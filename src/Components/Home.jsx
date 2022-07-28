@@ -1,0 +1,44 @@
+import React, { useEffect } from "react";
+import { getProductsThunk } from "../store/slices/products.slice";
+import { useDispatch, useSelector } from "react-redux";
+import ProductsItem from "./ProductsItem";
+
+const Home = () => {
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products);
+/*   console.log(products); */
+
+  useEffect(() => {
+    dispatch(getProductsThunk());
+  }, []);
+
+  return (
+    <div className="relative top-28 w-10/12 mx-auto">
+      <form className="flex align-center justify-center mx-auto">
+        <input
+          placeholder="What are you looking for?"
+          type="text"
+          className="p-3 max-w-[500px] text-sm rounded-sm w-10/12 border border-gray-300"
+        />
+        <button className="rounded-sm bg-red-500 w-11 inline-block">
+          <i className="text-white fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+      <div className="flex justify-end items-center relative top-4 gap-2 max-w-[500px] mx-auto ">
+        <i className="fa-solid text-xl fa-filter text-red-500"></i>
+        <p className="text-red-500 font-semibold text-sm tracking-widest">
+          Filters
+        </p>
+      </div>
+      <div className="w-full mx-auto relative top-16">
+        <ul className="grid gap-10 mb-[13rem]">
+          {products.map((product) => (
+            <ProductsItem product={product} key={product.id} />
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
