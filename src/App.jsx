@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
+import FiltersSideBar from "./Components/FiltersSideBar";
 import Footer from "./Components/Footer";
 import Home from "./Components/Home";
 import LoadingScreen from "./Components/LoadingScreen";
@@ -24,6 +25,7 @@ function App() {
         <Route path="/purchases" element={<Purchases />} />
       </Routes>
       <Footer />
+      <FiltersSideBar />
     </HashRouter>
   );
 }

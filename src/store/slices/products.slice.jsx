@@ -20,6 +20,28 @@ export const getProductsThunk = () => (dispatch) => {
     .finally(() => dispatch(setIsLoading(false)));
 };
 
+export const filtersCategoryThunk = (category) => (dispatch) => {
+  dispatch(setIsLoading(true));
+  return axios
+    .get(
+      `https://ecommerce-api-react.herokuapp.com/api/v1/products?category=${category}`
+    )
+    .then((res) => {
+      dispatch(setProducts(res.data.data.products));
+    })
+    .catch((err) => console.log(err))
+    .finally(() => dispatch(setIsLoading(false)));
+};
+
+export const filtersNameThunk = (searchValue) => (dispatch) => {
+  dispatch(setIsLoading(true));
+  return axios
+    .get(
+      `https://ecommerce-api-react.herokuapp.com/api/v1/products?query=${searchValue}`
+    )
+    .then((res) => dispatch(setProducts(res.data.data.products)))
+    .finally(() => dispatch(setIsLoading(false)));
+};
 export const { setProducts } = productsSlice.actions;
 
 export default productsSlice.reducer;
