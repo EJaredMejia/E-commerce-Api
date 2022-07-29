@@ -17,11 +17,15 @@ const Home = () => {
 
   const searchProduct = (e) => {
     e.preventDefault();
-    allProducts.forEach((product) => {
-      if (product.title.toLowerCase().includes(searchValue.toLowerCase())) {
-        dispatch(filtersNameThunk(product.title.split(" ").shift()));
-      }
-    });
+    if (searchValue !== "") {
+      allProducts.forEach((product) => {
+        if (product.title.toLowerCase().includes(searchValue.toLowerCase())) {
+          dispatch(filtersNameThunk(product.title.split(" ").shift()));
+        }
+      });
+    } else {
+      dispatch(getProductsThunk());
+    }
   };
 
   useEffect(() => {
@@ -48,7 +52,7 @@ const Home = () => {
           <i className="text-white fa-solid fa-magnifying-glass"></i>
         </button>
       </form>
-      <div className="flex justify-end items-center relative top-4 gap-2 max-w-[500px] mx-auto md:max-w-[40rem]">
+      <div className="flex justify-end items-center relative top-4 gap-2 max-w-[500px] mx-auto md:max-w-[40rem] lg:invisible">
         <i className="fa-solid text-xl fa-filter text-red-500"></i>
         <p className="text-red-500 font-semibold text-sm tracking-widest">
           Filters
