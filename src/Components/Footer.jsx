@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-t p-10 from-gray-600 to-gray-700 text-white flex gap-8 flex-col justify-center items-center">
+    <footer className="adjust-footer bg-gradient-to-t p-10 from-gray-600 to-gray-700 text-white flex gap-8 flex-col justify-center items-center">
       <p>Made by Jared Mejia 2022</p>
       <div className="flex gap-5">
         <a target="_blank" href="https://github.com/jaredmejia24/E-commerce-Api">
