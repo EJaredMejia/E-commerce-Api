@@ -32,7 +32,7 @@ const FiltersSideBar = () => {
   }, []);
 
   return (
-    <div className="fixed h-screen top-0 w-[18rem]">
+    <div className="fixed h-screen top-0 w-[18rem] invisible lg:visible">
       <div className="relative top-[8rem] left-5 w-[15rem]">
         <div className="border-b-2 border-gray-300 flex justify-between">
           <h4 className="font-bold text-gray-600">Price</h4>
