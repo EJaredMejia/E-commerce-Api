@@ -44,7 +44,7 @@ const Home = () => {
   return (
     <>
       <FiltersSideBar isFiltersVisible={isFiltersVisible} toogleFilters={toogleFilters}/>
-      <div className="relative top-28 w-10/12 mx-auto sm:w-11/12 lg:grid lg:grid-cols-home lg:w-full">
+      <section className="relative top-28 w-10/12 mx-auto sm:w-11/12 lg:grid lg:grid-cols-home lg:w-full">
         <div style={{ gridColumn: "2/3" }}>
           <form
             onSubmit={searchProduct}
@@ -77,7 +77,7 @@ const Home = () => {
             </ul>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };
