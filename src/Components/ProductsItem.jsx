@@ -1,9 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProductsItem = ({ product }) => {
+  
+  const navigate = useNavigate();
+
   console.log(product);
   return (
-    <li className="border pt-5 border-gray-300 rounded-xl">
+    <li onClick={()=>navigate(`/product/${product.id}`)} className="border cursor-pointer pt-5 border-gray-300 rounded-xl">
       <div className="w-full sm:h-50 border-b border-gray-300 pb-5">
         <img
           className="mx-auto w-40 max-h-[250px] sm:px-2 sm:w-fit sm:h-40 md:h-[12rem]"
