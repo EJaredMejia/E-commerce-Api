@@ -4,15 +4,51 @@
   font-family: 'Roboto', sans-serif;
 }
 
-body{
+body {
   position: relative;
   padding-bottom: 400px;
   min-height: 100vh;
 }
 
-.adjust-footer{
+.adjust-footer {
   position: absolute;
   bottom: 0;
   width: 100%;
 }
 
+.rotate-up {
+  transition: transform 1s !important;
+  display: inline-block !important;
+  transform: rotatex(180deg) !important;
+/* ^^ Change this */
+}
+
+.rotate-down{
+  transition: transform 1s !important;
+  display: inline-block !important;
+  transform: rotatex(0deg) !important;
+}
+
+.hide {
+  max-height: 0;
+  transition: max-height 0.4s ease-out;
+  overflow: hidden;
+}
+
+.show {
+  overflow: hidden;
+  max-height: 200px;
+  transition: max-height 0.4s ease-in;
+}
+
+.hide-filters {
+  max-width: 0;
+  transition: max-width 0.5s ease-out;
+  overflow: hidden;
+}
+
+.show-filters {
+  overflow: hidden;
+  max-width: 18rem;
+  transition: max-width 0.4s ease-in;
+}

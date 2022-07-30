@@ -6,8 +6,10 @@ import {
   getProductsThunk,
 } from "../store/slices/products.slice";
 
-const FiltersSideBar = () => {
+const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
   const [categories, setCategories] = useState([]);
+  const [isPriceActive, setIsPriceActive] = useState(false);
+  const [isCategoryActive, setIsCategoryActive] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -32,13 +34,27 @@ const FiltersSideBar = () => {
   }, []);
 
   return (
-    <div className="fixed z-50 h-screen top-0 w-[18rem] invisible lg:visible">
-      <div className="relative top-[8rem] left-5 w-[15rem]">
-        <div className="border-b-2 border-gray-300 flex justify-between">
+    <div className={`block fixed right-0 ${isFiltersVisible ? "show-filters" : "hide-filters"} shadow-lg bg-white w-[18rem] lg:max-w-[18rem] h-screen z-50 lg:visible lg:z-40 lg:right-auto lg:top-0`}>
+      <div className="relative top-[4rem] lg:top-[8rem] left-5 w-[15rem]">
+        {isFiltersVisible && (
+          <i onClick={toogleFilters} className="fa-solid fa-x fa-lg absolute right-0 top-[-2rem] cursor-pointer text-gray-600"></i>
+        )}
+        <div
+          onClick={() => setIsPriceActive(!isPriceActive)}
+          className="border-b-2 border-gray-300 flex justify-between cursor-pointer"
+        >
           <h4 className="font-bold text-gray-600">Price</h4>
-          <i class="fa-solid text-xl fa-angle-down"></i>
+          <i
+            className={`fa-solid text-xl fa-angle-down inline-block rotate-180 ${
+              isPriceActive ? "rotate-down" : "rotate-up"
+            }`}
+          ></i>
         </div>
-        <form className="flex flex-col gap-4 mt-5 ml-3">
+        <form
+          className={`flex flex-col gap-4 mt-5 ml-3 ${
+            isPriceActive ? "show" : "hide"
+          }`}
+        >
           <div>
             <label className="text-gray-600 text-md" htmlFor="fromPrice">
               From
@@ -64,13 +80,21 @@ const FiltersSideBar = () => {
           </button>
         </form>
         <form className="mt-10">
-          <div className="border-b-2 border-gray-300 flex justify-between">
+          <div
+            onClick={() => setIsCategoryActive(!isCategoryActive)}
+            className="border-b-2 border-gray-300 flex justify-between cursor-pointer"
+          >
             <h4 className="font-bold text-gray-600">Category</h4>
-            <i class="fa-solid text-xl fa-angle-down"></i>
+            <i
+              className={`fa-solid text-xl fa-angle-down inline-block rotate-180 ${
+                isCategoryActive ? "rotate-down" : "rotate-up"
+              }`}
+            ></i>
           </div>
-          <div className="mt-5 ml-3">
+          <div className={`mt-5 ml-3 ${isCategoryActive ? "show" : "hide"}`}>
             <div className="mb-3">
               <input
+                checked={categoriesInput === "all products" ? true : false}
                 className="mr-3"
                 type="radio"
                 name="select_category"
