@@ -27,8 +27,7 @@ const ProductDetail = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
-  console.log(currentImages);
-  console.log(product);
+
 
   useEffect(() => {
     const productToFind = allProducts.find(
@@ -47,7 +46,6 @@ const ProductDetail = () => {
     setQuantityProducts(quantityProducts + 1);
   };
 
-  /* console.log(product?.productImgs); */
   return (
     <section className="relative top-20 text-gray-600 mx-auto w-11/12 max-w-[540px] md:max-w-[900px] md:gap-8 md:grid md:grid-cols-2 md:top-28 lg:max-w-[1300px]">
       <section>
