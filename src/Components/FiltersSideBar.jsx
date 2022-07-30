@@ -14,8 +14,6 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
   const dispatch = useDispatch();
 
   const [categoriesInput, setCategoriesInput] = useState("all products");
-  console.log(categories);
-  console.log(categoriesInput);
 
   useEffect(() => {
     if (categoriesInput === "all products") {

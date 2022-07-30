@@ -15,7 +15,7 @@ const Home = () => {
 
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
-  /*   console.log(products); */
+
 
   const searchProduct = (e) => {
     e.preventDefault();
