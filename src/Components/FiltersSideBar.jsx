@@ -94,6 +94,7 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
           <div className={`mt-5 ml-3 ${isCategoryActive ? "show" : "hide"}`}>
             <div className="mb-3">
               <input
+                onClick={toogleFilters}
                 checked={categoriesInput === "all products" ? true : false}
                 className="mr-3"
                 type="radio"
@@ -107,6 +108,7 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
             {categories.map((category) => (
               <div className="mb-3" key={category.id}>
                 <input
+                  onClick={toogleFilters}
                   className="mr-3"
                   type="radio"
                   name="select_category"
