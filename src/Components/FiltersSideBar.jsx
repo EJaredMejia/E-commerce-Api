@@ -58,6 +58,7 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
               From
             </label>
             <input
+            min="0"
               className="ml-3 w-[11rem] p-2 border rounded border-gray-300 text-sm"
               id="fromPrice"
               type="number"
@@ -68,6 +69,7 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
               To
             </label>
             <input
+              min="1  "
               className="ml-8 w-[11rem] p-2 border rounded border-gray-300 text-sm"
               id="toPrice"
               type="number"
@@ -90,31 +92,31 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
             ></i>
           </div>
           <div className={`mt-5 ml-3 ${isCategoryActive ? "show" : "hide"}`}>
-            <div className="mb-3">
+            <div className="mb-3 ">
               <input
                 onClick={toogleFilters}
                 checked={categoriesInput === "all products" ? true : false}
-                className="mr-3"
+                className="mr-3 cursor-pointer"
                 type="radio"
                 name="select_category"
                 value="all products"
                 id="allProducts"
                 onChange={(e) => setCategoriesInput(e.target.value)}
               />
-              <label htmlFor="allProducts">All products</label>
+              <label className="cursor-pointer" htmlFor="allProducts">All products</label>
             </div>
             {categories.map((category) => (
               <div className="mb-3" key={category.id}>
                 <input
                   onClick={toogleFilters}
-                  className="mr-3"
+                  className="mr-3 cursor-pointer"
                   type="radio"
                   name="select_category"
                   value={category.id}
                   onChange={(e) => setCategoriesInput(e.target.value)}
                   id={category.name}
                 />
-                <label htmlFor={category.name}>{category.name}</label>
+                <label className="cursor-pointer" htmlFor={category.name}>{category.name}</label>
               </div>
             ))}
           </div>
