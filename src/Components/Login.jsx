@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 
 const Login = () => {
@@ -10,6 +10,8 @@ const Login = () => {
   const [passwordUser, setPasswordUser] = useState("");
   const [userState, setUserState] = useState(null);
   const [renderAgain, setRenderAgain] = useState(0);
+
+  const message = useSelector(state=>state.app.loginMessage);
 
   document.body.style.paddingBottom = "0px";
 
@@ -52,6 +54,7 @@ const Login = () => {
           <h3 className="font-[600] text-gray-600 text-2xl tracking-wide leading-9">
             Welcome! Enter your email and password to continue
           </h3>
+          <p className="text-center text-blue-500 mt-3">{message}</p>
           <div className="bg-cyan-100 rounded p-4 mt-5">
             <h4 className="text-center text-gray-600  mb-2">
               <b>Test data</b>

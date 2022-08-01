@@ -12,7 +12,7 @@ import ProtectedRoutes from "./Components/ProtectedRoutes";
 import Purchases from "./Components/Purchases";
 
 function App() {
-  const isLoading = useSelector((state) => state.isLoading);
+  const isLoading = useSelector((state) => state.app.isLoading);
 
   return (
     <HashRouter>

@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { setIsLoading } from "../store/slices/isLoading.slice";
 import { getProductsThunk } from "../store/slices/products.slice";
 import ProductsItem from "./ProductsItem";
 
@@ -92,6 +91,7 @@ const ProductDetail = () => {
         <ul className="hidden lg:flex mt-20 justify-center items-center gap-4">
           {product?.productImgs?.map((img, i) => (
             <div
+              key={img}
               className="cursor-pointer p-1 rounded-md"
               onClick={() => setCurrentPage(i + 1)}
               style={{ border: i + 1 === currentPage && "2px red solid" }}
