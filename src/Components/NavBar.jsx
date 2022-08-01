@@ -1,7 +1,31 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import CartSideBar from "./CartSideBar";
+import { useDispatch } from "react-redux/es/exports";
+import { setIsMessage } from "../store/slices/isLoading.slice";
 
 const NavBar = () => {
+  const [isCartVisible, setIsCartVisible] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userLocal = JSON.parse(localStorage.getItem("user"));
+
+  const toogleCart = () => {
+    if (userLocal) {
+      setIsCartVisible(!isCartVisible);
+    } else {
+      dispatch(setIsMessage("you need to log in to see your cart shop"));
+      navigate("/login");
+    }
+  };
+
+  const purchaseClick = () => {
+    if (!userLocal) {
+      dispatch(setIsMessage("you need to log in to see your purchases"));
+    }
+  };
+
   return (
     <nav className="bg-white z-50 fixed grid grid-cols-2 w-screen p-5 lg:items-center lg:py-0 lg:border-b lg:border-gray-300 ">
       <Link to="/">
@@ -14,10 +38,19 @@ const NavBar = () => {
           <i className="fa-solid text-red-500 sm:text-2xl text-xl fa-user lg:border-l lg:px-16 lg:py-5 lg:border-gray-300 lg:text-3xl"></i>
         </Link>
         <Link to="/purchases">
-          <i className="fa-solid text-red-500 sm:text-2xl text-xl fa-box-archive lg:border-l lg:px-16 lg:py-5 lg:border-gray-300 lg:text-3xl"></i>
+          <i
+            onClick={purchaseClick}
+            className="fa-solid text-red-500 sm:text-2xl text-xl fa-box-archive lg:border-l lg:px-16 lg:py-5 lg:border-gray-300 lg:text-3xl"
+          ></i>
         </Link>
-        <i className="fa-solid text-red-500 sm:text-2xl text-xl fa-cart-shopping lg:border-l lg:px-16 lg:py-5 lg:border-gray-300 lg:text-3xl"></i>
+        <i
+          onClick={toogleCart}
+          className={` ${
+            isCartVisible ? "text-red-500" : "text-gray-500"
+          } cursor-pointer fa-solid sm:text-2xl text-xl fa-cart-shopping lg:border-l lg:px-16 lg:py-5 lg:border-gray-300 lg:text-3xl`}
+        ></i>
       </div>
+      {userLocal && <CartSideBar isCartVisible={isCartVisible} />}
     </nav>
   );
 };

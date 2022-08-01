@@ -1,15 +1,18 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-export const isLoadingSlice = createSlice({
-    name: 'isLoading',
-    initialState: false,
-    reducers: {
-        setIsLoading: (state, action) =>{
-            return action.payload;
-        }
+export const appSlice = createSlice({
+  name: "app",
+  initialState: { isLoading: false, loginMessage: "" },
+  reducers: {
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    setIsMessage: (state, action) =>{
+      state.loginMessage = action.payload;
     }
-})
+  },
+});
 
-export const { setIsLoading } = isLoadingSlice.actions;
+export const { setIsLoading, setIsMessage } = appSlice.actions;
 
-export default isLoadingSlice.reducer;
+export default appSlice.reducer;
