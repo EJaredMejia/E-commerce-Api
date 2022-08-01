@@ -28,7 +28,6 @@ const ProductDetail = () => {
     indexOfLastItem
   );
 
-
   useEffect(() => {
     const productToFind = allProducts.find(
       (productItem) => Number(productItem.id) === Number(id)
@@ -50,7 +49,9 @@ const ProductDetail = () => {
     <section className="relative top-20 text-gray-600 mx-auto w-11/12 max-w-[540px] md:max-w-[900px] md:gap-8 md:grid md:grid-cols-2 md:top-28 lg:max-w-[1300px]">
       <section>
         <div className="flex items-center gap-3 text-sm">
-          <h4 className="cursor-pointer" onClick={()=>navigate("/")}>Home</h4>
+          <h4 className="cursor-pointer" onClick={() => navigate("/")}>
+            Home
+          </h4>
           <i className="fa-solid fa-circle text-red-500 text-xs"></i>
           <b>{product?.title}</b>
         </div>
@@ -89,9 +90,17 @@ const ProductDetail = () => {
           </li>
         </ul>
         <ul className="hidden lg:flex mt-20 justify-center items-center gap-4">
-          {product?.productImgs?.map((img, i)=>(
-            <div className="cursor-pointer p-1 rounded-md" onClick={()=>setCurrentPage(i+1)} style={{border: i+1===currentPage && "2px red solid"}}>
-              <img className="w-[4rem] h-[4rem] object-contain" src={img} alt="" />
+          {product?.productImgs?.map((img, i) => (
+            <div
+              className="cursor-pointer p-1 rounded-md"
+              onClick={() => setCurrentPage(i + 1)}
+              style={{ border: i + 1 === currentPage && "2px red solid" }}
+            >
+              <img
+                className="w-[4rem] h-[4rem] object-contain"
+                src={img}
+                alt=""
+              />
             </div>
           ))}
         </ul>
@@ -128,7 +137,9 @@ const ProductDetail = () => {
           <button className="cursor-pointer w-full py-4 px-3 bg-red-500 text-white mt-10 flex gap-3 justify-center items-center md:order-2">
             Add to cart <i className="fa-solid fa-cart-shopping"></i>
           </button>
-          <p className="text-base mt-12 leading-6 md:order-1">{product?.description}</p>
+          <p className="text-base mt-12 leading-6 md:order-1">
+            {product?.description}
+          </p>
         </div>
       </section>
       <section style={{ gridColumn: "1/3" }} className="mt-[7rem] lg:mt-[2rem]">
