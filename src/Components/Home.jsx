@@ -13,6 +13,8 @@ const Home = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
+  document.body.style.paddingBottom = "400px";
+
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
 
