@@ -52,3 +52,33 @@ body {
   max-width: 18rem;
   transition: max-width 0.3s ease-in;
 }
+
+.change-height{
+  margin: auto;
+  height: 20vh;
+}
+
+@media (min-height: 576px) { 
+  .change-height{
+    height: 50vh;
+  }
+}
+
+
+@media (min-height: 768px) { 
+  .change-height{
+    height: 66vh;
+  }
+}
+
+@media (min-height: 992px) { 
+  .change-height{
+    height: 70vh;
+  }
+}
+
+@media (min-height: 1200px) { 
+  .change-height{
+    height: 80vh;
+  }
+}

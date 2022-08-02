@@ -21,8 +21,6 @@ const PurchasesItem = ({ purchase }) => {
 
   /*   console.log(arrayDate); */
 
-  console.log(purchase);
-
   return (
     <>
       {purchase.cart.products.length > 0 && (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import { getPurchasesThunk } from "../store/slices/purchases.slice";
 import { useNavigate } from "react-router-dom";
