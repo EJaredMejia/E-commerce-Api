@@ -29,15 +29,18 @@ const PurchasesItem = ({ purchase }) => {
             {months[parseInt(arrayDate[1] - 1)]} {parseInt(arrayDate[2])},{" "}
             {parseInt(arrayDate[0])}
           </h3>
-          <div className="text-sm mx-auto text-gray-600 p-3 gap-y-7 grid grid-cols-3 justify-items-end items-center sm:w-[25rem] md:p-7 md:w-[34rem]">
+          <div className="p-7 text-sm mx-auto text-gray-600  sm:w-[25rem] md:w-[34rem]">
             {purchase.cart.products.map((product) => (
-              <>
+              <div
+                className="gap-y-7 grid grid-cols-3 justify-items-end items-center"
+                key={product.id}
+              >
                 <p>{product.title}</p>
                 <p className="border border-gray-300 w-[3rem] flex justify-center items-center py-1 px-6">
                   {product.quantity}
                 </p>
                 <p>$ {product.price}</p>
-              </>
+              </div>
             ))}
           </div>
         </li>

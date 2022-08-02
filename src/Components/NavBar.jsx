@@ -16,6 +16,7 @@ const NavBar = () => {
       setIsCartVisible(!isCartVisible);
     } else {
       dispatch(setIsMessage("you need to log in to see your cart shop"));
+      navigate('/login');
     }
   };
 
@@ -49,7 +50,7 @@ const NavBar = () => {
           } cursor-pointer fa-solid sm:text-2xl text-xl fa-cart-shopping lg:border-l lg:px-16 lg:py-5 lg:border-gray-300 lg:text-3xl`}
         ></i>
       </div>
-      {userLocal && <CartSideBar isCartVisible={isCartVisible} />}
+      {userLocal && <CartSideBar isCartVisible={isCartVisible} setIsCartVisible={setIsCartVisible}/>}
     </nav>
   );
 };
