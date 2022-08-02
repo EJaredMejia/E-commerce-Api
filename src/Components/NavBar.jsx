@@ -16,7 +16,6 @@ const NavBar = () => {
       setIsCartVisible(!isCartVisible);
     } else {
       dispatch(setIsMessage("you need to log in to see your cart shop"));
-      navigate("/login");
     }
   };
 

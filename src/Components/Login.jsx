@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [emailUser, setEmailUser] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
@@ -37,9 +39,11 @@ const Login = () => {
         setUserState(res.data.data);
         setRenderAgain(renderAgain+1);
     })
+    .catch(()=>alert("User does'nt exit"))
       .finally(() => dispatch(setIsLoading(false)));
     setEmailUser('');
     setPasswordUser('');
+    navigate('/');
   };
 
   const logOut = () => {
