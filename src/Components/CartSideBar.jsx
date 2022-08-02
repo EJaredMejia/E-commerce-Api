@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCartThunk } from "../store/slices/cart.slice";
+import {
+  deleteCartThunk,
+  getCartThunk,
+  updateCartThunk,
+} from "../store/slices/cart.slice";
 
 const CartSideBar = ({ isCartVisible }) => {
   const dispatch = useDispatch();
@@ -11,16 +15,43 @@ const CartSideBar = ({ isCartVisible }) => {
   shoppingCart.forEach((product) => {
     totalVar += product.price * product.productsInCart.quantity;
   });
+  useEffect(() => {
+    setTotal(totalVar);
+  }, [totalVar]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       dispatch(getCartThunk(user.token));
     }
-    setTotal(totalVar);
   }, [isCartVisible]);
 
-  console.log(shoppingCart);
+  const minusQuantity = (cart) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (cart.productsInCart.quantity === 1) {
+      deleteCart(cart.id);
+    } else {
+      const newProductCart = {
+        id: cart.id,
+        newQuantity: cart.productsInCart.quantity - 1,
+      };
+      dispatch(updateCartThunk(user.token, newProductCart));
+    }
+  };
+
+  const plusQuantity = (cart) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const newProductCart = {
+      id: cart.id,
+      newQuantity: cart.productsInCart.quantity + 1,
+    };
+    dispatch(updateCartThunk(user.token, newProductCart));
+  };
+
+  const deleteCart = (id) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    dispatch(deleteCartThunk(user.token, id));
+  };
 
   return (
     <div
@@ -38,12 +69,29 @@ const CartSideBar = ({ isCartVisible }) => {
             <p className="mb-2">
               $ {cart.price * cart.productsInCart.quantity}
             </p>
-            <div className="mb-2 flex">
-              <button className="text-3xl">-</button>
-              <p>Quantity: {cart.productsInCart.quantity}</p>
-              <button className="text-3xl">+</button>
+            <div className="mb-2 flex gap-5 items-center">
+              <p>Quantity: </p>
+              <div className="text-base border border-gray-300 items-center w-[6rem] justify-items-center order-4 grid grid-cols-3">
+                <p
+                  onClick={() => minusQuantity(cart)}
+                  className="cursor-pointer w-full h-full  flex justify-center items-center active:bg-teal-300"
+                >
+                  <i className="fa-solid fa-minus"></i>
+                </p>
+                <p className="border-r  border-l w-full text-center border-gray-300">
+                  {cart.productsInCart.quantity}
+                </p>
+                <p
+                  onClick={() => plusQuantity(cart)}
+                  className="cursor-pointer w-full h-full flex justify-center items-center active:bg-teal-300"
+                >
+                  <i className="fa-solid fa-plus"></i>
+                </p>
+              </div>
+              <button onClick={() => deleteCart(cart.id)} className="order-5">
+                <i class="fa-solid fa-trash-can text-red-500"></i>
+              </button>
             </div>
-            <button>delete</button>
           </li>
         ))}
       </ul>

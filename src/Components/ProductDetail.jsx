@@ -1,11 +1,12 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { updateCartThunk, addCartThunk } from "../store/slices/cart.slice";
 import { getProductsThunk } from "../store/slices/products.slice";
 import ProductsItem from "./ProductsItem";
 
 const ProductDetail = () => {
+  const shoppingCart = useSelector((state) => state.cart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -43,6 +44,35 @@ const ProductDetail = () => {
   const plusQuantity = () => {
     setQuantityProducts(quantityProducts + 1);
   };
+
+  const addToCart = () =>{
+    const user = JSON.parse(localStorage.getItem("user"));
+    if(shoppingCart.length > 0){
+      shoppingCart.find((productShop) => {
+        if (productShop.id === id) {
+          const newProductCart = {
+            id: id,
+            newQuantity: quantityProducts,
+          };
+          dispatch(updateCartThunk(user.token, newProductCart));
+          return true;
+        } else {
+          const newProductCart = {
+            id: id,
+            quantity: quantityProducts,
+          };
+          dispatch(addCartThunk(user.token, newProductCart));
+          return true;
+        }
+      });
+    } else {
+      const newProductCart = {
+        id: id,
+        quantity: quantityProducts,
+      };
+      dispatch(addCartThunk(user.token, newProductCart));
+    }
+  }
 
   return (
     <section className="relative top-20 text-gray-600 mx-auto w-11/12 max-w-[540px] md:max-w-[900px] md:gap-8 md:grid md:grid-cols-2 md:top-28 lg:max-w-[1300px]">
@@ -134,7 +164,7 @@ const ProductDetail = () => {
           </div>
         </div>
         <div className="md:grid">
-          <button className="cursor-pointer w-full py-4 px-3 bg-red-500 text-white mt-10 flex gap-3 justify-center items-center md:order-2">
+          <button onClick={addToCart} className="cursor-pointer w-full py-4 px-3 bg-red-500 text-white mt-10 flex gap-3 justify-center items-center md:order-2">
             Add to cart <i className="fa-solid fa-cart-shopping"></i>
           </button>
           <p className="text-base mt-12 leading-6 md:order-1">

@@ -23,23 +23,31 @@ const ProductsItem = ({ product }) => {
 
   const addProductToCart = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    shoppingCart.find((productShop) => {
-      if (productShop.id === product.id) {
-        const newProductCart = {
-          id: product.id,
-          newQuantity: productShop.productsInCart.quantity + 1,
-        };
-        dispatch(updateCartThunk(user.token, newProductCart));
-        return true;
-      } else {
-        const newProductCart = {
-          id: product.id,
-          quantity: 1,
-        };
-        dispatch(addCartThunk(user.token, newProductCart));
-        return true;
-      }
-    });
+    if (shoppingCart.length > 0) {
+      shoppingCart.find((productShop) => {
+        if (productShop.id === product.id) {
+          const newProductCart = {
+            id: product.id,
+            newQuantity: productShop.productsInCart.quantity + 1,
+          };
+          dispatch(updateCartThunk(user.token, newProductCart));
+          return true;
+        } else {
+          const newProductCart = {
+            id: product.id,
+            quantity: 1,
+          };
+          dispatch(addCartThunk(user.token, newProductCart));
+          return true;
+        }
+      });
+    } else {
+      const newProductCart = {
+        id: product.id,
+        quantity: 1,
+      };
+      dispatch(addCartThunk(user.token, newProductCart));
+    }
     /* dispatch(addCartThunk(user.token)); */
   };
 
