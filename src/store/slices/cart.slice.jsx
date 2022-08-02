@@ -21,6 +21,7 @@ export const getCartThunk = (token) => (dispatch) => {
       getConfig(token)
     )
     .then((res) => dispatch(setCart(res.data.data.cart.products)))
+    .catch((err) => dispatch(setCart([])))
     .finally(() => dispatch(setIsLoading(false)));
 };
 
@@ -56,6 +57,21 @@ export const deleteCartThunk = (token, id) => (dispatch) => {
       getConfig(token)
     )
     .then(() => dispatch(getCartThunk(token)))
+    .finally(() => dispatch(setIsLoading(false)));
+};
+
+export const purchaseCartThunk = (token, location) => (dispatch) => {
+  dispatch(setIsLoading(true));
+  return axios
+    .post(
+      "https://ecommerce-api-react.herokuapp.com/api/v1/purchases",
+      location,
+      getConfig(token)
+    )
+    .then(() => {
+      dispatch(getCartThunk(token));
+      alert("your purchase was Successful")
+    })
     .finally(() => dispatch(setIsLoading(false)));
 };
 

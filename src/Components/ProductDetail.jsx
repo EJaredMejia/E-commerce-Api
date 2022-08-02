@@ -45,34 +45,29 @@ const ProductDetail = () => {
     setQuantityProducts(quantityProducts + 1);
   };
 
-  const addToCart = () =>{
+  const addToCart = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if(shoppingCart.length > 0){
-      shoppingCart.find((productShop) => {
-        if (productShop.id === id) {
-          const newProductCart = {
-            id: id,
-            newQuantity: quantityProducts,
-          };
-          dispatch(updateCartThunk(user.token, newProductCart));
-          return true;
-        } else {
-          const newProductCart = {
-            id: id,
-            quantity: quantityProducts,
-          };
-          dispatch(addCartThunk(user.token, newProductCart));
-          return true;
-        }
-      });
-    } else {
+    let isProductAllreadyInCart = false;
+    const idProduct = Number(id);
+    shoppingCart.find((product) => {
+      if (product.id === idProduct) {
+        isProductAllreadyInCart = true;
+        const newProductCart = {
+          id: idProduct,
+          newQuantity: quantityProducts,
+        };
+        dispatch(updateCartThunk(user.token, newProductCart));
+        return true;
+      }
+    });
+    if (isProductAllreadyInCart === false) {
       const newProductCart = {
-        id: id,
+        id: idProduct,
         quantity: quantityProducts,
       };
       dispatch(addCartThunk(user.token, newProductCart));
     }
-  }
+  };
 
   return (
     <section className="relative top-20 text-gray-600 mx-auto w-11/12 max-w-[540px] md:max-w-[900px] md:gap-8 md:grid md:grid-cols-2 md:top-28 lg:max-w-[1300px]">
@@ -164,7 +159,10 @@ const ProductDetail = () => {
           </div>
         </div>
         <div className="md:grid">
-          <button onClick={addToCart} className="cursor-pointer w-full py-4 px-3 bg-red-500 text-white mt-10 flex gap-3 justify-center items-center md:order-2">
+          <button
+            onClick={addToCart}
+            className="cursor-pointer w-full py-4 px-3 bg-red-500 text-white mt-10 flex gap-3 justify-center items-center md:order-2"
+          >
             Add to cart <i className="fa-solid fa-cart-shopping"></i>
           </button>
           <p className="text-base mt-12 leading-6 md:order-1">

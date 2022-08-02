@@ -5,8 +5,10 @@ import {
   getCartThunk,
   updateCartThunk,
 } from "../store/slices/cart.slice";
+import CheckoutModal from "./CheckoutModal";
 
-const CartSideBar = ({ isCartVisible }) => {
+const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const dispatch = useDispatch();
   let totalVar = 0;
   const [total, setTotal] = useState(0);
@@ -53,6 +55,19 @@ const CartSideBar = ({ isCartVisible }) => {
     dispatch(deleteCartThunk(user.token, id));
   };
 
+  const checkoutClick = () => {
+    if (shoppingCart.length > 0) {
+      setIsCheckoutModalOpen(true);
+      setIsCartVisible(false);
+    } else {
+      alert("The shopping cart is empty");
+    }
+  };
+
+  const closeCheckoutModal = () => {
+    setIsCheckoutModalOpen(false);
+  };
+
   return (
     <div
       className={`w-[20rem] z-50 block fixed right-0 ${
@@ -64,7 +79,7 @@ const CartSideBar = ({ isCartVisible }) => {
       </h3>
       <ul className="mr-1 change-height">
         {shoppingCart.map((cart) => (
-          <li className="border-b-2 border-gray-300 py-1 px-5 ">
+          <li key={cart.id} className="border-b-2 border-gray-300 py-1 px-5 ">
             <p className="mb-2">{cart.title}</p>
             <p className="mb-2">
               $ {cart.price * cart.productsInCart.quantity}
@@ -89,7 +104,7 @@ const CartSideBar = ({ isCartVisible }) => {
                 </p>
               </div>
               <button onClick={() => deleteCart(cart.id)} className="order-5">
-                <i class="fa-solid fa-trash-can text-red-500"></i>
+                <i className="fa-solid fa-trash-can text-red-500"></i>
               </button>
             </div>
           </li>
@@ -101,11 +116,18 @@ const CartSideBar = ({ isCartVisible }) => {
             <p className="text-gray-500">Total: </p>
             <p className="font-bold">$ {total}</p>
           </div>
-          <button className="bg-red-500 text-white text-center p-2 w-full mt-8">
+          <button
+            onClick={checkoutClick}
+            className="bg-red-500 text-white text-center p-2 w-full mt-8"
+          >
             Checkout
           </button>
         </div>
       </div>
+      <CheckoutModal
+        isCheckoutModalOpen={isCheckoutModalOpen}
+        closeCheckoutModal={closeCheckoutModal}
+      />
     </div>
   );
 };

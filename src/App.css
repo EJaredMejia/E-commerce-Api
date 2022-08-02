@@ -20,10 +20,10 @@ body {
   transition: transform 0.3s !important;
   display: inline-block !important;
   transform: rotatex(180deg) !important;
-/* ^^ Change this */
+  /* ^^ Change this */
 }
 
-.rotate-down{
+.rotate-down {
   transition: transform 0.3s !important;
   display: inline-block !important;
   transform: rotatex(0deg) !important;
@@ -53,33 +53,63 @@ body {
   transition: max-width 0.3s ease-in;
 }
 
-.change-height{
+.change-height {
   overflow-y: auto;
   margin: auto;
   height: 20vh;
 }
 
-@media (min-height: 576px) { 
-  .change-height{
+.adjust-modal {
+  box-shadow: 0 0 8px rgb(209, 209, 209);
+  background-color: white;
+  padding: 1rem;
+  position: absolute;
+  top: 16%;
+  overflow-y: auto;
+  left: 15%;
+  transform: translate(-50% -50%);
+  height: 75%;
+  max-height: 36.5rem;
+  width: 70%;
+  max-width: 50rem;
+}
+
+@media (min-height: 576px) {
+  .change-height {
     height: 50vh;
   }
+
 }
 
 
-@media (min-height: 768px) { 
-  .change-height{
+@media (min-height: 768px) {
+  .change-height {
     height: 66vh;
   }
 }
 
-@media (min-height: 992px) { 
-  .change-height{
+@media (min-height: 992px) {
+  .change-height {
     height: 70vh;
   }
 }
 
-@media (min-height: 1200px) { 
-  .change-height{
+@media (min-height: 1200px) {
+  .change-height {
     height: 80vh;
+  }
+}
+
+@media (min-width: 992px) {
+  .adjust-modal {
+    left: 32%;
+    max-width: 40rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .adjust-modal {
+    left: 30%;
+    max-width: 55rem;
   }
 }
