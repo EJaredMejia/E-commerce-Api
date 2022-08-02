@@ -54,6 +54,7 @@ body {
 }
 
 .change-height{
+  overflow-y: auto;
   margin: auto;
   height: 20vh;
 }
