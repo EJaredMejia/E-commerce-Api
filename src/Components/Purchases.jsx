@@ -46,7 +46,7 @@ const Purchases = () => {
       <h2 className="font-bold text-xl tracking-wide text-gray-600 mt-5">
         My purchases
       </h2>
-      <ul className="mt-8 grid gap-5">
+      <ul className="mt-8 grid gap-5 ">
         {sortArray.map((purchase) => (
           <PurchasesItem key={purchase.id} purchase={purchase} />
         ))}

@@ -38,12 +38,12 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(res.data.data));
         setUserState(res.data.data);
         setRenderAgain(renderAgain+1);
+        navigate('/');
     })
     .catch(()=>alert("User does'nt exit"))
       .finally(() => dispatch(setIsLoading(false)));
     setEmailUser('');
     setPasswordUser('');
-    navigate('/');
   };
 
   const logOut = () => {
