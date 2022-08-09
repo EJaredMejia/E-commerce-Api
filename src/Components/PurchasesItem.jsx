@@ -32,7 +32,7 @@ const PurchasesItem = ({ purchase }) => {
           <div className="p-7 text-sm mx-auto text-gray-600  sm:w-[25rem] md:w-[34rem]">
             {purchase.cart.products.map((product) => (
               <div
-                className="gap-y-7 grid grid-cols-3 justify-items-end items-center"
+                className="gap-y-7 my-2 grid grid-cols-3 justify-items-end items-center"
                 key={product.id}
               >
                 <p>{product.title}</p>

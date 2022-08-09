@@ -1,21 +1,30 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { setIsLoading } from "../store/slices/isLoading.slice";
 import {
   filtersCategoryThunk,
   getProductsThunk,
+  setProducts,
 } from "../store/slices/products.slice";
 
-const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
+const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
   const [categories, setCategories] = useState([]);
   const [isPriceActive, setIsPriceActive] = useState(false);
   const [isCategoryActive, setIsCategoryActive] = useState(false);
+
+  const [priceTo, setPriceTo] = useState("");
+  const [priceFrom, setPriceFrom] = useState("");
 
   const dispatch = useDispatch();
 
   const [categoriesInput, setCategoriesInput] = useState("all products");
 
   useEffect(() => {
+    if (categoriesInput !== -1) {
+      setPriceTo("");
+      setPriceFrom("");
+    }
     if (categoriesInput === "all products") {
       dispatch(getProductsThunk());
     } else {
@@ -31,11 +40,39 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
       .then((res) => setCategories(res.data.data.categories));
   }, []);
 
+  const filterByPrice = () => {
+    dispatch(setIsLoading(true));
+    axios
+      .get("https://ecommerce-api-react.herokuapp.com/api/v1/products")
+      .then((res) =>{
+        const productsFiltered = res.data.data.products.filter((product) => {
+          return (
+            Number(product.price) >= priceFrom && Number(product.price) <= priceTo
+          );
+        });
+        console.log(productsFiltered);
+        if (productsFiltered.length > 0) {
+          dispatch(setProducts(productsFiltered));
+          setCategoriesInput(-1);
+        } else {
+          alert("no products found");
+        }
+      })
+      .finally(() => dispatch(setIsLoading(false)));
+  };
+
   return (
-    <div className={`block fixed right-0 ${isFiltersVisible ? "show-filters" : "hide-filters"} shadow-lg bg-white w-[18rem] lg:max-w-[18rem] h-screen z-50 lg:visible lg:z-40 lg:right-auto lg:top-0`}>
+    <div
+      className={`block fixed right-0 ${
+        isFiltersVisible ? "show-filters" : "hide-filters"
+      } shadow-lg bg-white w-[18rem] lg:max-w-[18rem] h-screen z-50 lg:visible lg:z-40 lg:right-auto lg:top-0`}
+    >
       <div className="relative top-[4rem] lg:top-[8rem] left-5 w-[15rem]">
         {isFiltersVisible && (
-          <i onClick={toogleFilters} className="fa-solid fa-x fa-lg absolute right-0 top-[-2rem] cursor-pointer text-gray-600"></i>
+          <i
+            onClick={toogleFilters}
+            className="fa-solid fa-x fa-lg absolute right-0 top-[-2rem] cursor-pointer text-gray-600 lg:hidden"
+          ></i>
         )}
         <div
           onClick={() => setIsPriceActive(!isPriceActive)}
@@ -49,6 +86,7 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
           ></i>
         </div>
         <form
+          onSubmit={filterByPrice}
           className={`flex flex-col gap-4 mt-5 ml-3 ${
             isPriceActive ? "show" : "hide"
           }`}
@@ -58,9 +96,11 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
               From
             </label>
             <input
-            min="0"
+              min="0"
               className="ml-3 w-[11rem] p-2 border rounded border-gray-300 text-sm"
               id="fromPrice"
+              value={priceFrom}
+              onChange={(e) => setPriceFrom(e.target.value)}
               type="number"
             />
           </div>
@@ -69,7 +109,9 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
               To
             </label>
             <input
-              min="1  "
+              value={priceTo}
+              onChange={(e) => setPriceTo(e.target.value)}
+              min="1"
               className="ml-8 w-[11rem] p-2 border rounded border-gray-300 text-sm"
               id="toPrice"
               type="number"
@@ -103,7 +145,9 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
                 id="allProducts"
                 onChange={(e) => setCategoriesInput(e.target.value)}
               />
-              <label className="cursor-pointer" htmlFor="allProducts">All products</label>
+              <label className="cursor-pointer" htmlFor="allProducts">
+                All products
+              </label>
             </div>
             {categories.map((category) => (
               <div className="mb-3" key={category.id}>
@@ -116,7 +160,9 @@ const FiltersSideBar = ({isFiltersVisible, toogleFilters}) => {
                   onChange={(e) => setCategoriesInput(e.target.value)}
                   id={category.name}
                 />
-                <label className="cursor-pointer" htmlFor={category.name}>{category.name}</label>
+                <label className="cursor-pointer" htmlFor={category.name}>
+                  {category.name}
+                </label>
               </div>
             ))}
           </div>
