@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateCartThunk, addCartThunk } from "../store/slices/cart.slice";
+import { setIsMessage } from "../store/slices/isLoading.slice";
 import { getProductsThunk } from "../store/slices/products.slice";
 import ProductsItem from "./ProductsItem";
 
@@ -47,25 +48,32 @@ const ProductDetail = () => {
 
   const addToCart = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    let isProductAllreadyInCart = false;
-    const idProduct = Number(id);
-    shoppingCart.find((product) => {
-      if (product.id === idProduct) {
-        isProductAllreadyInCart = true;
+    if (user) {
+      let isProductAllreadyInCart = false;
+      const idProduct = Number(id);
+      shoppingCart.find((product) => {
+        if (product.id === idProduct) {
+          isProductAllreadyInCart = true;
+          const newProductCart = {
+            id: idProduct,
+            newQuantity: quantityProducts,
+          };
+          dispatch(updateCartThunk(user.token, newProductCart));
+          return true;
+        }
+      });
+      if (isProductAllreadyInCart === false) {
         const newProductCart = {
           id: idProduct,
-          newQuantity: quantityProducts,
+          quantity: quantityProducts,
         };
-        dispatch(updateCartThunk(user.token, newProductCart));
-        return true;
+        dispatch(addCartThunk(user.token, newProductCart));
       }
-    });
-    if (isProductAllreadyInCart === false) {
-      const newProductCart = {
-        id: idProduct,
-        quantity: quantityProducts,
-      };
-      dispatch(addCartThunk(user.token, newProductCart));
+    } else {
+      dispatch(
+        setIsMessage("You need to be login to add products to the cart")
+      );
+      navigate("/login");
     }
   };
 

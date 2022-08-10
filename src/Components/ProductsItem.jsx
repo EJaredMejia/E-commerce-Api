@@ -6,11 +6,14 @@ import {
   getCartThunk,
   updateCartThunk,
 } from "../store/slices/cart.slice";
+import { setIsMessage } from "../store/slices/isLoading.slice";
 
 const ProductsItem = ({ product }) => {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+
+  const message = useSelector(state=>state.app.loginMessage);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -23,34 +26,39 @@ const ProductsItem = ({ product }) => {
 
   const addProductToCart = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    let isProductAllreadyInCart = false;
-    if (shoppingCart.length > 0) {
-      shoppingCart.find((productShop) => {
-        if (productShop.id === product.id) {
-          isProductAllreadyInCart = true;
+    if (user) {
+      let isProductAllreadyInCart = false;
+      if (shoppingCart.length > 0) {
+        shoppingCart.find((productShop) => {
+          if (productShop.id === product.id) {
+            isProductAllreadyInCart = true;
+            const newProductCart = {
+              id: product.id,
+              newQuantity: productShop.productsInCart.quantity + 1,
+            };
+            dispatch(updateCartThunk(user.token, newProductCart));
+            return true;
+          }
+        });
+        if (isProductAllreadyInCart === false) {
           const newProductCart = {
             id: product.id,
-            newQuantity: productShop.productsInCart.quantity + 1,
+            quantity: 1,
           };
-          dispatch(updateCartThunk(user.token, newProductCart));
-          return true;
+          dispatch(addCartThunk(user.token, newProductCart));
         }
-      });
-      if (isProductAllreadyInCart === false) {
+      } else {
         const newProductCart = {
           id: product.id,
           quantity: 1,
         };
         dispatch(addCartThunk(user.token, newProductCart));
       }
+      /* dispatch(addCartThunk(user.token)); */
     } else {
-      const newProductCart = {
-        id: product.id,
-        quantity: 1,
-      };
-      dispatch(addCartThunk(user.token, newProductCart));
+      dispatch(setIsMessage('You need to be login to add products to the cart'))
+      navigate("/login");
     }
-    /* dispatch(addCartThunk(user.token)); */
   };
 
   const navigateToProductDetail = () => {
