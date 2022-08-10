@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductsItem from "./ProductsItem";
 import axios from "axios";
 import FiltersSideBar from "./FiltersSideBar";
+import AnimatedPage from "./AnimatedPage";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -17,7 +18,6 @@ const Home = () => {
 
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
-
 
   const searchProduct = (e) => {
     e.preventDefault();
@@ -44,8 +44,11 @@ const Home = () => {
   };
 
   return (
-    <>
-      <FiltersSideBar isFiltersVisible={isFiltersVisible} toogleFilters={toogleFilters}/>
+    <AnimatedPage>
+      <FiltersSideBar
+        isFiltersVisible={isFiltersVisible}
+        toogleFilters={toogleFilters}
+      />
       <section className="relative top-28 w-10/12 mx-auto sm:w-11/12 lg:grid lg:grid-cols-home lg:w-full">
         <div style={{ gridColumn: "2/3" }}>
           <form
@@ -80,7 +83,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </>
+    </AnimatedPage>
   );
 };
 

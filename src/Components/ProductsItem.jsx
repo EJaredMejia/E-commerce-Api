@@ -13,8 +13,6 @@ const ProductsItem = ({ product }) => {
 
   const navigate = useNavigate();
 
-  const message = useSelector(state=>state.app.loginMessage);
-
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
@@ -56,13 +54,14 @@ const ProductsItem = ({ product }) => {
       }
       /* dispatch(addCartThunk(user.token)); */
     } else {
-      dispatch(setIsMessage('You need to be login to add products to the cart'))
+      dispatch(
+        setIsMessage("You need to be login to add products to the cart")
+      );
       navigate("/login");
     }
   };
 
   const navigateToProductDetail = () => {
-    window.scrollTo(0, 0);
     navigate(`/product/${product.id}`);
   };
 
