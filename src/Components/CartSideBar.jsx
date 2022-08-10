@@ -5,11 +5,14 @@ import {
   getCartThunk,
   updateCartThunk,
 } from "../store/slices/cart.slice";
+import { useNavigate } from "react-router-dom";
 import CheckoutModal from "./CheckoutModal";
 
 const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   let totalVar = 0;
   const [total, setTotal] = useState(0);
 
@@ -79,11 +82,16 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
       </h3>
       <ul className="mr-1 change-height">
         {shoppingCart.map((cart) => (
-          <li key={cart.id} className="border-b-2 border-gray-300 py-1 px-5 ">
-            <p className="mb-2">{cart.title}</p>
-            <p className="mb-2">
-              $ {cart.price * cart.productsInCart.quantity}
-            </p>
+          <li
+            key={cart.id}
+            className="hover:bg-slate-100 active:bg-slate-200 border-b-2 border-gray-300 py-1 px-5 "
+          >
+            <div className="cursor-pointer" onClick={()=>navigate(`/product/${cart.id}`)}>
+              <p className="mb-2">{cart.title}</p>
+              <p className="mb-2">
+                $ {cart.price * cart.productsInCart.quantity}
+              </p>
+            </div>
             <div className="mb-2 flex gap-5 items-center">
               <p>Quantity: </p>
               <div className="text-base border border-gray-300 items-center w-[6rem] justify-items-center order-4 grid grid-cols-3">
@@ -104,7 +112,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
                 </p>
               </div>
               <button onClick={() => deleteCart(cart.id)} className="order-5">
-                <i className="fa-solid fa-trash-can text-red-500"></i>
+                <i className="fa-solid fa-trash-can hover:text-red-700 active:text-red-800 text-xl text-red-500"></i>
               </button>
             </div>
           </li>
