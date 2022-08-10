@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setIsLoading } from "../store/slices/isLoading.slice";
+import AnimatedPage from "./AnimatedPage";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -37,68 +38,70 @@ const SignUp = () => {
   };
 
   return (
-    <section className="flex justify-center items-center w-full h-[85vh] relative bg-gray-50 top-3">
-      <div className="relative bg-white shadow-md rounded p-7 w-11/12 max-w-[500px]">
-        <h3 className="font-semibold text-gray-600 text-2xl">Sign up</h3>
-        <form
-          onSubmit={handleSubmit(signUpUser)}
-          className="flex flex-col gap-3 mt-5"
-        >
-          <label htmlFor="emailSignUp">Email</label>
-          <input
-            {...register("email")}
-            required
-            type="email"
-            id="emailSignUp"
-            className="border border-gray-300 p-2"
-          />
-          <label htmlFor="firstSignUp">First Name</label>
-          <input
-            {...register("firstName")}
-            required
-            type="text"
-            id="firstNameSignUp"
-            className="border border-gray-300 p-2"
-          />
-          <label htmlFor="lastNameSignUp">Last Name</label>
-          <input
-            {...register("lastName")}
-            required
-            type="lastName"
-            id="lastNameSignUp"
-            className="border border-gray-300 p-2"
-          />
-          <label htmlFor="passwordSignUp">Password</label>
-          <input
-            {...register("password")}
-            required
-            type="password"
-            id="passwordSignUp"
-            className="border border-gray-300 p-2"
-          />
-          <label htmlFor="phoneSignUp">Phone (10 characters)</label>
-          <input
-            {...register("phone")}
-            required
-            type="number"
-            id="phoneSignUp"
-            className="border border-gray-300 p-2"
-          />
-          <button className="text-center w-full text-white bg-red-500 p-2.5 mt-5">
-            Sign up
-          </button>
-        </form>
-        <p className="mt-5 text-xs tracking-wide">
-          Already have an account?{" "}
-          <span
-            onClick={() => navigate("/login")}
-            className="text-blue-400 cursor-pointer"
+    <AnimatedPage>
+      <section className="flex justify-center items-center w-full h-[85vh] relative bg-gray-50 top-3">
+        <div className="relative bg-white shadow-md rounded p-7 w-11/12 max-w-[500px]">
+          <h3 className="font-semibold text-gray-600 text-2xl">Sign up</h3>
+          <form
+            onSubmit={handleSubmit(signUpUser)}
+            className="flex flex-col gap-3 mt-5"
           >
-            Login in
-          </span>
-        </p>
-      </div>
-    </section>
+            <label htmlFor="emailSignUp">Email</label>
+            <input
+              {...register("email")}
+              required
+              type="email"
+              id="emailSignUp"
+              className="border border-gray-300 p-2"
+            />
+            <label htmlFor="firstSignUp">First Name</label>
+            <input
+              {...register("firstName")}
+              required
+              type="text"
+              id="firstNameSignUp"
+              className="border border-gray-300 p-2"
+            />
+            <label htmlFor="lastNameSignUp">Last Name</label>
+            <input
+              {...register("lastName")}
+              required
+              type="lastName"
+              id="lastNameSignUp"
+              className="border border-gray-300 p-2"
+            />
+            <label htmlFor="passwordSignUp">Password</label>
+            <input
+              {...register("password")}
+              required
+              type="password"
+              id="passwordSignUp"
+              className="border border-gray-300 p-2"
+            />
+            <label htmlFor="phoneSignUp">Phone (10 characters)</label>
+            <input
+              {...register("phone")}
+              required
+              type="number"
+              id="phoneSignUp"
+              className="border border-gray-300 p-2"
+            />
+            <button className="text-center w-full text-white bg-red-500 p-2.5 mt-5">
+              Sign up
+            </button>
+          </form>
+          <p className="mt-5 text-xs tracking-wide">
+            Already have an account?{" "}
+            <span
+              onClick={() => navigate("/login")}
+              className="text-blue-400 cursor-pointer"
+            >
+              Login in
+            </span>
+          </p>
+        </div>
+      </section>
+    </AnimatedPage>
   );
 };
 

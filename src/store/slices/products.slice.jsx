@@ -7,7 +7,6 @@ export const productsSlice = createSlice({
   initialState: [],
   reducers: {
     setProducts: (state, action) => {
-      console.log(action.payload);
       if (action.payload.length > 0) {
         return action.payload;
       }
