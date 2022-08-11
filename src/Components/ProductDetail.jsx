@@ -17,6 +17,8 @@ const ProductDetail = () => {
     dispatch(getProductsThunk());
   }, []);
 
+  document.body.style.paddingBottom = "400px";
+
   const allProducts = useSelector((state) => state.products);
 
   const [product, setProduct] = useState({});
