@@ -16,7 +16,6 @@ const Login = () => {
 
   const message = useSelector((state) => state.app.loginMessage);
 
-  document.body.style.paddingBottom = "0px";
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -54,7 +53,7 @@ const Login = () => {
 
   return (
     <AnimatedPage>
-      <section className="flex justify-center items-center w-full h-[85vh] relative bg-gray-50">
+      <section className="flex justify-center items-center w-full h-[100vh] relative top-[1.9rem] mb-[-13rem] bg-gray-50 ">
         {userState === null ? (
           <div className="relative bg-white shadow-md rounded p-7 w-11/12 max-w-[500px]">
             <h3 className="font-[600] text-gray-600 text-2xl tracking-wide leading-9">
