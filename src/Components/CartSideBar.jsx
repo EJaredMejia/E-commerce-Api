@@ -83,10 +83,11 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
       <ul className="mr-1 change-height">
         {shoppingCart.map((cart) => (
           <li
+            onClick={() => navigate(`/product/${cart.id}`)}
             key={cart.id}
-            className="hover:bg-slate-100 active:bg-slate-200 border-b-2 border-gray-300 py-1 px-5 "
+            className="cursor-pointer hover:bg-slate-100 active:bg-slate-200 border-b-2 border-gray-300 py-1 px-5 "
           >
-            <div className="cursor-pointer" onClick={()=>navigate(`/product/${cart.id}`)}>
+            <div>
               <p className="mb-2">{cart.title}</p>
               <p className="mb-2">
                 $ {cart.price * cart.productsInCart.quantity}
@@ -96,7 +97,10 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
               <p>Quantity: </p>
               <div className="text-base border border-gray-300 items-center w-[6rem] justify-items-center order-4 grid grid-cols-3">
                 <p
-                  onClick={() => minusQuantity(cart)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    minusQuantity(cart);
+                  }}
                   className="cursor-pointer w-full h-full  flex justify-center items-center active:bg-teal-300"
                 >
                   <i className="fa-solid fa-minus"></i>
@@ -105,13 +109,22 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
                   {cart.productsInCart.quantity}
                 </p>
                 <p
-                  onClick={() => plusQuantity(cart)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    plusQuantity(cart);
+                  }}
                   className="cursor-pointer w-full h-full flex justify-center items-center active:bg-teal-300"
                 >
                   <i className="fa-solid fa-plus"></i>
                 </p>
               </div>
-              <button onClick={() => deleteCart(cart.id)} className="order-5">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteCart(cart.id);
+                }}
+                className="order-5"
+              >
                 <i className="fa-solid fa-trash-can hover:text-red-700 active:text-red-800 text-xl text-red-500"></i>
               </button>
             </div>
