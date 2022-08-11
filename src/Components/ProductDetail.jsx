@@ -149,7 +149,7 @@ const ProductDetail = () => {
           <div className="mt-6 grid grid-cols-2">
             <h6 className="text-gray-400 order-1">Price</h6>
             <p className="ml-6 mt-2 text-lg order-3">
-              <b>$ {product?.price}</b>
+              <b>$ {product?.price*quantityProducts}</b>
             </p>
             <h6 className="text-gray-400 order-2">Quantity</h6>
             <div className="mt-2 text-base border border-gray-300 items-center w-[8rem] justify-items-center order-4 grid grid-cols-3">
