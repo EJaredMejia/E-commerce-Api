@@ -12,6 +12,8 @@ const Purchases = () => {
 
   const dispatch = useDispatch();
 
+  document.body.style.paddingBottom = "400px";
+
   useEffect(() => {
     const userLocal = JSON.parse(localStorage.getItem("user"));
     if (userLocal) {
