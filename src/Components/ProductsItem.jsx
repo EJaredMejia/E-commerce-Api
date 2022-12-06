@@ -10,7 +10,6 @@ import { setIsMessage } from "../store/slices/isLoading.slice";
 
 const ProductsItem = ({ product }) => {
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,11 +27,11 @@ const ProductsItem = ({ product }) => {
       let isProductAllreadyInCart = false;
       if (shoppingCart.length > 0) {
         shoppingCart.find((productShop) => {
-          if (productShop.id === product.id) {
+          if (productShop.product.id === product.id) {
             isProductAllreadyInCart = true;
             const newProductCart = {
-              id: product.id,
-              newQuantity: productShop.productsInCart.quantity + 1,
+              productId: product.id,
+              newQty: productShop.quantity + 1,
             };
             dispatch(updateCartThunk(user.token, newProductCart));
             return true;
@@ -40,14 +39,14 @@ const ProductsItem = ({ product }) => {
         });
         if (isProductAllreadyInCart === false) {
           const newProductCart = {
-            id: product.id,
+            productId: product.id,
             quantity: 1,
           };
           dispatch(addCartThunk(user.token, newProductCart));
         }
       } else {
         const newProductCart = {
-          id: product.id,
+          productId: product.id,
           quantity: 1,
         };
         dispatch(addCartThunk(user.token, newProductCart));
@@ -73,7 +72,7 @@ const ProductsItem = ({ product }) => {
       >
         <img
           className={`mx-auto w-40 max-h-[250px] sm:px-2 sm:w-fit sm:h-40 md:h-[12rem] `}
-          src={product.productImgs[0]}
+          src={product.productImgs[0].imgUrl}
           alt="product image"
         />
       </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   filtersNameThunk,
   getProductsThunk,
+  setProducts,
 } from "../store/slices/products.slice";
 import { useDispatch, useSelector } from "react-redux";
 import ProductsItem from "./ProductsItem";
@@ -22,22 +23,28 @@ const Home = () => {
   const searchProduct = (e) => {
     e.preventDefault();
     if (searchValue !== "") {
-      allProducts.forEach((product) => {
-        if (product.title.toLowerCase().includes(searchValue.toLowerCase())) {
-          dispatch(filtersNameThunk(product.title.split(" ").shift()));
-        }
+      const filteredProducts = allProducts.filter((product) => {
+        return product.title.toLowerCase().includes(searchValue.toLowerCase());
       });
+      dispatch(setProducts(filteredProducts));
     } else {
       dispatch(getProductsThunk());
     }
   };
 
   useEffect(() => {
-    dispatch(getProductsThunk());
-    axios
-      .get("https://ecommerce-api-react.herokuapp.com/api/v1/products")
-      .then((res) => setAllProducts(res.data.data.products));
-  }, []);
+    if (searchValue === "") {
+      dispatch(getProductsThunk());
+      axios
+        .get("https://e-commerce-api-htys.onrender.com/api/v1/products")
+        .then((res) => setAllProducts(res.data.data.products));
+    } else {
+      const filteredProducts = allProducts.filter((product) => {
+        return product.title.toLowerCase().includes(searchValue.toLowerCase());
+      });
+      dispatch(setProducts(filteredProducts));
+    }
+  }, [searchValue]);
 
   const toogleFilters = () => {
     setIsFiltersVisible(!isFiltersVisible);

@@ -60,8 +60,8 @@ const ProductDetail = () => {
         if (product.id === idProduct) {
           isProductAllreadyInCart = true;
           const newProductCart = {
-            id: idProduct,
-            newQuantity: quantityProducts,
+            productId: idProduct,
+            newQty: quantityProducts,
           };
           dispatch(updateCartThunk(user.token, newProductCart));
           return true;
@@ -69,7 +69,7 @@ const ProductDetail = () => {
       });
       if (isProductAllreadyInCart === false) {
         const newProductCart = {
-          id: idProduct,
+          productId: idProduct,
           quantity: quantityProducts,
         };
         dispatch(addCartThunk(user.token, newProductCart));
@@ -107,10 +107,10 @@ const ProductDetail = () => {
               ></i>
             </li>
             {currentImages?.map((img) => (
-              <li key={img}>
+              <li key={img.imgUrl}>
                 <img
                   className="w-[13rem] h-[13rem] sm:w-[20rem] sm:h-[20rem] object-contain"
-                  src={img}
+                  src={img.imgUrl}
                 ></img>
               </li>
             ))}
@@ -130,14 +130,14 @@ const ProductDetail = () => {
           <ul className="hidden lg:flex mt-20 justify-center items-center gap-4">
             {product?.productImgs?.map((img, i) => (
               <div
-                key={img}
+                key={img.imgUrl}
                 className="cursor-pointer p-1 rounded-md"
                 onClick={() => setCurrentPage(i + 1)}
                 style={{ border: i + 1 === currentPage && "2px red solid" }}
               >
                 <img
                   className="w-[4rem] h-[4rem] object-contain"
-                  src={img}
+                  src={img.imgUrl}
                   alt=""
                 />
               </div>
@@ -151,7 +151,7 @@ const ProductDetail = () => {
           <div className="mt-6 grid grid-cols-2">
             <h6 className="text-gray-400 order-1">Price</h6>
             <p className="ml-6 mt-2 text-lg order-3">
-              <b>$ {product?.price*quantityProducts}</b>
+              <b>$ {product?.price * quantityProducts}</b>
             </p>
             <h6 className="text-gray-400 order-2">Quantity</h6>
             <div className="mt-2 text-base border border-gray-300 items-center w-[8rem] justify-items-center order-4 grid grid-cols-3">
@@ -195,7 +195,11 @@ const ProductDetail = () => {
             <ul className="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3 xl:gap-10 ">
               {allProducts
                 .filter((productItem) => {
-                  return productItem.category?.id === product?.category?.id;
+                  if (productItem.id === product.id) {
+                    return;
+                  }
+                  console.log(productItem);
+                  return productItem?.categoryId === product?.categoryId;
                 })
                 .map((productItem) => (
                   <ProductsItem product={productItem} key={productItem.id} />

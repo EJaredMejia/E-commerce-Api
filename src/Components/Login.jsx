@@ -31,7 +31,7 @@ const Login = () => {
     dispatch(setIsLoading(true));
     axios
       .post(
-        `https://ecommerce-api-react.herokuapp.com/api/v1/users/login`,
+        `https://e-commerce-api-htys.onrender.com/api/v1/users/login`,
         loginObject
       )
       .then((res) => {
@@ -66,10 +66,10 @@ const Login = () => {
               </h4>
               <p className="text-gray-600">
                 <i className="fa-solid fa-envelope text-red-500 mr-3 mb-4"></i>{" "}
-                mason@gmail.com
+                admin@gmail.com
               </p>
               <p className="text-gray-600">
-                <i className="fa-solid fa-lock text-red-500 mr-3"></i> mason1234
+                <i className="fa-solid fa-lock text-red-500 mr-3"></i> pass1234
               </p>
             </div>
             <form onSubmit={loginUser} className="flex flex-col gap-3 mt-5">

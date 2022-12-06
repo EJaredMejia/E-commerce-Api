@@ -18,7 +18,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
 
   const shoppingCart = useSelector((state) => state.cart);
   shoppingCart.forEach((product) => {
-    totalVar += product.price * product.productsInCart.quantity;
+    totalVar += product.product.price * product.quantity;
   });
   useEffect(() => {
     setTotal(totalVar);
@@ -33,12 +33,12 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
 
   const minusQuantity = (cart) => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (cart.productsInCart.quantity === 1) {
-      deleteCart(cart.id);
+    if (cart.quantity === 1) {
+      deleteCart(cart.product.id);
     } else {
       const newProductCart = {
-        id: cart.id,
-        newQuantity: cart.productsInCart.quantity - 1,
+        productId: cart.product.id,
+        newQty: cart.quantity - 1,
       };
       dispatch(updateCartThunk(user.token, newProductCart));
     }
@@ -47,8 +47,8 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
   const plusQuantity = (cart) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const newProductCart = {
-      id: cart.id,
-      newQuantity: cart.productsInCart.quantity + 1,
+      productId: cart.product.id,
+      newQty: cart.quantity + 1,
     };
     dispatch(updateCartThunk(user.token, newProductCart));
   };
@@ -83,14 +83,14 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
       <ul className="mr-1 change-height">
         {shoppingCart.map((cart) => (
           <li
-            onClick={() => navigate(`/product/${cart.id}`)}
+            onClick={() => navigate(`/product/${cart.product.id}`)}
             key={cart.id}
             className="cursor-pointer hover:bg-slate-100 active:bg-slate-200 border-b-2 border-gray-300 py-1 px-5 "
           >
             <div>
-              <p className="mb-2">{cart.title}</p>
+              <p className="mb-2">{cart.product.title}</p>
               <p className="mb-2">
-                $ {cart.price * cart.productsInCart.quantity}
+                $ {cart.product.price * cart.quantity}
               </p>
             </div>
             <div className="mb-2 flex gap-5 items-center">
@@ -106,7 +106,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
                   <i className="fa-solid fa-minus"></i>
                 </p>
                 <p className="border-r  border-l w-full text-center border-gray-300">
-                  {cart.productsInCart.quantity}
+                  {cart.quantity}
                 </p>
                 <p
                   onClick={(e) => {
@@ -121,7 +121,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  deleteCart(cart.id);
+                  deleteCart(cart.product.id);
                 }}
                 className="order-5"
               >

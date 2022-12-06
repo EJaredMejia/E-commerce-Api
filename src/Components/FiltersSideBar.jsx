@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import {
   filtersCategoryThunk,
@@ -28,32 +28,42 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
     if (categoriesInput === "all products") {
       dispatch(getProductsThunk());
     } else {
-      dispatch(filtersCategoryThunk(categoriesInput));
+      dispatch(setIsLoading(true));
+      axios
+        .get("https://e-commerce-api-htys.onrender.com/api/v1/products")
+        .then((res) => {
+          const filteredProducts = res.data.data.products.filter((product) => {
+            return product.categoryId == categoriesInput;
+          });
+          dispatch(setProducts(filteredProducts));
+        })
+        .finally(() => dispatch(setIsLoading(false)));
     }
   }, [categoriesInput]);
 
   useEffect(() => {
     axios
       .get(
-        "https://ecommerce-api-react.herokuapp.com/api/v1/products/categories"
+        "https://e-commerce-api-htys.onrender.com/api/v1/products/categories"
       )
-      .then((res) => setCategories(res.data.data.categories));
+      .then((res) => setCategories(res.data.categories));
   }, []);
+
 
   const filterByPrice = () => {
     dispatch(setIsLoading(true));
     axios
-      .get("https://ecommerce-api-react.herokuapp.com/api/v1/products")
-      .then((res) =>{
+      .get("https://e-commerce-api-htys.onrender.com/api/v1/products")
+      .then((res) => {
         const productsFiltered = res.data.data.products.filter((product) => {
           return (
-            Number(product.price) >= priceFrom && Number(product.price) <= priceTo
+            Number(product.price) >= priceFrom &&
+            Number(product.price) <= priceTo
           );
         });
-        console.log(productsFiltered);
         if (productsFiltered.length > 0) {
           dispatch(setProducts(productsFiltered));
-          setCategoriesInput(-1);
+          setCategoriesInput("");
         } else {
           alert("no products found");
         }

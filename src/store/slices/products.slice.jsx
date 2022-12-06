@@ -17,7 +17,7 @@ export const productsSlice = createSlice({
 export const getProductsThunk = () => (dispatch) => {
   dispatch(setIsLoading(true));
   return axios
-    .get("https://ecommerce-api-react.herokuapp.com/api/v1/products")
+    .get("https://e-commerce-api-htys.onrender.com/api/v1/products")
     .then((res) => dispatch(setProducts(res.data.data.products)))
     .finally(() => dispatch(setIsLoading(false)));
 };
@@ -26,7 +26,7 @@ export const filtersCategoryThunk = (category) => (dispatch) => {
   dispatch(setIsLoading(true));
   return axios
     .get(
-      `https://ecommerce-api-react.herokuapp.com/api/v1/products?category=${category}`
+      `https://e-commerce-api-htys.onrender.com/api/v1/products?category=${category}`
     )
     .then((res) => {
       dispatch(setProducts(res.data.data.products));
@@ -39,7 +39,7 @@ export const filtersNameThunk = (searchValue) => (dispatch) => {
   dispatch(setIsLoading(true));
   return axios
     .get(
-      `https://ecommerce-api-react.herokuapp.com/api/v1/products?query=${searchValue}`
+      `https://e-commerce-api-htys.onrender.com/api/v1/products?query=${searchValue}`
     )
     .then((res) => dispatch(setProducts(res.data.data.products)))
     .finally(() => dispatch(setIsLoading(false)));

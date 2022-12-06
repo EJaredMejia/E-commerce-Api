@@ -15,8 +15,8 @@ export const purchasesSlice = createSlice({
 
 export const getPurchasesThunk = (token) => (dispatch) => {
     dispatch(setIsLoading(true));
-    return axios.get("https://ecommerce-api-react.herokuapp.com/api/v1/purchases", getConfig(token))
-        .then((res) => dispatch(setPurchases(res.data.data.purchases)))
+    return axios.get("https://e-commerce-api-htys.onrender.com/api/v1/users/orders", getConfig(token))
+        .then((res) => dispatch(setPurchases(res.data.data.orders)))
         .finally(() => dispatch(setIsLoading(false)));
 }
 

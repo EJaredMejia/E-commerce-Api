@@ -17,10 +17,10 @@ export const getCartThunk = (token) => (dispatch) => {
   dispatch(setIsLoading(true));
   return axios
     .get(
-      "https://ecommerce-api-react.herokuapp.com/api/v1/cart",
+      "https://e-commerce-api-htys.onrender.com/api/v1/cart",
       getConfig(token)
     )
-    .then((res) => dispatch(setCart(res.data.data.cart.products)))
+    .then((res) => dispatch(setCart(res.data.data.cart.productInCarts)))
     .catch((err) => dispatch(setCart([])))
     .finally(() => dispatch(setIsLoading(false)));
 };
@@ -29,7 +29,7 @@ export const addCartThunk = (token, product) => (dispatch) => {
   dispatch(setIsLoading(true));
   return axios
     .post(
-      "https://ecommerce-api-react.herokuapp.com/api/v1/cart",
+      "https://e-commerce-api-htys.onrender.com/api/v1/cart/add-product",
       product,
       getConfig(token)
     )
@@ -41,7 +41,7 @@ export const updateCartThunk = (token, product) => (dispatch) => {
   dispatch(setIsLoading(true));
   return axios
     .patch(
-      "https://ecommerce-api-react.herokuapp.com/api/v1/cart",
+      "https://e-commerce-api-htys.onrender.com/api/v1/cart/update-cart",
       product,
       getConfig(token)
     )
@@ -53,7 +53,7 @@ export const deleteCartThunk = (token, id) => (dispatch) => {
   dispatch(setIsLoading(true));
   return axios
     .delete(
-      `https://ecommerce-api-react.herokuapp.com/api/v1/cart/${parseInt(id)}`,
+      `https://e-commerce-api-htys.onrender.com/api/v1/cart/${parseInt(id)}`,
       getConfig(token)
     )
     .then(() => dispatch(getCartThunk(token)))
@@ -64,7 +64,7 @@ export const purchaseCartThunk = (token, location) => (dispatch) => {
   dispatch(setIsLoading(true));
   return axios
     .post(
-      "https://ecommerce-api-react.herokuapp.com/api/v1/purchases",
+      "https://e-commerce-api-htys.onrender.com/api/v1/cart/purchase",
       location,
       getConfig(token)
     )

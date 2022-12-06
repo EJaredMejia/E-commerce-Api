@@ -16,7 +16,7 @@ const SignUp = () => {
     data.role = "normal";
     dispatch(setIsLoading(true));
     axios
-      .post("https://ecommerce-api-react.herokuapp.com/api/v1/users", data)
+      .post("https://e-commerce-api-htys.onrender.com/api/v1/users", data)
       .then(() => {
         const autoLoginObject = {
           email: data.email,
@@ -24,7 +24,7 @@ const SignUp = () => {
         };
         axios
           .post(
-            `https://ecommerce-api-react.herokuapp.com/api/v1/users/login`,
+            `https://e-commerce-api-htys.onrender.com/api/v1/users/login`,
             autoLoginObject
           )
           .then((res) => {
