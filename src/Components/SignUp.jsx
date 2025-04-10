@@ -1,10 +1,10 @@
-import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import AnimatedPage from "./AnimatedPage";
+import { axiosInstance } from "./utilis/axios";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -15,22 +15,17 @@ const SignUp = () => {
   const signUpUser = (data) => {
     data.role = "normal";
     dispatch(setIsLoading(true));
-    axios
-      .post("https://e-commerce-api-htys.onrender.com/api/v1/users", data)
+    axiosInstance
+      .post("/users", data)
       .then(() => {
         const autoLoginObject = {
           email: data.email,
           password: data.password,
         };
-        axios
-          .post(
-            `https://e-commerce-api-htys.onrender.com/api/v1/users/login`,
-            autoLoginObject
-          )
-          .then((res) => {
-            localStorage.setItem("user", JSON.stringify(res.data.data));
-            navigate("/login");
-          });
+        axiosInstance.post(`/users/login`, autoLoginObject).then((res) => {
+          localStorage.setItem("user", JSON.stringify(res.data.data));
+          navigate("/login");
+        });
       })
       .catch(() => alert("email already taken"))
       .finally(() => dispatch(setIsLoading(false)));

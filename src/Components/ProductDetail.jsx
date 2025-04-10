@@ -198,7 +198,6 @@ const ProductDetail = () => {
                   if (productItem.id === product.id) {
                     return;
                   }
-                  console.log(productItem);
                   return productItem?.categoryId === product?.categoryId;
                 })
                 .map((productItem) => (

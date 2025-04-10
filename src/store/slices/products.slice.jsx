@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { axiosInstance } from "../../Components/utilis/axios";
 import { setIsLoading } from "./isLoading.slice";
-import axios from "axios";
 
 export const productsSlice = createSlice({
   name: "products",
@@ -16,17 +16,17 @@ export const productsSlice = createSlice({
 
 export const getProductsThunk = () => (dispatch) => {
   dispatch(setIsLoading(true));
-  return axios
-    .get("https://e-commerce-api-htys.onrender.com/api/v1/products")
+  return axiosInstance
+    .get("/products")
     .then((res) => dispatch(setProducts(res.data.data.products)))
     .finally(() => dispatch(setIsLoading(false)));
 };
 
 export const filtersCategoryThunk = (category) => (dispatch) => {
   dispatch(setIsLoading(true));
-  return axios
+  return axiosInstance
     .get(
-      `https://e-commerce-api-htys.onrender.com/api/v1/products?category=${category}`
+      `/products?category=${category}`
     )
     .then((res) => {
       dispatch(setProducts(res.data.data.products));
@@ -37,9 +37,9 @@ export const filtersCategoryThunk = (category) => (dispatch) => {
 
 export const filtersNameThunk = (searchValue) => (dispatch) => {
   dispatch(setIsLoading(true));
-  return axios
+  return axiosInstance
     .get(
-      `https://e-commerce-api-htys.onrender.com/api/v1/products?query=${searchValue}`
+      `/products?query=${searchValue}`
     )
     .then((res) => dispatch(setProducts(res.data.data.products)))
     .finally(() => dispatch(setIsLoading(false)));

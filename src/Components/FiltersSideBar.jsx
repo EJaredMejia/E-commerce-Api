@@ -1,12 +1,11 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import {
-  filtersCategoryThunk,
   getProductsThunk,
-  setProducts,
+  setProducts
 } from "../store/slices/products.slice";
+import { axiosInstance } from "./utilis/axios";
 
 const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
   const [categories, setCategories] = useState([]);
@@ -29,8 +28,8 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
       dispatch(getProductsThunk());
     } else {
       dispatch(setIsLoading(true));
-      axios
-        .get("https://e-commerce-api-htys.onrender.com/api/v1/products")
+      axiosInstance
+        .get("/products")
         .then((res) => {
           const filteredProducts = res.data.data.products.filter((product) => {
             return product.categoryId == categoriesInput;
@@ -42,9 +41,9 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
   }, [categoriesInput]);
 
   useEffect(() => {
-    axios
+    axiosInstance
       .get(
-        "https://e-commerce-api-htys.onrender.com/api/v1/products/categories"
+        "/products/categories"
       )
       .then((res) => setCategories(res.data.categories));
   }, []);
@@ -52,8 +51,8 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
 
   const filterByPrice = () => {
     dispatch(setIsLoading(true));
-    axios
-      .get("https://e-commerce-api-htys.onrender.com/api/v1/products")
+    axiosInstance
+      .get("/products")
       .then((res) => {
         const productsFiltered = res.data.data.products.filter((product) => {
           return (

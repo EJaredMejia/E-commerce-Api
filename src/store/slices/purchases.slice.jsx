@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { setIsLoading } from './isLoading.slice';
-import axios from 'axios';
+import { axiosInstance } from '../../Components/utilis/axios';
 import getConfig from '../../Components/utilis/getConfig';
+import { setIsLoading } from './isLoading.slice';
 
 export const purchasesSlice = createSlice({
     name: 'purchases',
@@ -15,7 +15,7 @@ export const purchasesSlice = createSlice({
 
 export const getPurchasesThunk = (token) => (dispatch) => {
     dispatch(setIsLoading(true));
-    return axios.get("https://e-commerce-api-htys.onrender.com/api/v1/users/orders", getConfig(token))
+    return axiosInstance.get("/users/orders", getConfig(token))
         .then((res) => dispatch(setPurchases(res.data.data.orders)))
         .finally(() => dispatch(setIsLoading(false)));
 }

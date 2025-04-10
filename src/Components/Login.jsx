@@ -1,9 +1,9 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import AnimatedPage from "./AnimatedPage";
+import { axiosInstance } from "./utilis/axios";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -15,7 +15,6 @@ const Login = () => {
   const [renderAgain, setRenderAgain] = useState(0);
 
   const message = useSelector((state) => state.app.loginMessage);
-
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -29,11 +28,8 @@ const Login = () => {
       password: passwordUser,
     };
     dispatch(setIsLoading(true));
-    axios
-      .post(
-        `https://e-commerce-api-htys.onrender.com/api/v1/users/login`,
-        loginObject
-      )
+    axiosInstance
+      .post(`/users/login`, loginObject)
       .then((res) => {
         localStorage.setItem("user", JSON.stringify(res.data.data));
         setUserState(res.data.data);

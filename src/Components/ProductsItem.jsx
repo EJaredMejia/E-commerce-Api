@@ -9,15 +9,8 @@ import {
 import { setIsMessage } from "../store/slices/isLoading.slice";
 
 const ProductsItem = ({ product }) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      dispatch(getCartThunk(user.token));
-    }
-  }, []);
+  const dispatch = useDispatch();
 
   const shoppingCart = useSelector((state) => state.cart);
 

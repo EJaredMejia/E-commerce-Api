@@ -26,7 +26,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
+    if (user && isCartVisible) {
       dispatch(getCartThunk(user.token));
     }
   }, [isCartVisible]);
@@ -89,9 +89,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
           >
             <div>
               <p className="mb-2">{cart.product.title}</p>
-              <p className="mb-2">
-                $ {cart.product.price * cart.quantity}
-              </p>
+              <p className="mb-2">$ {cart.product.price * cart.quantity}</p>
             </div>
             <div className="mb-2 flex gap-5 items-center">
               <p>Quantity: </p>

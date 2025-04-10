@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  filtersNameThunk,
-  getProductsThunk,
-  setProducts,
-} from "../store/slices/products.slice";
 import { useDispatch, useSelector } from "react-redux";
-import ProductsItem from "./ProductsItem";
-import axios from "axios";
-import FiltersSideBar from "./FiltersSideBar";
+import { getProductsThunk, setProducts } from "../store/slices/products.slice";
 import AnimatedPage from "./AnimatedPage";
+import FiltersSideBar from "./FiltersSideBar";
+import ProductsItem from "./ProductsItem";
+import { axiosInstance } from "./utilis/axios";
+import { getCartThunk } from "../store/slices/cart.slice";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -18,6 +15,14 @@ const Home = () => {
   document.body.style.paddingBottom = "400px";
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      dispatch(getCartThunk(user.token));
+    }
+  }, []);
+
   const products = useSelector((state) => state.products);
 
   const searchProduct = (e) => {
@@ -35,8 +40,8 @@ const Home = () => {
   useEffect(() => {
     if (searchValue === "") {
       dispatch(getProductsThunk());
-      axios
-        .get("https://e-commerce-api-htys.onrender.com/api/v1/products")
+      axiosInstance
+        .get("/products")
         .then((res) => setAllProducts(res.data.data.products));
     } else {
       const filteredProducts = allProducts.filter((product) => {
