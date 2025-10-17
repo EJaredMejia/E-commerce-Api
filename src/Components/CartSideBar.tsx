@@ -1,38 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   deleteCartThunk,
   getCartThunk,
   updateCartThunk,
+  type Cart,
 } from "../store/slices/cart.slice";
-import { useNavigate } from "react-router-dom";
 import CheckoutModal from "./CheckoutModal";
+import { getLocalStorageUser } from "./utils/storage";
 
-const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
+interface CartSideBarProps {
+  isCartVisible: boolean;
+  setIsCartVisible: (value: boolean) => void;
+}
+const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  let totalVar = 0;
-  const [total, setTotal] = useState(0);
+  const shoppingCart = useAppSelector((state) => state.cart);
 
-  const shoppingCart = useSelector((state) => state.cart);
-  shoppingCart.forEach((product) => {
-    totalVar += product.product.price * product.quantity;
-  });
-  useEffect(() => {
-    setTotal(totalVar);
-  }, [totalVar]);
+  const total = shoppingCart.reduce((acc, product) => {
+    return acc + product.product.price * product.quantity;
+  }, 0);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getLocalStorageUser();
     if (user && isCartVisible) {
       dispatch(getCartThunk(user.token));
     }
   }, [isCartVisible]);
 
-  const minusQuantity = (cart) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+  const minusQuantity = (cart: Cart) => {
+    const user = getLocalStorageUser();
     if (cart.quantity === 1) {
       deleteCart(cart.product.id);
     } else {
@@ -40,22 +41,32 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }) => {
         productId: cart.product.id,
         newQty: cart.quantity - 1,
       };
-      dispatch(updateCartThunk(user.token, newProductCart));
+      dispatch(
+        updateCartThunk({
+          product: newProductCart,
+          token: user.token,
+        })
+      );
     }
   };
 
-  const plusQuantity = (cart) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+  const plusQuantity = (cart: Cart) => {
+    const user = getLocalStorageUser();
     const newProductCart = {
       productId: cart.product.id,
       newQty: cart.quantity + 1,
     };
-    dispatch(updateCartThunk(user.token, newProductCart));
+    dispatch(
+      updateCartThunk({
+        product: newProductCart,
+        token: user.token,
+      })
+    );
   };
 
-  const deleteCart = (id) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    dispatch(deleteCartThunk(user.token, id));
+  const deleteCart = (id: number) => {
+    const user = getLocalStorageUser();
+    dispatch(deleteCartThunk({ id, token: user.token }));
   };
 
   const checkoutClick = () => {

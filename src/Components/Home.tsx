@@ -1,31 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getProductsThunk, setProducts } from "../store/slices/products.slice";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { useEffect, useState } from "react";
+import { getCartThunk } from "../store/slices/cart.slice";
+import {
+  getProductsThunk,
+  setProducts,
+  type Product,
+} from "../store/slices/products.slice";
 import AnimatedPage from "./AnimatedPage";
 import FiltersSideBar from "./FiltersSideBar";
 import ProductsItem from "./ProductsItem";
-import { axiosInstance } from "./utilis/axios";
-import { getCartThunk } from "../store/slices/cart.slice";
+import { axiosInstance } from "./utils/axios";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [allProducts, setAllProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
   document.body.style.paddingBottom = "400px";
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      dispatch(getCartThunk(user.token));
-    }
+    const storageUser = localStorage.getItem("user");
+
+    if (!storageUser) return;
+
+    const user = JSON.parse(storageUser) as { token: string };
+    if (!user) return;
+
+    dispatch(getCartThunk(user.token));
   }, []);
 
-  const products = useSelector((state) => state.products);
+  const products = useAppSelector((state) => state.products);
 
-  const searchProduct = (e) => {
+  const searchProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchValue !== "") {
       const filteredProducts = allProducts.filter((product) => {

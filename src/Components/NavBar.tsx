@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import CartSideBar from "./CartSideBar";
+import { useState } from "react";
 import { useDispatch } from "react-redux/es/exports";
+import { Link, useNavigate } from "react-router-dom";
 import { setIsMessage } from "../store/slices/isLoading.slice";
+import CartSideBar from "./CartSideBar";
 
 const NavBar = () => {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userLocal = JSON.parse(localStorage.getItem("user"));
+  const userLocal = JSON.parse(String(localStorage.getItem("user")));
 
   const toogleCart = () => {
     if (userLocal) {
       setIsCartVisible(!isCartVisible);
     } else {
       dispatch(setIsMessage("you need to log in to see your cart shop"));
-      navigate('/login');
+      navigate("/login");
     }
   };
 
@@ -50,7 +50,12 @@ const NavBar = () => {
           } cursor-pointer fa-solid sm:text-2xl text-xl fa-cart-shopping lg:border-l lg:px-16 lg:py-5 lg:border-gray-300 lg:text-3xl`}
         ></i>
       </div>
-      {userLocal && <CartSideBar isCartVisible={isCartVisible} setIsCartVisible={setIsCartVisible}/>}
+      {userLocal && (
+        <CartSideBar
+          isCartVisible={isCartVisible}
+          setIsCartVisible={setIsCartVisible}
+        />
+      )}
     </nav>
   );
 };

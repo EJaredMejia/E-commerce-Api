@@ -1,9 +1,8 @@
-import React from "react";
-import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
+import { getLocalStorageUser } from "./utils/storage";
 
 const ProtectedRoutes = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getLocalStorageUser();
 
   if (user) {
     return <Outlet />;

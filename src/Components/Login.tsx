@@ -1,27 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import AnimatedPage from "./AnimatedPage";
-import { axiosInstance } from "./utilis/axios";
+import { axiosInstance } from "./utils/axios";
 
+interface User {
+  user: {
+    firstName: string;
+    lastName: string;
+  };
+}
 const Login = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [emailUser, setEmailUser] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
-  const [userState, setUserState] = useState(null);
+  const [userState, setUserState] = useState<User | null>(null);
   const [renderAgain, setRenderAgain] = useState(0);
 
-  const message = useSelector((state) => state.app.loginMessage);
+  const message = useAppSelector((state) => state.app.loginMessage);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const storageUser = localStorage.getItem("user");
+
+    if (!storageUser) {
+      setUserState(null);
+      return;
+    }
+
+    const user = JSON.parse(storageUser);
     setUserState(user);
   }, [renderAgain]);
 
-  const loginUser = (e) => {
+  const loginUser = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const loginObject = {
       email: emailUser,

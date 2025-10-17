@@ -1,5 +1,5 @@
-import { useSelector } from "react-redux";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Footer from "./Components/Footer";
 import Home from "./Components/Home";
@@ -10,10 +10,10 @@ import ProductDetail from "./Components/ProductDetail";
 import ProtectedRoutes from "./Components/ProtectedRoutes";
 import Purchases from "./Components/Purchases";
 import SignUp from "./Components/SignUp";
-import { AnimatePresence } from "framer-motion";
+import { useAppSelector } from "./store";
 
 function App() {
-  const isLoading = useSelector((state) => state.app.isLoading);
+  const isLoading = useAppSelector((state) => state.app.isLoading);
 
   const location = useLocation();
 
@@ -21,7 +21,7 @@ function App() {
     <>
       {isLoading && <LoadingScreen />}
       <NavBar />
-      <AnimatePresence exitBeforeEnter>
+      <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetail />} />

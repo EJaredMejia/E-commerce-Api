@@ -1,39 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/store";
+import { useEffect, useState } from "react";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import {
   getProductsThunk,
-  setProducts
+  setProducts,
+  type Product,
 } from "../store/slices/products.slice";
-import { axiosInstance } from "./utilis/axios";
+import { axiosInstance } from "./utils/axios";
 
-const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
-  const [categories, setCategories] = useState([]);
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface FiltersSideBarProps {
+  isFiltersVisible: boolean;
+  toogleFilters: () => void;
+}
+
+const ALL_PRODUCTS = "all products";
+const FiltersSideBar = ({
+  isFiltersVisible,
+  toogleFilters,
+}: FiltersSideBarProps) => {
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isPriceActive, setIsPriceActive] = useState(false);
   const [isCategoryActive, setIsCategoryActive] = useState(false);
 
-  const [priceTo, setPriceTo] = useState("");
-  const [priceFrom, setPriceFrom] = useState("");
+  const [priceTo, setPriceTo] = useState<number>(Number.POSITIVE_INFINITY);
+  const [priceFrom, setPriceFrom] = useState<number>(Number.NEGATIVE_INFINITY);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const [categoriesInput, setCategoriesInput] = useState("all products");
+  const [categoriesInput, setCategoriesInput] = useState<
+    typeof ALL_PRODUCTS | number
+  >(ALL_PRODUCTS);
 
   useEffect(() => {
     if (categoriesInput !== -1) {
-      setPriceTo("");
-      setPriceFrom("");
+      setPriceTo(Number.POSITIVE_INFINITY);
+      setPriceFrom(Number.NEGATIVE_INFINITY);
     }
-    if (categoriesInput === "all products") {
+    if (categoriesInput === ALL_PRODUCTS) {
       dispatch(getProductsThunk());
     } else {
       dispatch(setIsLoading(true));
       axiosInstance
         .get("/products")
         .then((res) => {
-          const filteredProducts = res.data.data.products.filter((product) => {
-            return product.categoryId == categoriesInput;
-          });
+          const filteredProducts = res.data.data.products.filter(
+            (product: Product) => {
+              return product.categoryId == categoriesInput;
+            }
+          );
           dispatch(setProducts(filteredProducts));
         })
         .finally(() => dispatch(setIsLoading(false)));
@@ -42,27 +61,27 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
 
   useEffect(() => {
     axiosInstance
-      .get(
-        "/products/categories"
-      )
+      .get("/products/categories")
       .then((res) => setCategories(res.data.categories));
   }, []);
-
 
   const filterByPrice = () => {
     dispatch(setIsLoading(true));
     axiosInstance
       .get("/products")
       .then((res) => {
-        const productsFiltered = res.data.data.products.filter((product) => {
-          return (
-            Number(product.price) >= priceFrom &&
-            Number(product.price) <= priceTo
-          );
-        });
+        const productsFiltered = res.data.data.products.filter(
+          (product: Product) => {
+            return (
+              Number(product.price) >= priceFrom &&
+              Number(product.price) <= priceTo
+            );
+          }
+        );
         if (productsFiltered.length > 0) {
           dispatch(setProducts(productsFiltered));
-          setCategoriesInput("");
+          // TODO why is this needed?
+          // setCategoriesInput("");
         } else {
           alert("no products found");
         }
@@ -108,8 +127,8 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
               min="0"
               className="ml-3 w-[11rem] p-2 border rounded border-gray-300 text-sm"
               id="fromPrice"
-              value={priceFrom}
-              onChange={(e) => setPriceFrom(e.target.value)}
+              value={priceFrom || ""}
+              onChange={(e) => setPriceFrom(Number(e.target.value))}
               type="number"
             />
           </div>
@@ -118,8 +137,8 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
               To
             </label>
             <input
-              value={priceTo}
-              onChange={(e) => setPriceTo(e.target.value)}
+              value={priceTo || ""}
+              onChange={(e) => setPriceTo(Number(e.target.value))}
               min="1"
               className="ml-8 w-[11rem] p-2 border rounded border-gray-300 text-sm"
               id="toPrice"
@@ -146,13 +165,15 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
             <div className="mb-3 ">
               <input
                 onClick={toogleFilters}
-                checked={categoriesInput === "all products" ? true : false}
+                checked={categoriesInput === ALL_PRODUCTS ? true : false}
                 className="mr-3 cursor-pointer"
                 type="radio"
                 name="select_category"
-                value="all products"
+                value={ALL_PRODUCTS}
                 id="allProducts"
-                onChange={(e) => setCategoriesInput(e.target.value)}
+                onChange={(e) =>
+                  setCategoriesInput(e.target.value as typeof ALL_PRODUCTS)
+                }
               />
               <label className="cursor-pointer" htmlFor="allProducts">
                 All products
@@ -166,7 +187,7 @@ const FiltersSideBar = ({ isFiltersVisible, toogleFilters }) => {
                   type="radio"
                   name="select_category"
                   value={category.id}
-                  onChange={(e) => setCategoriesInput(e.target.value)}
+                  onChange={(e) => setCategoriesInput(Number(e.target.value))}
                   id={category.name}
                 />
                 <label className="cursor-pointer" htmlFor={category.name}>

@@ -6,11 +6,12 @@ import { setIsMessage } from "../store/slices/isLoading.slice";
 import { getProductsThunk } from "../store/slices/products.slice";
 import ProductsItem from "./ProductsItem";
 import AnimatedPage from "./AnimatedPage";
+import { useAppDispatch, useAppSelector } from "@/store";
 
 const ProductDetail = () => {
-  const shoppingCart = useSelector((state) => state.cart);
+  const shoppingCart = useAppSelector((state) => state.cart);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
 
   useEffect(() => {
@@ -19,9 +20,7 @@ const ProductDetail = () => {
 
   document.body.style.paddingBottom = "400px";
 
-  const allProducts = useSelector((state) => state.products);
-
-  const [product, setProduct] = useState({});
+  const allProducts = useAppSelector((state) => state.products);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(1);
@@ -34,12 +33,9 @@ const ProductDetail = () => {
     indexOfLastItem
   );
 
-  useEffect(() => {
-    const productToFind = allProducts.find(
-      (productItem) => Number(productItem.id) === Number(id)
-    );
-    setProduct(productToFind);
-  }, [allProducts, id]);
+  const product = allProducts.find(
+    (productItem) => Number(productItem.id) === Number(id)
+  );
 
   const minusQuantity = () => {
     if (quantityProducts !== 1) {
@@ -57,13 +53,20 @@ const ProductDetail = () => {
       let isProductAllreadyInCart = false;
       const idProduct = Number(id);
       shoppingCart.find((product) => {
+        // TODO is this a bug?
+        console.log({ product, idProduct });
         if (product.id === idProduct) {
           isProductAllreadyInCart = true;
           const newProductCart = {
             productId: idProduct,
             newQty: quantityProducts,
           };
-          dispatch(updateCartThunk(user.token, newProductCart));
+          dispatch(
+            updateCartThunk({
+              product: newProductCart,
+              token: user.token,
+            })
+          );
           return true;
         }
       });
@@ -72,7 +75,10 @@ const ProductDetail = () => {
           productId: idProduct,
           quantity: quantityProducts,
         };
-        dispatch(addCartThunk(user.token, newProductCart));
+        dispatch(addCartThunk({
+          product: newProductCart,
+          token: user.token
+        }));
       }
     } else {
       dispatch(

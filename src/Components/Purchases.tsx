@@ -1,21 +1,22 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux/es/exports";
-import { getPurchasesThunk } from "../store/slices/purchases.slice";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PurchasesItem from "./PurchasesItem";
+import { getPurchasesThunk } from "../store/slices/purchases.slice";
 import AnimatedPage from "./AnimatedPage";
+import PurchasesItem from "./PurchasesItem";
+import { getLocalStorageUser } from "./utils/storage";
 
 const Purchases = () => {
   const navigate = useNavigate();
 
-  const purchases = useSelector((state) => state.purchases);
+  const purchases = useAppSelector((state) => state.purchases);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   document.body.style.paddingBottom = "400px";
 
   useEffect(() => {
-    const userLocal = JSON.parse(localStorage.getItem("user"));
+    const userLocal = getLocalStorageUser();
     if (userLocal) {
       dispatch(getPurchasesThunk(userLocal.token));
     }

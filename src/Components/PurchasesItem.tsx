@@ -1,6 +1,9 @@
-import React from "react";
+import type { Purchase } from "@/store/slices/purchases.slice";
 
-const PurchasesItem = ({ purchase }) => {
+interface PurchasesItemProps {
+  purchase: Purchase;
+}
+const PurchasesItem = ({ purchase }: PurchasesItemProps) => {
   const months = [
     "Jan",
     "Feb",
@@ -26,8 +29,7 @@ const PurchasesItem = ({ purchase }) => {
       {purchase.cart.productInCarts.length > 0 && (
         <li className="rounded-lg border border-gray-300">
           <h3 className="p-3 border-b border-gray-300 font-semibold text-gray-700">
-            {months[parseInt(arrayDate[1] - 1)]} {parseInt(arrayDate[2])},{" "}
-            {parseInt(arrayDate[0])}
+            {months[Number(arrayDate[1]) - 1]} {arrayDate[2]}, {arrayDate[0]}
           </h3>
           <div className="p-7 text-sm mx-auto text-gray-600  sm:w-[25rem] md:w-[34rem]">
             {purchase.cart.productInCarts.map((product) => (

@@ -4,12 +4,12 @@ export const appSlice = createSlice({
   name: "app",
   initialState: { isLoading: false, loginMessage: "" },
   reducers: {
-    setIsLoading: (state, action) => {
+    setIsLoading: (state, action: { payload: boolean }) => {
       state.isLoading = action.payload;
     },
-    setIsMessage: (state, action) =>{
+    setIsMessage: (state, action: { payload: string }) => {
       state.loginMessage = action.payload;
-    }
+    },
   },
 });
 

@@ -1,22 +1,28 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import AnimatedPage from "./AnimatedPage";
-import { axiosInstance } from "./utilis/axios";
+import { axiosInstance } from "./utils/axios";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { register, handleSubmit } = useForm();
+  const defaultValues = {
+    name: "",
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+  };
+  const { register, handleSubmit } = useForm({ defaultValues });
 
-  const signUpUser = (data) => {
-    data.role = "normal";
+  const signUpUser = (data: typeof defaultValues) => {
     dispatch(setIsLoading(true));
     axiosInstance
-      .post("/users", data)
+      .post("/users", { ...data, role: "normal" })
       .then(() => {
         const autoLoginObject = {
           email: data.email,

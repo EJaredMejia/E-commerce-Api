@@ -1,27 +1,37 @@
-import React from "react";
+import { useAppDispatch } from "@/store";
 import { useForm } from "react-hook-form";
 import Modal from "react-modal";
-import { useDispatch } from "react-redux";
 import { purchaseCartThunk } from "../store/slices/cart.slice";
+import { getLocalStorageUser } from "./utils/storage";
 
-const CheckoutModal = ({ isCheckoutModalOpen, closeCheckoutModal }) => {
-  const { register, handleSubmit, reset } = useForm();
+interface CheckoutModalProps {
+  isCheckoutModalOpen: boolean;
+  closeCheckoutModal: () => void;
+}
+const CheckoutModal = ({
+  isCheckoutModalOpen,
+  closeCheckoutModal,
+}: CheckoutModalProps) => {
+  const defaultValues = {
+    street: "",
+    colony: "",
+    zipCode: "",
+    city: "",
+    references: "",
+  };
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: defaultValues,
+  });
 
   const restoreForm = () => {
-    reset({
-      street: "",
-      colony: "",
-      zipCode: "",
-      city: "",
-      references: "",
-    });
+    reset();
   };
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const purchaseCart = (data) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    dispatch(purchaseCartThunk(user.token, data));
+  const purchaseCart = (data: typeof defaultValues) => {
+    const user = getLocalStorageUser();
+    dispatch(purchaseCartThunk({ data, token: user.token }));
     closeCheckoutModal();
     restoreForm();
   };
@@ -35,7 +45,10 @@ const CheckoutModal = ({ isCheckoutModalOpen, closeCheckoutModal }) => {
         className="flex flex-col gap-3 p-3 pb-0"
         onSubmit={handleSubmit(purchaseCart)}
       >
-         <i onClick={closeCheckoutModal} className="fa-solid fa-x fa-lg absolute right-8 top-8 cursor-pointer text-gray-600"></i>
+        <i
+          onClick={closeCheckoutModal}
+          className="fa-solid fa-x fa-lg absolute right-8 top-8 cursor-pointer text-gray-600"
+        ></i>
         <h2 className="font-bold text-gray-800">Send to:</h2>
         <label htmlFor="street">Street</label>
         <input
