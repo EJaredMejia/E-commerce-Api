@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateCartThunk, addCartThunk } from "../store/slices/cart.slice";
+import { addCartThunk, updateCartThunk } from "../store/slices/cart.slice";
 import { setIsMessage } from "../store/slices/isLoading.slice";
 import { getProductsThunk } from "../store/slices/products.slice";
-import ProductsItem from "./ProductsItem";
 import AnimatedPage from "./AnimatedPage";
-import { useAppDispatch, useAppSelector } from "@/store";
+import ProductsItem from "./ProductsItem";
+import { getLocalStorageUser } from "./utils/storage";
 
 const ProductDetail = () => {
   const shoppingCart = useAppSelector((state) => state.cart);
@@ -23,18 +23,17 @@ const ProductDetail = () => {
   const allProducts = useAppSelector((state) => state.products);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(1);
+  const [itemsPerPage, _] = useState(1);
   const [quantityProducts, setQuantityProducts] = useState(1);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const product = allProducts.find(
+    (productItem) => Number(productItem.id) === Number(id)
+  );
   const currentImages = product?.productImgs?.slice(
     indexOfFirstItem,
     indexOfLastItem
-  );
-
-  const product = allProducts.find(
-    (productItem) => Number(productItem.id) === Number(id)
   );
 
   const minusQuantity = () => {
@@ -48,43 +47,46 @@ const ProductDetail = () => {
   };
 
   const addToCart = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      let isProductAllreadyInCart = false;
-      const idProduct = Number(id);
-      shoppingCart.find((product) => {
-        // TODO is this a bug?
-        console.log({ product, idProduct });
-        if (product.id === idProduct) {
-          isProductAllreadyInCart = true;
-          const newProductCart = {
-            productId: idProduct,
-            newQty: quantityProducts,
-          };
-          dispatch(
-            updateCartThunk({
-              product: newProductCart,
-              token: user.token,
-            })
-          );
-          return true;
-        }
-      });
-      if (isProductAllreadyInCart === false) {
-        const newProductCart = {
-          productId: idProduct,
-          quantity: quantityProducts,
-        };
-        dispatch(addCartThunk({
-          product: newProductCart,
-          token: user.token
-        }));
-      }
-    } else {
+    const user = getLocalStorageUser();
+
+    if (!user) {
       dispatch(
         setIsMessage("You need to be login to add products to the cart")
       );
       navigate("/login");
+      return;
+    }
+    let isProductAllreadyInCart = false;
+    const idProduct = Number(id);
+    shoppingCart.find((product) => {
+      // TODO is this a bug?
+      console.log({ product, idProduct });
+      if (product.id === idProduct) {
+        isProductAllreadyInCart = true;
+        const newProductCart = {
+          productId: idProduct,
+          newQty: quantityProducts,
+        };
+        dispatch(
+          updateCartThunk({
+            product: newProductCart,
+            token: user.token,
+          })
+        );
+        return true;
+      }
+    });
+    if (!isProductAllreadyInCart) {
+      const newProductCart = {
+        productId: idProduct,
+        quantity: quantityProducts,
+      };
+      dispatch(
+        addCartThunk({
+          product: newProductCart,
+          token: user.token,
+        })
+      );
     }
   };
 
@@ -106,7 +108,7 @@ const ProductDetail = () => {
                   if (currentPage !== 1) {
                     setCurrentPage(currentPage - 1);
                   } else {
-                    setCurrentPage(product?.productImgs?.length);
+                    setCurrentPage(product?.productImgs?.length || 1);
                   }
                 }}
                 className="cursor-pointer fa-solid fa-arrow-left text-white bg-red-500 rounded-full p-3"
@@ -139,7 +141,9 @@ const ProductDetail = () => {
                 key={img.imgUrl}
                 className="cursor-pointer p-1 rounded-md"
                 onClick={() => setCurrentPage(i + 1)}
-                style={{ border: i + 1 === currentPage && "2px red solid" }}
+                style={{
+                  border: i + 1 === currentPage ? "2px red solid" : undefined,
+                }}
               >
                 <img
                   className="w-[4rem] h-[4rem] object-contain"
@@ -157,7 +161,7 @@ const ProductDetail = () => {
           <div className="mt-6 grid grid-cols-2">
             <h6 className="text-gray-400 order-1">Price</h6>
             <p className="ml-6 mt-2 text-lg order-3">
-              <b>$ {product?.price * quantityProducts}</b>
+              <b>$ {(product?.price || 0) * quantityProducts}</b>
             </p>
             <h6 className="text-gray-400 order-2">Quantity</h6>
             <div className="mt-2 text-base border border-gray-300 items-center w-[8rem] justify-items-center order-4 grid grid-cols-3">
@@ -201,7 +205,7 @@ const ProductDetail = () => {
             <ul className="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3 xl:gap-10 ">
               {allProducts
                 .filter((productItem) => {
-                  if (productItem.id === product.id) {
+                  if (productItem.id === product?.id) {
                     return;
                   }
                   return productItem?.categoryId === product?.categoryId;
