@@ -89,20 +89,24 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
         className="cursor-pointer w-full sm:h-50 border-b border-gray-300 pb-5"
       >
         <img
-          className={`mx-auto w-40 max-h-[250px] sm:px-2 sm:w-fit sm:h-40 md:h-[12rem] `}
+          className={`mx-auto w-40 max-h-[250px] sm:px-2 sm:w-fit sm:h-40 md:h-48 `}
           src={product.productImgs[0]?.imgUrl}
           alt="product image"
         />
       </div>
-      <div className="p-5 h-[10.5rem]">
+      <div className="p-5 h-42">
         <h3 className="font-bold ml-4 tracking-wider mb-4">{product.title}</h3>
-        <p className="text-gray-400">Price</p>
-        <p className="font-semibold ml-4">$ {product.price}</p>
-        <div className="relative top-[-3rem]">
-          <i
-            onClick={addProductToCart}
-            className="cursor-pointer fa-solid block p-4 py-3 text-lg bg-red-500 text-gray-100 rounded-full w-fit ml-auto text-end fa-cart-shopping"
-          ></i>
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="text-gray-400">Price</p>
+            <p className="font-semibold ml-4">$ {product.price}</p>
+          </div>
+          <div className="">
+            <i
+              onClick={addProductToCart}
+              className="cursor-pointer fa-solid block p-4 text-lg bg-red-500 text-gray-100 rounded-full w-fit fa-cart-shopping"
+            ></i>
+          </div>
         </div>
       </div>
     </li>

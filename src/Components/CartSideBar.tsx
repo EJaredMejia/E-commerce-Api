@@ -86,7 +86,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
     <div
       className={`w-[20rem] z-50 block fixed right-0 ${
         isCartVisible ? "show-filters" : "hide-filters"
-      } shadow-xl bg-white h-screen top-[4rem] lg:top-[4.8rem]`}
+      } shadow-xl bg-white h-screen top-16 lg:top-[4.8rem]`}
     >
       <h3 className="text-gray-700 font-bold px-6 py-5 text-lg">
         Shopping cart
@@ -104,7 +104,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
             </div>
             <div className="mb-2 flex gap-5 items-center">
               <p>Quantity: </p>
-              <div className="text-base border border-gray-300 items-center w-[6rem] justify-items-center order-4 grid grid-cols-3">
+              <div className="text-base border border-gray-300 items-center w-24 justify-items-center order-4 grid grid-cols-3">
                 <p
                   onClick={(e) => {
                     e.stopPropagation();
@@ -140,7 +140,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
           </li>
         ))}
       </ul>
-      <div className="absolute w-[18rem] bottom-[5rem] flex flex-col justify-end">
+      <div className="absolute w-[18rem] bottom-20 flex flex-col justify-end">
         <div className="border-t-2 border-gray-300 p-6">
           <div className="flex justify-between">
             <p className="text-gray-500">Total: </p>

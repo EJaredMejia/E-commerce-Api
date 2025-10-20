@@ -39,8 +39,8 @@ const SignUp = () => {
 
   return (
     <AnimatedPage>
-      <section className="flex justify-center items-center w-full bg-gray-50 h-[100vh] relative top-[1.9rem] mb-[-13rem]">
-        <div className="relative bg-white shadow-md rounded p-7 w-11/12 max-w-[500px]">
+      <section className="flex justify-center items-center w-full bg-gray-50 h-screen relative top-[1.9rem] -mb-52">
+        <div className="relative bg-white shadow-md rounded-sm p-7 w-11/12 max-w-[500px]">
           <h3 className="font-semibold text-gray-600 text-2xl">Sign up</h3>
           <form
             onSubmit={handleSubmit(signUpUser)}

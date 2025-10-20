@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="adjust-footer z-40 bg-gradient-to-t p-10 from-gray-600 to-gray-700 text-white flex gap-8 flex-col justify-center items-center">
+    <footer className="adjust-footer bg-linear-to-t p-10 from-gray-600 to-gray-700 text-white flex gap-8 flex-col justify-center items-center">
       <p>Made by Jared Mejia 2022</p>
       <div className="flex gap-5">
         <a

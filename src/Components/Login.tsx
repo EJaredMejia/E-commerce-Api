@@ -62,14 +62,14 @@ const Login = () => {
 
   return (
     <AnimatedPage>
-      <section className="flex justify-center items-center w-full h-[100vh] relative top-[1.9rem] mb-[-13rem] bg-gray-50 ">
+      <section className="flex justify-center items-center w-full h-screen relative top-[1.9rem] -mb-52 bg-gray-50 ">
         {userState === null ? (
-          <div className="relative bg-white shadow-md rounded p-7 w-11/12 max-w-[500px]">
-            <h3 className="font-[600] text-gray-600 text-2xl tracking-wide leading-9">
+          <div className="relative bg-white shadow-md rounded-sm p-7 w-11/12 max-w-[500px]">
+            <h3 className="font-semibold text-gray-600 text-2xl tracking-wide leading-9">
               Welcome! Enter your email and password to continue
             </h3>
             <p className="text-center text-blue-500 mt-3">{message}</p>
-            <div className="bg-cyan-100 rounded p-4 mt-5">
+            <div className="bg-cyan-100 rounded-sm p-4 mt-5">
               <h4 className="text-center text-gray-600  mb-2">
                 <b>Test data</b>
               </h4>
@@ -115,7 +115,7 @@ const Login = () => {
             </p>
           </div>
         ) : (
-          <div className="shadow-md rounded p-7 w-11/12  max-w-[500px] h-[200px] bg-white flex justify-center gap-5 items-center flex-col">
+          <div className="shadow-md rounded-sm p-7 w-11/12  max-w-[500px] h-[200px] bg-white flex justify-center gap-5 items-center flex-col">
             <i className="fa-solid fa-user text-5xl"></i>
             <p className="font-bold text-gray-600">
               {userState.user.firstName} {userState.user.lastName}

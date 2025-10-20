@@ -101,7 +101,7 @@ const ProductDetail = () => {
             <i className="fa-solid fa-circle text-red-500 text-xs"></i>
             <b>{product?.title}</b>
           </div>
-          <ul className="relative top-[3rem] gap-1 flex items-center justify-between md:justify-center lg:justify-evenly">
+          <ul className="relative top-12 gap-1 flex items-center justify-between md:justify-center lg:justify-evenly">
             <li>
               <i
                 onClick={() => {
@@ -117,7 +117,7 @@ const ProductDetail = () => {
             {currentImages?.map((img) => (
               <li key={img.imgUrl}>
                 <img
-                  className="w-[13rem] h-[13rem] sm:w-[20rem] sm:h-[20rem] object-contain"
+                  className="w-52 h-52 sm:w-[20rem] sm:h-80 object-contain"
                   src={img.imgUrl}
                 ></img>
               </li>
@@ -146,7 +146,7 @@ const ProductDetail = () => {
                 }}
               >
                 <img
-                  className="w-[4rem] h-[4rem] object-contain"
+                  className="w-16 h-16 object-contain"
                   src={img.imgUrl}
                   alt=""
                 />
@@ -154,7 +154,7 @@ const ProductDetail = () => {
             ))}
           </ul>
         </section>
-        <section className="relative top-[5rem]">
+        <section className="relative top-20">
           <h3 className="ml-6 text-xl">
             <b>{product?.title}</b>
           </h3>
@@ -164,7 +164,7 @@ const ProductDetail = () => {
               <b>$ {(product?.price || 0) * quantityProducts}</b>
             </p>
             <h6 className="text-gray-400 order-2">Quantity</h6>
-            <div className="mt-2 text-base border border-gray-300 items-center w-[8rem] justify-items-center order-4 grid grid-cols-3">
+            <div className="mt-2 text-base border border-gray-300 items-center w-32 justify-items-center order-4 grid grid-cols-3">
               <p
                 onClick={minusQuantity}
                 className="cursor-pointer w-full flex justify-center items-center active:bg-teal-300 h-full"
@@ -196,7 +196,7 @@ const ProductDetail = () => {
         </section>
         <section
           style={{ gridColumn: "1/3" }}
-          className="mt-[7rem] lg:mt-[2rem]"
+          className="mt-28 lg:mt-8"
         >
           <h3 className="text-red-500 text-lg">
             <b>Discover similar items</b>

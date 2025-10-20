@@ -95,11 +95,11 @@ const FiltersSideBar = ({
         isFiltersVisible ? "show-filters" : "hide-filters"
       } shadow-lg bg-white w-[18rem] lg:max-w-[18rem] h-screen z-50 lg:visible lg:z-40 lg:right-auto lg:top-0`}
     >
-      <div className="relative top-[4rem] lg:top-[8rem] left-5 w-[15rem]">
+      <div className="relative top-16 lg:top-32 left-5 w-60">
         {isFiltersVisible && (
           <i
             onClick={toogleFilters}
-            className="fa-solid fa-x fa-lg absolute right-0 top-[-2rem] cursor-pointer text-gray-600 lg:hidden"
+            className="fa-solid fa-x fa-lg absolute right-0 -top-8 cursor-pointer text-gray-600 lg:hidden"
           ></i>
         )}
         <div
@@ -125,7 +125,7 @@ const FiltersSideBar = ({
             </label>
             <input
               min="0"
-              className="ml-3 w-[11rem] p-2 border rounded border-gray-300 text-sm"
+              className="ml-3 w-44 p-2 border rounded-sm border-gray-300 text-sm"
               id="fromPrice"
               value={priceFrom || ""}
               onChange={(e) => setPriceFrom(Number(e.target.value))}
@@ -140,7 +140,7 @@ const FiltersSideBar = ({
               value={priceTo || ""}
               onChange={(e) => setPriceTo(Number(e.target.value))}
               min="1"
-              className="ml-8 w-[11rem] p-2 border rounded border-gray-300 text-sm"
+              className="ml-8 w-44 p-2 border rounded-sm border-gray-300 text-sm"
               id="toPrice"
               type="number"
             />

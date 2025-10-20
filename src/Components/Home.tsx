@@ -80,13 +80,13 @@ const Home = () => {
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="p-3 max-w-[500px] text-sm rounded-sm w-10/12 border border-gray-300 md:max-w-[40rem] lg:w-full xl:max-w-[47rem]"
+              className="p-3 max-w-[500px] text-sm rounded-xs w-10/12 border border-gray-300 md:max-w-160 lg:w-full xl:max-w-188"
             />
-            <button className="rounded-sm bg-red-500 w-11 inline-block xl:flex xl:justify-center xl:items-center xl:px-[3rem]">
+            <button className="rounded-xs bg-red-500 w-11 inline-block xl:flex xl:justify-center xl:items-center xl:px-12">
               <i className="text-white fa-solid fa-magnifying-glass "></i>
             </button>
           </form>
-          <div className="flex justify-end items-center relative top-4 max-w-[500px] mx-auto md:max-w-[40rem] lg:invisible">
+          <div className="flex justify-end items-center relative top-4 max-w-[500px] mx-auto md:max-w-160 lg:invisible">
             <div onClick={toogleFilters} className="flex gap-2 items-center">
               <i className="fa-solid text-xl fa-filter text-red-500"></i>
               <p className="text-red-500 font-semibold text-sm tracking-widest">
@@ -94,7 +94,7 @@ const Home = () => {
               </p>
             </div>
           </div>
-          <div className="w-full mx-auto relative top-16 md:max-w-[42rem] lg:top-6 xl:max-w-none xl:w-11/12">
+          <div className="w-full mx-auto relative top-16 md:max-w-2xl lg:top-6 xl:max-w-none xl:w-11/12">
             <ul className="grid gap-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3 xl:gap-10 ">
               {products.map((product) => (
                 <ProductsItem product={product} key={product.id} />
