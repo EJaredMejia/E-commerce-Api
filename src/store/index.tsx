@@ -6,11 +6,13 @@ import filtersSlice from "./slices/filters.slice";
 import appSlice from "./slices/isLoading.slice";
 import { productsApi } from "./slices/products.slice";
 import { purchasesApi } from "./slices/purchases.slice";
+import { categoriesApi } from "./slices/categories.slice";
 
 const store = configureStore({
   reducer: {
     [productsApi.reducerPath]: productsApi.reducer,
     [purchasesApi.reducerPath]: purchasesApi.reducer,
+    [categoriesApi.reducerPath]: categoriesApi.reducer,
     app: appSlice,
     cart: cartSlice,
     filters: filtersSlice,
@@ -18,7 +20,8 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       productsApi.middleware,
-      purchasesApi.middleware
+      purchasesApi.middleware,
+      categoriesApi.middleware
     ),
 });
 

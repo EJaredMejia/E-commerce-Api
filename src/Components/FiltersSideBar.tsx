@@ -1,17 +1,12 @@
+import { ALL_PRODUCTS } from "@/constants/products.constants";
 import { useAppDispatch, useAppSelector } from "@/store";
+import { useGetCategoriesQuery } from "@/store/slices/categories.slice";
 import {
   setCategory,
   setPrice,
   type FiltersState,
 } from "@/store/slices/filters.slice";
-import { useEffect, useState } from "react";
-import { axiosInstance } from "./utils/axios";
-import { ALL_PRODUCTS } from "@/constants/products.constants";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import { useState } from "react";
 
 interface FiltersSideBarProps {
   isFiltersVisible: boolean;
@@ -22,7 +17,6 @@ const FiltersSideBar = ({
   isFiltersVisible,
   toogleFilters,
 }: FiltersSideBarProps) => {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isPriceActive, setIsPriceActive] = useState(false);
   const [isCategoryActive, setIsCategoryActive] = useState(false);
 
@@ -34,13 +28,9 @@ const FiltersSideBar = ({
 
   const category = useAppSelector((state) => state.filters.category);
   const dispatch = useAppDispatch();
+  const { data } = useGetCategoriesQuery();
 
-  useEffect(() => {
-    // TODO migrate to rtk query
-    axiosInstance
-      .get("/products/categories")
-      .then((res) => setCategories(res.data.categories));
-  }, []);
+  const categories = data?.data.categories;
 
   return (
     <div
@@ -158,7 +148,7 @@ const FiltersSideBar = ({
                 All products
               </label>
             </div>
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <div className="mb-3" key={category.id}>
                 <input
                   onClick={toogleFilters}
