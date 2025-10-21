@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/store";
+import { useLoginMutation } from "@/store/slices/auth.slice";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import AnimatedPage from "./AnimatedPage";
-import { axiosInstance } from "./utils/axios";
 
 interface User {
   user: {
@@ -20,6 +20,7 @@ const Login = () => {
   const [userState, setUserState] = useState<User | null>(null);
   const [renderAgain, setRenderAgain] = useState(0);
 
+  const [login] = useLoginMutation();
   const message = useAppSelector((state) => state.app.loginMessage);
 
   useEffect(() => {
@@ -34,25 +35,31 @@ const Login = () => {
     setUserState(user);
   }, [renderAgain]);
 
-  const loginUser = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const loginObject = {
-      email: emailUser,
-      password: passwordUser,
-    };
-    dispatch(setIsLoading(true));
-    axiosInstance
-      .post(`/users/login`, loginObject)
-      .then((res) => {
-        localStorage.setItem("user", JSON.stringify(res.data.data));
-        setUserState(res.data.data);
-        setRenderAgain(renderAgain + 1);
-        navigate("/");
-      })
-      .catch(() => alert("User does'nt exit"))
-      .finally(() => dispatch(setIsLoading(false)));
-    setEmailUser("");
-    setPasswordUser("");
+  const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+      const loginObject = {
+        email: emailUser,
+        password: passwordUser,
+      };
+      dispatch(setIsLoading(true));
+      const { data, error } = await login(loginObject);
+
+      if (error) {
+        alert("User does'nt exit");
+        return;
+      }
+
+      setUserState(data.data);
+      setEmailUser("");
+      setPasswordUser("");
+      setRenderAgain(renderAgain + 1);
+      navigate("/");
+      dispatch(setIsLoading(false));
+      return;
+    } finally {
+      dispatch(setIsLoading(false));
+    }
   };
 
   const logOut = () => {

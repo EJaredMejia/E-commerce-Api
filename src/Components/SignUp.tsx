@@ -1,13 +1,19 @@
+import {
+  useCreateUserMutation,
+  useLoginMutation,
+} from "@/store/slices/auth.slice";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import AnimatedPage from "./AnimatedPage";
-import { axiosInstance } from "./utils/axios";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [createUser] = useCreateUserMutation();
+  const [login] = useLoginMutation();
 
   const defaultValues = {
     name: "",
@@ -19,22 +25,27 @@ const SignUp = () => {
   };
   const { register, handleSubmit } = useForm({ defaultValues });
 
-  const signUpUser = (data: typeof defaultValues) => {
+  const signUpUser = async (data: typeof defaultValues) => {
     dispatch(setIsLoading(true));
-    axiosInstance
-      .post("/users", { ...data, role: "normal" })
-      .then(() => {
-        const autoLoginObject = {
-          email: data.email,
-          password: data.password,
-        };
-        axiosInstance.post(`/users/login`, autoLoginObject).then((res) => {
-          localStorage.setItem("user", JSON.stringify(res.data.data));
-          navigate("/login");
-        });
-      })
-      .catch(() => alert("email already taken"))
-      .finally(() => dispatch(setIsLoading(false)));
+    try {
+      const { error } = await createUser({ ...data, role: "normal" });
+
+      if (error) return alert("email already taken");
+
+      const autoLoginObject = {
+        email: data.email,
+        password: data.password,
+      };
+      const { error: userError } = await login(autoLoginObject);
+
+      if (userError) {
+        return;
+      }
+
+      navigate("/login");
+    } finally {
+      dispatch(setIsLoading(false));
+    }
   };
 
   return (
