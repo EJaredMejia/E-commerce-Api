@@ -1,7 +1,11 @@
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useGetCart } from "@/hooks/cart.hooks";
+import { useAppDispatch } from "@/store";
+import {
+  useAddCartProductMutation,
+  useUpdateCartMutation,
+} from "@/store/slices/cart.slice";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { addCartThunk, updateCartThunk } from "../store/slices/cart.slice";
 import { setIsMessage } from "../store/slices/isLoading.slice";
 import { useGetProductsQuery } from "../store/slices/products.slice";
 import AnimatedPage from "./AnimatedPage";
@@ -9,7 +13,8 @@ import ProductsItem from "./ProductsItem";
 import { getLocalStorageUser } from "./utils/storage";
 
 const ProductDetail = () => {
-  const shoppingCart = useAppSelector((state) => state.cart);
+  const { data: shoppingCart } = useGetCart();
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { id } = useParams();
@@ -17,6 +22,9 @@ const ProductDetail = () => {
   document.body.style.paddingBottom = "400px";
 
   const { data } = useGetProductsQuery();
+
+  const [addProductCart] = useAddCartProductMutation();
+  const [updateCart] = useUpdateCartMutation();
 
   const allProducts = data?.data.products;
 
@@ -65,12 +73,8 @@ const ProductDetail = () => {
           productId: idProduct,
           newQty: quantityProducts,
         };
-        dispatch(
-          updateCartThunk({
-            product: newProductCart,
-            token: user.token,
-          })
-        );
+        updateCart(newProductCart);
+
         return true;
       }
     });
@@ -79,12 +83,7 @@ const ProductDetail = () => {
         productId: idProduct,
         quantity: quantityProducts,
       };
-      dispatch(
-        addCartThunk({
-          product: newProductCart,
-          token: user.token,
-        })
-      );
+      addProductCart(newProductCart);
     }
   };
 

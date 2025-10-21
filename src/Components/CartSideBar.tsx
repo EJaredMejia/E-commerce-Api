@@ -1,14 +1,12 @@
-import { useAppDispatch, useAppSelector } from "@/store";
-import { useEffect, useState } from "react";
+import { useGetCart } from "@/hooks/cart.hooks";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import {
-  deleteCartThunk,
-  getCartThunk,
-  updateCartThunk,
+  useDeleteCartMutation,
+  useUpdateCartMutation,
   type Cart,
 } from "../store/slices/cart.slice";
 import CheckoutModal from "./CheckoutModal";
-import { getLocalStorageUser } from "./utils/storage";
 
 interface CartSideBarProps {
   isCartVisible: boolean;
@@ -16,66 +14,51 @@ interface CartSideBarProps {
 }
 const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const shoppingCart = useAppSelector((state) => state.cart);
+  const [updateCart] = useUpdateCartMutation();
+  const [deleteCartMutation] = useDeleteCartMutation();
+
+  const { data: shoppingCart } = useGetCart();
 
   const total = shoppingCart.reduce((acc, product) => {
     return acc + product.product.price * product.quantity;
   }, 0);
 
-  useEffect(() => {
-    const user = getLocalStorageUser();
-    if (user && isCartVisible) {
-      dispatch(getCartThunk(user.token));
-    }
-  }, [isCartVisible]);
-
   const minusQuantity = (cart: Cart) => {
-    const user = getLocalStorageUser();
     if (cart.quantity === 1) {
-      deleteCart(cart.product.id);
-    } else {
-      const newProductCart = {
-        productId: cart.product.id,
-        newQty: cart.quantity - 1,
-      };
-      dispatch(
-        updateCartThunk({
-          product: newProductCart,
-          token: user.token,
-        })
-      );
+      deleteCartMutation({ id: cart.product.id });
+      return;
     }
+
+    const newProductCart = {
+      productId: cart.product.id,
+      newQty: cart.quantity - 1,
+    };
+
+    updateCart(newProductCart);
   };
 
   const plusQuantity = (cart: Cart) => {
-    const user = getLocalStorageUser();
     const newProductCart = {
       productId: cart.product.id,
       newQty: cart.quantity + 1,
     };
-    dispatch(
-      updateCartThunk({
-        product: newProductCart,
-        token: user.token,
-      })
-    );
+    updateCart(newProductCart);
   };
 
   const deleteCart = (id: number) => {
-    const user = getLocalStorageUser();
-    dispatch(deleteCartThunk({ id, token: user.token }));
+    deleteCartMutation({ id });
   };
 
   const checkoutClick = () => {
     if (shoppingCart.length > 0) {
       setIsCheckoutModalOpen(true);
       setIsCartVisible(false);
-    } else {
-      alert("The shopping cart is empty");
+      return;
     }
+
+    alert("The shopping cart is empty");
   };
 
   const closeCheckoutModal = () => {

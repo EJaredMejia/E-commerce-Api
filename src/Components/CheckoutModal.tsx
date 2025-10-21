@@ -1,8 +1,6 @@
-import { useAppDispatch } from "@/store";
+import { usePurchaseCartMutation } from "@/store/slices/cart.slice";
 import { useForm } from "react-hook-form";
 import Modal from "react-modal";
-import { purchaseCartThunk } from "../store/slices/cart.slice";
-import { getLocalStorageUser } from "./utils/storage";
 
 interface CheckoutModalProps {
   isCheckoutModalOpen: boolean;
@@ -23,18 +21,18 @@ const CheckoutModal = ({
     defaultValues: defaultValues,
   });
 
+  const [purchaseCartMutate] = usePurchaseCartMutation();
+
   const restoreForm = () => {
     reset();
   };
 
-  const dispatch = useAppDispatch();
-
   const purchaseCart = (data: typeof defaultValues) => {
-    const user = getLocalStorageUser();
-    dispatch(purchaseCartThunk({ data, token: user.token }));
+    purchaseCartMutate(data);
     closeCheckoutModal();
     restoreForm();
   };
+
   return (
     <Modal
       isOpen={isCheckoutModalOpen}

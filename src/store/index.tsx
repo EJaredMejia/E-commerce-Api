@@ -1,21 +1,21 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import cartSlice from "./slices/cart.slice";
 import filtersSlice from "./slices/filters.slice";
 import appSlice from "./slices/isLoading.slice";
 import { productsApi } from "./slices/products.slice";
 import { purchasesApi } from "./slices/purchases.slice";
 import { categoriesApi } from "./slices/categories.slice";
 import { authApi } from "./slices/auth.slice";
+import { cartApi } from "./slices/cart.slice";
 
 const appReducer = combineReducers({
   [productsApi.reducerPath]: productsApi.reducer,
   [purchasesApi.reducerPath]: purchasesApi.reducer,
   [categoriesApi.reducerPath]: categoriesApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [cartApi.reducerPath]: cartApi.reducer,
   app: appSlice,
-  cart: cartSlice,
   filters: filtersSlice,
 });
 
@@ -34,7 +34,8 @@ const store = configureStore({
       productsApi.middleware,
       purchasesApi.middleware,
       categoriesApi.middleware,
-      authApi.middleware
+      authApi.middleware,
+      cartApi.middleware
     ),
 });
 

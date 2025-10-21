@@ -1,7 +1,6 @@
 import { ALL_PRODUCTS } from "@/constants/products.constants";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { useEffect, useState } from "react";
-import { getCartThunk } from "../store/slices/cart.slice";
+import { useAppSelector } from "@/store";
+import { useState } from "react";
 import { useGetProductsQuery } from "../store/slices/products.slice";
 import AnimatedPage from "./AnimatedPage";
 import FiltersSideBar from "./FiltersSideBar";
@@ -13,24 +12,12 @@ const Home = () => {
 
   document.body.style.paddingBottom = "400px";
 
-  const dispatch = useAppDispatch();
   const category = useAppSelector((state) => state.filters.category);
   const price = useAppSelector((state) => state.filters.price);
 
   const { data } = useGetProductsQuery();
 
   const allProducts = data?.data.products;
-  useEffect(() => {
-    const storageUser = localStorage.getItem("user");
-
-    if (!storageUser) return;
-
-    const user = JSON.parse(storageUser) as { token: string };
-    if (!user) return;
-
-    // TODO use rtk query
-    dispatch(getCartThunk(user.token));
-  }, []);
 
   const toogleFilters = () => {
     setIsFiltersVisible(!isFiltersVisible);

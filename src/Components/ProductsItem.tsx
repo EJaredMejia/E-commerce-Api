@@ -1,7 +1,11 @@
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useGetCart } from "@/hooks/cart.hooks";
+import { useAppDispatch } from "@/store";
 import type { Product } from "@/store/slices/products.slice";
 import { useNavigate } from "react-router";
-import { addCartThunk, updateCartThunk } from "../store/slices/cart.slice";
+import {
+  useAddCartProductMutation,
+  useUpdateCartMutation,
+} from "../store/slices/cart.slice";
 import { setIsMessage } from "../store/slices/isLoading.slice";
 
 interface ProductsItemsProps {
@@ -11,7 +15,10 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const shoppingCart = useAppSelector((state) => state.cart);
+  const { data: shoppingCart } = useGetCart();
+
+  const [addProductCart] = useAddCartProductMutation();
+  const [updateCart] = useUpdateCartMutation();
 
   function unAuthorized() {
     dispatch(setIsMessage("You need to be login to add products to the cart"));
@@ -39,12 +46,8 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
         productId: product.id,
         quantity: 1,
       };
-      dispatch(
-        addCartThunk({
-          product: newProductCart,
-          token: user.token,
-        })
-      );
+      addProductCart(newProductCart);
+
       return;
     }
 
@@ -55,12 +58,8 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
           productId: product.id,
           newQty: productShop.quantity + 1,
         };
-        dispatch(
-          updateCartThunk({
-            token: user.token,
-            product: newProductCart,
-          })
-        );
+        updateCart(newProductCart);
+
         return true;
       }
     });
@@ -70,12 +69,7 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
         productId: product.id,
         quantity: 1,
       };
-      dispatch(
-        addCartThunk({
-          product: newProductCart,
-          token: user.token,
-        })
-      );
+      addProductCart(newProductCart);
     }
   };
 

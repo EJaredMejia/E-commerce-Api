@@ -30,7 +30,7 @@ const FiltersSideBar = ({
   const dispatch = useAppDispatch();
   const { data } = useGetCategoriesQuery();
 
-  const categories = data?.data.categories;
+  const categories = data?.categories;
 
   return (
     <div

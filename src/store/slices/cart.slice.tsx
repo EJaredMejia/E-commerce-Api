@@ -1,7 +1,18 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../Components/utils/axios";
-import getConfig from "../../Components/utils/query.utils";
+import { setGlobalLoaderOnQueryStart } from "@/Components/utils/global-loader.utils";
+import type { DataResponse } from "@/types/data-response.types";
+import type { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import {
+  getFetchBaseQuery,
+  getTokenHeaders,
+} from "../../Components/utils/query.utils";
 import { setIsLoading } from "./isLoading.slice";
+import type {
+  DeleteCart,
+  ParamsAddCart,
+  PurchaseCart,
+  UpdateCart,
+} from "@/types/cart.types";
 
 export interface Cart {
   id: number;
@@ -13,101 +24,91 @@ export interface Cart {
   quantity: number;
 }
 
-export const cartSlice = createSlice({
-  name: "cart",
-  initialState: [] as Cart[],
-  reducers: {
-    setCart: (_, action: { payload: Cart[] }) => {
-      return action.payload;
-    },
-  },
+type ResponseCart = DataResponse<{ cart: { productInCarts: Cart[] } }>;
+
+async function onQueryStartCart<T>(
+  _: T,
+  api: {
+    dispatch: ThunkDispatch<any, any, UnknownAction>;
+    queryFulfilled: Promise<any>;
+  }
+) {
+  try {
+    api.dispatch(setIsLoading(true));
+    await api.queryFulfilled;
+
+    const refetches = api
+      .dispatch(
+        cartApi.endpoints.getCart.initiate(undefined, {
+          forceRefetch: true,
+          subscribe: false,
+        })
+      )
+      .unwrap();
+
+    await refetches;
+  } finally {
+    api.dispatch(setIsLoading(false));
+  }
+}
+export const cartApi = createApi({
+  reducerPath: "cartApi",
+  baseQuery: getFetchBaseQuery(),
+  tagTypes: ["Cart"],
+  endpoints: (builder) => ({
+    getCart: builder.query<ResponseCart, void>({
+      query: () => ({ url: "/cart", ...getTokenHeaders() }),
+      providesTags: ["Cart"],
+      onQueryStarted: setGlobalLoaderOnQueryStart,
+    }),
+    addCartProduct: builder.mutation<void, ParamsAddCart>({
+      query: (body) => ({
+        url: "/cart/add-product",
+        body,
+        method: "POST",
+        ...getTokenHeaders(),
+      }),
+      onQueryStarted: onQueryStartCart,
+    }),
+    updateCart: builder.mutation<void, UpdateCart>({
+      query: (body) => ({
+        url: "/cart/update-cart",
+        body,
+        method: "PATCH",
+        ...getTokenHeaders(),
+      }),
+      onQueryStarted: onQueryStartCart,
+    }),
+    deleteCart: builder.mutation<void, DeleteCart>({
+      query: (body) => ({
+        url: `/cart/${body.id}`,
+        method: "DELETE",
+        ...getTokenHeaders(),
+      }),
+      onQueryStarted: onQueryStartCart,
+    }),
+    purchaseCart: builder.mutation<void, PurchaseCart>({
+      query: (body) => ({
+        url: `/cart/purchase`,
+        body,
+        method: "POST",
+        ...getTokenHeaders(),
+      }),
+      onQueryStarted: async (_, api) => {
+        setGlobalLoaderOnQueryStart(_, api);
+
+        await api.queryFulfilled;
+        alert("your purchase was Successful");
+      },
+      invalidatesTags: ["Cart"],
+    }),
+  }),
 });
 
-export const getCartThunk = createAsyncThunk(
-  "cart/getCart",
-  async (token: string, { dispatch }) => {
-    dispatch(setIsLoading(true));
-    return axiosInstance
-      .get("/cart", getConfig(token))
-      .then((res) => dispatch(setCart(res.data.data.cart.productInCarts)))
-      .catch(() => dispatch(setCart([])))
-      .finally(() => dispatch(setIsLoading(false)));
-  }
-);
-
-interface ParamsAddCardThunk {
-  token: string;
-  product: { productId: number; quantity: number };
-}
-export const addCartThunk = createAsyncThunk(
-  "cart/addCart",
-  async ({ token, product }: ParamsAddCardThunk, { dispatch }) => {
-    dispatch(setIsLoading(true));
-    return axiosInstance
-      .post("/cart/add-product", product, getConfig(token))
-      .then(() => dispatch(getCartThunk(token)))
-      .finally(() => dispatch(setIsLoading(false)));
-  }
-);
-
-type UpdateCartThunk = {
-  token: string;
-  product: {
-    productId: number;
-    newQty: number;
-  };
-};
-
-export const updateCartThunk = createAsyncThunk(
-  "cart/updateCart",
-  async ({ product, token }: UpdateCartThunk, { dispatch }) => {
-    dispatch(setIsLoading(true));
-    return axiosInstance
-      .patch("/cart/update-cart", product, getConfig(token))
-      .then(() => dispatch(getCartThunk(token)))
-      .finally(() => dispatch(setIsLoading(false)));
-  }
-);
-
-interface DeleteCarThunk {
-  token: string;
-  id: number;
-}
-export const deleteCartThunk = createAsyncThunk(
-  "cart/deleteCart",
-  async ({ id, token }: DeleteCarThunk, { dispatch }) => {
-    dispatch(setIsLoading(true));
-    return axiosInstance
-      .delete(`/cart/${id}`, getConfig(token))
-      .then(() => dispatch(getCartThunk(token)))
-      .finally(() => dispatch(setIsLoading(false)));
-  }
-);
-
-interface PurchaseCartThunk {
-  token: string;
-  data: {
-    street: string;
-    colony: string;
-    zipCode: string;
-    city: string;
-    references: string;
-  };
-}
-export const purchaseCartThunk = createAsyncThunk(
-  "cart/purchaseCart",
-  async ({ token, data }: PurchaseCartThunk, { dispatch }) => {
-    dispatch(setIsLoading(true));
-    return axiosInstance
-      .post("/cart/purchase", data, getConfig(token))
-      .then(() => {
-        dispatch(getCartThunk(token));
-        alert("your purchase was Successful");
-      })
-      .finally(() => dispatch(setIsLoading(false)));
-  }
-);
-
-export const { setCart } = cartSlice.actions;
-
-export default cartSlice.reducer;
+export const {
+  useAddCartProductMutation,
+  useDeleteCartMutation,
+  useGetCartQuery,
+  usePurchaseCartMutation,
+  useUpdateCartMutation,
+} = cartApi;
