@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/store";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import { addCartThunk, updateCartThunk } from "../store/slices/cart.slice";
 import { setIsMessage } from "../store/slices/isLoading.slice";
-import { getProductsThunk } from "../store/slices/products.slice";
+import { useGetProductsQuery } from "../store/slices/products.slice";
 import AnimatedPage from "./AnimatedPage";
 import ProductsItem from "./ProductsItem";
 import { getLocalStorageUser } from "./utils/storage";
@@ -14,13 +14,11 @@ const ProductDetail = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
 
-  useEffect(() => {
-    dispatch(getProductsThunk());
-  }, []);
-
   document.body.style.paddingBottom = "400px";
 
-  const allProducts = useAppSelector((state) => state.products);
+  const { data } = useGetProductsQuery();
+
+  const allProducts = data?.data.products;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, _] = useState(1);
@@ -28,7 +26,7 @@ const ProductDetail = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const product = allProducts.find(
+  const product = allProducts?.find(
     (productItem) => Number(productItem.id) === Number(id)
   );
   const currentImages = product?.productImgs?.slice(
@@ -194,19 +192,16 @@ const ProductDetail = () => {
             </p>
           </div>
         </section>
-        <section
-          style={{ gridColumn: "1/3" }}
-          className="mt-28 lg:mt-8"
-        >
+        <section style={{ gridColumn: "1/3" }} className="mt-28 lg:mt-8">
           <h3 className="text-red-500 text-lg">
             <b>Discover similar items</b>
           </h3>
           <ul>
             <ul className="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3 xl:gap-10 ">
               {allProducts
-                .filter((productItem) => {
+                ?.filter((productItem) => {
                   if (productItem.id === product?.id) {
-                    return;
+                    return false;
                   }
                   return productItem?.categoryId === product?.categoryId;
                 })

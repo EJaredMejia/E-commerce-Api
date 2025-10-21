@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux/es/exports";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { setIsMessage } from "../store/slices/isLoading.slice";
 import CartSideBar from "./CartSideBar";
+import { useAppDispatch } from "@/store";
 
 const NavBar = () => {
   const [isCartVisible, setIsCartVisible] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const userLocal = JSON.parse(String(localStorage.getItem("user")));

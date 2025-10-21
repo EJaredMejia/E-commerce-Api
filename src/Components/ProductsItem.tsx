@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import type { Product } from "@/store/slices/products.slice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { addCartThunk, updateCartThunk } from "../store/slices/cart.slice";
 import { setIsMessage } from "../store/slices/isLoading.slice";
 

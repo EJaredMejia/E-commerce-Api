@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router";
 import { getLocalStorageUser } from "./utils/storage";
 
 const ProtectedRoutes = () => {

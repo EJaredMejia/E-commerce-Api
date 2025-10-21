@@ -1,23 +1,28 @@
 import { configureStore } from "@reduxjs/toolkit";
-import productsSlice from "./slices/products.slice";
-import appSlice from "./slices/isLoading.slice";
-import purchasesSlice from "./slices/purchases.slice";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import cartSlice from "./slices/cart.slice";
-import {
-  useDispatch,
-  useSelector,
-  useStore,
-  type TypedUseSelectorHook,
-} from "react-redux";
+import filtersSlice from "./slices/filters.slice";
+import appSlice from "./slices/isLoading.slice";
+import { productsApi } from "./slices/products.slice";
+import { purchasesApi } from "./slices/purchases.slice";
 
 const store = configureStore({
   reducer: {
-    products: productsSlice,
+    [productsApi.reducerPath]: productsApi.reducer,
+    [purchasesApi.reducerPath]: purchasesApi.reducer,
     app: appSlice,
-    purchases: purchasesSlice,
     cart: cartSlice,
+    filters: filtersSlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(
+      productsApi.middleware,
+      purchasesApi.middleware
+    ),
 });
+
+setupListeners(store.dispatch);
 
 export default store;
 
@@ -27,6 +32,6 @@ export type RootState = ReturnType<AppStore["getState"]>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = AppStore["dispatch"];
 
-export const useAppDispatch: () => AppDispatch = useDispatch;
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const useAppStore: () => AppStore = useStore;
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const useAppSelector = useSelector.withTypes<RootState>();
+export const useAppStore = useStore.withTypes<AppStore>();

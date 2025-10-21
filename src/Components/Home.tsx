@@ -1,25 +1,25 @@
+import { ALL_PRODUCTS } from "@/constants/products.constants";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { useEffect, useState } from "react";
 import { getCartThunk } from "../store/slices/cart.slice";
-import {
-  getProductsThunk,
-  setProducts,
-  type Product,
-} from "../store/slices/products.slice";
+import { useGetProductsQuery } from "../store/slices/products.slice";
 import AnimatedPage from "./AnimatedPage";
 import FiltersSideBar from "./FiltersSideBar";
 import ProductsItem from "./ProductsItem";
-import { axiosInstance } from "./utils/axios";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
   document.body.style.paddingBottom = "400px";
 
   const dispatch = useAppDispatch();
+  const category = useAppSelector((state) => state.filters.category);
+  const price = useAppSelector((state) => state.filters.price);
 
+  const { data } = useGetProductsQuery();
+
+  const allProducts = data?.data.products;
   useEffect(() => {
     const storageUser = localStorage.getItem("user");
 
@@ -28,40 +28,32 @@ const Home = () => {
     const user = JSON.parse(storageUser) as { token: string };
     if (!user) return;
 
+    // TODO use rtk query
     dispatch(getCartThunk(user.token));
   }, []);
-
-  const products = useAppSelector((state) => state.products);
-
-  const searchProduct = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (searchValue !== "") {
-      const filteredProducts = allProducts.filter((product) => {
-        return product.title.toLowerCase().includes(searchValue.toLowerCase());
-      });
-      dispatch(setProducts(filteredProducts));
-    } else {
-      dispatch(getProductsThunk());
-    }
-  };
-
-  useEffect(() => {
-    if (searchValue === "") {
-      dispatch(getProductsThunk());
-      axiosInstance
-        .get("/products")
-        .then((res) => setAllProducts(res.data.data.products));
-    } else {
-      const filteredProducts = allProducts.filter((product) => {
-        return product.title.toLowerCase().includes(searchValue.toLowerCase());
-      });
-      dispatch(setProducts(filteredProducts));
-    }
-  }, [searchValue]);
 
   const toogleFilters = () => {
     setIsFiltersVisible(!isFiltersVisible);
   };
+
+  function getFilteredProducts() {
+    return allProducts?.filter((product) => {
+      const hasCategory =
+        category !== ALL_PRODUCTS ? product.categoryId === category : true;
+
+      const hasSearch = searchValue
+        ? product.title.toLowerCase().includes(searchValue.toLowerCase())
+        : true;
+
+      const isInsidePrice =
+        Number(product.price) >= price.from &&
+        Number(product.price) <= price.to;
+
+      return hasCategory && hasSearch && isInsidePrice;
+    });
+  }
+
+  const filteredProducts = getFilteredProducts();
 
   return (
     <AnimatedPage>
@@ -72,7 +64,9 @@ const Home = () => {
       <section className="relative top-28 w-10/12 mx-auto sm:w-11/12 lg:grid lg:grid-cols-home lg:w-full">
         <div style={{ gridColumn: "2/3" }}>
           <form
-            onSubmit={searchProduct}
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
             className="flex align-center justify-center mx-auto"
           >
             <input
@@ -96,7 +90,7 @@ const Home = () => {
           </div>
           <div className="w-full mx-auto relative top-16 md:max-w-2xl lg:top-6 xl:max-w-none xl:w-11/12">
             <ul className="grid gap-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3 xl:gap-10 ">
-              {products.map((product) => (
+              {filteredProducts?.map((product) => (
                 <ProductsItem product={product} key={product.id} />
               ))}
             </ul>

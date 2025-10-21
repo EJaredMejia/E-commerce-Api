@@ -1,26 +1,16 @@
-import { useAppDispatch, useAppSelector } from "@/store";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getPurchasesThunk } from "../store/slices/purchases.slice";
+import { useNavigate } from "react-router";
+import { useGetPurchasesQuery } from "../store/slices/purchases.slice";
 import AnimatedPage from "./AnimatedPage";
 import PurchasesItem from "./PurchasesItem";
-import { getLocalStorageUser } from "./utils/storage";
 
 const Purchases = () => {
   const navigate = useNavigate();
 
-  const purchases = useAppSelector((state) => state.purchases);
+  const { data } = useGetPurchasesQuery();
 
-  const dispatch = useAppDispatch();
+  const purchases = data?.data.orders ?? [];
 
   document.body.style.paddingBottom = "400px";
-
-  useEffect(() => {
-    const userLocal = getLocalStorageUser();
-    if (userLocal) {
-      dispatch(getPurchasesThunk(userLocal.token));
-    }
-  }, []);
 
   const sortArray = [...purchases];
 

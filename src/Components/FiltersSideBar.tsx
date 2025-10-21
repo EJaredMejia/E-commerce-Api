@@ -1,12 +1,12 @@
-import { useAppDispatch } from "@/store";
-import { useEffect, useState } from "react";
-import { setIsLoading } from "../store/slices/isLoading.slice";
+import { useAppDispatch, useAppSelector } from "@/store";
 import {
-  getProductsThunk,
-  setProducts,
-  type Product,
-} from "../store/slices/products.slice";
+  setCategory,
+  setPrice,
+  type FiltersState,
+} from "@/store/slices/filters.slice";
+import { useEffect, useState } from "react";
 import { axiosInstance } from "./utils/axios";
+import { ALL_PRODUCTS } from "@/constants/products.constants";
 
 interface Category {
   id: number;
@@ -18,7 +18,6 @@ interface FiltersSideBarProps {
   toogleFilters: () => void;
 }
 
-const ALL_PRODUCTS = "all products";
 const FiltersSideBar = ({
   isFiltersVisible,
   toogleFilters,
@@ -27,67 +26,21 @@ const FiltersSideBar = ({
   const [isPriceActive, setIsPriceActive] = useState(false);
   const [isCategoryActive, setIsCategoryActive] = useState(false);
 
-  const [priceTo, setPriceTo] = useState<number>(Number.POSITIVE_INFINITY);
-  const [priceFrom, setPriceFrom] = useState<number>(Number.NEGATIVE_INFINITY);
+  const price = useAppSelector((state) => state.filters.price);
 
+  function setCategoryInput(category: FiltersState["category"]) {
+    dispatch(setCategory(category));
+  }
+
+  const category = useAppSelector((state) => state.filters.category);
   const dispatch = useAppDispatch();
 
-  const [categoriesInput, setCategoriesInput] = useState<
-    typeof ALL_PRODUCTS | number
-  >(ALL_PRODUCTS);
-
   useEffect(() => {
-    if (categoriesInput !== -1) {
-      setPriceTo(Number.POSITIVE_INFINITY);
-      setPriceFrom(Number.NEGATIVE_INFINITY);
-    }
-    if (categoriesInput === ALL_PRODUCTS) {
-      dispatch(getProductsThunk());
-    } else {
-      dispatch(setIsLoading(true));
-      axiosInstance
-        .get("/products")
-        .then((res) => {
-          const filteredProducts = res.data.data.products.filter(
-            (product: Product) => {
-              return product.categoryId == categoriesInput;
-            }
-          );
-          dispatch(setProducts(filteredProducts));
-        })
-        .finally(() => dispatch(setIsLoading(false)));
-    }
-  }, [categoriesInput]);
-
-  useEffect(() => {
+    // TODO migrate to rtk query
     axiosInstance
       .get("/products/categories")
       .then((res) => setCategories(res.data.categories));
   }, []);
-
-  const filterByPrice = () => {
-    dispatch(setIsLoading(true));
-    axiosInstance
-      .get("/products")
-      .then((res) => {
-        const productsFiltered = res.data.data.products.filter(
-          (product: Product) => {
-            return (
-              Number(product.price) >= priceFrom &&
-              Number(product.price) <= priceTo
-            );
-          }
-        );
-        if (productsFiltered.length > 0) {
-          dispatch(setProducts(productsFiltered));
-          // TODO why is this needed?
-          // setCategoriesInput("");
-        } else {
-          alert("no products found");
-        }
-      })
-      .finally(() => dispatch(setIsLoading(false)));
-  };
 
   return (
     <div
@@ -113,8 +66,7 @@ const FiltersSideBar = ({
             }`}
           ></i>
         </div>
-        <form
-          onSubmit={filterByPrice}
+        <div
           className={`flex flex-col gap-4 mt-5 ml-3 ${
             isPriceActive ? "show" : "hide"
           }`}
@@ -127,8 +79,23 @@ const FiltersSideBar = ({
               min="0"
               className="ml-3 w-44 p-2 border rounded-sm border-gray-300 text-sm"
               id="fromPrice"
-              value={priceFrom || ""}
-              onChange={(e) => setPriceFrom(Number(e.target.value))}
+              value={
+                !price.from || price.from === Number.NEGATIVE_INFINITY
+                  ? ""
+                  : price.from
+              }
+              onChange={(e) => {
+                const value = e.target.value;
+
+                const isEmpty = value === "";
+
+                if (isEmpty) {
+                  dispatch(setPrice({ from: Number.NEGATIVE_INFINITY }));
+                  return;
+                }
+
+                dispatch(setPrice({ from: Number(e.target.value) }));
+              }}
               type="number"
             />
           </div>
@@ -137,18 +104,30 @@ const FiltersSideBar = ({
               To
             </label>
             <input
-              value={priceTo || ""}
-              onChange={(e) => setPriceTo(Number(e.target.value))}
+              value={
+                !price.to || price.to === Number.POSITIVE_INFINITY
+                  ? ""
+                  : price.to
+              }
+              onChange={(e) => {
+                const value = e.target.value;
+
+                const isEmpty = value === "";
+
+                if (isEmpty) {
+                  dispatch(setPrice({ to: Number.POSITIVE_INFINITY }));
+                  return;
+                }
+
+                dispatch(setPrice({ to: Number(value) }));
+              }}
               min="1"
               className="ml-8 w-44 p-2 border rounded-sm border-gray-300 text-sm"
               id="toPrice"
               type="number"
             />
           </div>
-          <button className="text-white bg-red-500 rounded-md w-fit px-3 py-2 text-sm self-end">
-            Filter price
-          </button>
-        </form>
+        </div>
         <form className="mt-10">
           <div
             onClick={() => setIsCategoryActive(!isCategoryActive)}
@@ -165,14 +144,14 @@ const FiltersSideBar = ({
             <div className="mb-3 ">
               <input
                 onClick={toogleFilters}
-                checked={categoriesInput === ALL_PRODUCTS ? true : false}
+                checked={category === ALL_PRODUCTS ? true : false}
                 className="mr-3 cursor-pointer"
                 type="radio"
                 name="select_category"
                 value={ALL_PRODUCTS}
                 id="allProducts"
                 onChange={(e) =>
-                  setCategoriesInput(e.target.value as typeof ALL_PRODUCTS)
+                  setCategoryInput(e.target.value as typeof ALL_PRODUCTS)
                 }
               />
               <label className="cursor-pointer" htmlFor="allProducts">
@@ -187,7 +166,7 @@ const FiltersSideBar = ({
                   type="radio"
                   name="select_category"
                   value={category.id}
-                  onChange={(e) => setCategoriesInput(Number(e.target.value))}
+                  onChange={(e) => setCategoryInput(Number(e.target.value))}
                   id={category.name}
                 />
                 <label className="cursor-pointer" htmlFor={category.name}>

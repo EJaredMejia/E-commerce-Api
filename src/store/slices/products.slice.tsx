@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../Components/utils/axios";
-import { setIsLoading } from "./isLoading.slice";
+import { getFetchBaseQuery } from "@/Components/utils/query.utils";
+import { setGlobalLoaderOnQueryStart } from "@/Components/utils/global-loader.utils";
+import type { DataResponse } from "@/types/data-response.types";
+import { createApi } from "@reduxjs/toolkit/query/react";
 
 export interface Product {
   id: number;
@@ -13,29 +14,18 @@ export interface Product {
     imgUrl: string;
   }[];
 }
-export const productsSlice = createSlice({
-  name: "products",
-  initialState: [] as Product[],
-  reducers: {
-    setProducts: (_, action: { payload: Product[] }) => {
-      if (action.payload.length > 0) {
-        return action.payload;
-      }
-    },
-  },
+
+export const productsApi = createApi({
+  reducerPath: "productsApi",
+  baseQuery: getFetchBaseQuery(),
+  tagTypes: ["Products"],
+  endpoints: (builder) => ({
+    getProducts: builder.query<DataResponse<{ products: Product[] }>, void>({
+      query: () => "/products",
+      onQueryStarted: setGlobalLoaderOnQueryStart,
+      providesTags: ["Products"],
+    }),
+  }),
 });
 
-export const getProductsThunk = createAsyncThunk(
-  "products/getProducts",
-  async (_, { dispatch }) => {
-    dispatch(setIsLoading(true));
-    return axiosInstance
-      .get("/products")
-      .then((res) => dispatch(setProducts(res.data.data.products)))
-      .finally(() => dispatch(setIsLoading(false)));
-  }
-);
-
-export const { setProducts } = productsSlice.actions;
-
-export default productsSlice.reducer;
+export const { useGetProductsQuery } = productsApi;

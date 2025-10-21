@@ -1,7 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../Components/utils/axios";
-import getConfig from "../../Components/utils/getConfig";
-import { setIsLoading } from "./isLoading.slice";
+import { setGlobalLoaderOnQueryStart } from "@/Components/utils/global-loader.utils";
+import type { DataResponse } from "@/types/data-response.types";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import {
+  getFetchBaseQuery,
+  getTokenHeaders,
+} from "../../Components/utils/query.utils";
 import type { Product } from "./products.slice";
 
 export interface Purchase {
@@ -16,27 +19,21 @@ export interface Purchase {
     }[];
   };
 }
-export const purchasesSlice = createSlice({
-  name: "purchases",
-  initialState: [] as Purchase[],
-  reducers: {
-    setPurchases: (_, action: { payload: Purchase[] }) => {
-      return action.payload;
-    },
-  },
+
+export const purchasesApi = createApi({
+  reducerPath: "purchasesApi",
+  baseQuery: getFetchBaseQuery(),
+  tagTypes: ["Purchases"],
+  endpoints: (builder) => ({
+    getPurchases: builder.query<DataResponse<{ orders: Purchase[] }>, void>({
+      query: () => ({
+        url: "/users/orders",
+        ...getTokenHeaders(),
+      }),
+      onQueryStarted: setGlobalLoaderOnQueryStart,
+      providesTags: ["Purchases"],
+    }),
+  }),
 });
 
-export const getPurchasesThunk = createAsyncThunk(
-  "purchases/getPurchases",
-  async (token: string, { dispatch }) => {
-    dispatch(setIsLoading(true));
-    return axiosInstance
-      .get("/users/orders", getConfig(token))
-      .then((res) => dispatch(setPurchases(res.data.data.orders)))
-      .finally(() => dispatch(setIsLoading(false)));
-  }
-);
-
-export const { setPurchases } = purchasesSlice.actions;
-
-export default purchasesSlice.reducer;
+export const { useGetPurchasesQuery } = purchasesApi;

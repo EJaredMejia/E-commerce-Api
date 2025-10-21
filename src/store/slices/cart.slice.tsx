@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../Components/utils/axios";
-import getConfig from "../../Components/utils/getConfig";
+import getConfig from "../../Components/utils/query.utils";
 import { setIsLoading } from "./isLoading.slice";
 
 export interface Cart {
