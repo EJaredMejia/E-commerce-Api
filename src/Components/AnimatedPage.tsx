@@ -11,8 +11,8 @@ const AnimatedPage = ({ children }: { children: ReactNode }) => {
   return (
     <motion.div
       variants={animations}
-      initial="initial"
-      animate="animate"
+      initial={false}
+      animate
       exit="exit"
       transition={{ duration: 0.6 }}
     >

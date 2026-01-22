@@ -5,7 +5,7 @@ import {
   useUpdateCartMutation,
 } from "@/store/slices/cart.slice";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { setIsMessage } from "../store/slices/isLoading.slice";
 import { useGetProductsQuery } from "../store/slices/products.slice";
 import AnimatedPage from "./AnimatedPage";
@@ -17,7 +17,7 @@ const ProductDetail = () => {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { id } = useParams();
+  const { id } = useParams({ strict: false });
 
   document.body.style.paddingBottom = "400px";
 
@@ -59,7 +59,7 @@ const ProductDetail = () => {
       dispatch(
         setIsMessage("You need to be login to add products to the cart")
       );
-      navigate("/login");
+      navigate({ to: "/login" });
       return;
     }
     let isProductAllreadyInCart = false;
@@ -92,7 +92,7 @@ const ProductDetail = () => {
       <section className="relative top-20 text-gray-600 mx-auto w-11/12 max-w-[540px] md:max-w-[900px] md:gap-8 md:grid md:grid-cols-2 md:top-28 lg:max-w-[1300px]">
         <section>
           <div className="flex items-center gap-3 text-sm">
-            <h4 className="cursor-pointer" onClick={() => navigate("/")}>
+            <h4 className="cursor-pointer" onClick={() => navigate({ to: "/" })}>
               Home
             </h4>
             <i className="fa-solid fa-circle text-red-500 text-xs"></i>

@@ -10,8 +10,6 @@ const Home = () => {
   const [searchValue, setSearchValue] = useState("");
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
-  document.body.style.paddingBottom = "400px";
-
   const category = useAppSelector((state) => state.filters.category);
   const price = useAppSelector((state) => state.filters.price);
 
@@ -48,7 +46,7 @@ const Home = () => {
         isFiltersVisible={isFiltersVisible}
         toogleFilters={toogleFilters}
       />
-      <section className="relative top-28 w-10/12 mx-auto sm:w-11/12 lg:grid lg:grid-cols-home lg:w-full">
+      <section className="relative top-28 w-10/12 mx-auto sm:w-11/12 lg:grid lg:grid-cols-home lg:w-full pb-14">
         <div style={{ gridColumn: "2/3" }}>
           <form
             onSubmit={(e) => {

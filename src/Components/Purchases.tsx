@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useGetPurchasesQuery } from "../store/slices/purchases.slice";
 import AnimatedPage from "./AnimatedPage";
 import PurchasesItem from "./PurchasesItem";
@@ -33,7 +33,7 @@ const Purchases = () => {
         <div className="flex items-center gap-3 text-sm text-gray-700">
           <h4
             className="cursor-pointer text-gray-600"
-            onClick={() => navigate("/")}
+            onClick={() => navigate({ to: "/" })}
           >
             Home
           </h4>

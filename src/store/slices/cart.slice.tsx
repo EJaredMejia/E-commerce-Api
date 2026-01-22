@@ -31,7 +31,7 @@ async function onQueryStartCart<T>(
   api: {
     dispatch: ThunkDispatch<any, any, UnknownAction>;
     queryFulfilled: Promise<any>;
-  }
+  },
 ) {
   try {
     api.dispatch(setIsLoading(true));
@@ -42,7 +42,7 @@ async function onQueryStartCart<T>(
         cartApi.endpoints.getCart.initiate(undefined, {
           forceRefetch: true,
           subscribe: false,
-        })
+        }),
       )
       .unwrap();
 

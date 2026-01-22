@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import { useLoginMutation } from "@/store/slices/auth.slice";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import AnimatedPage from "./AnimatedPage";
 
@@ -54,7 +54,7 @@ const Login = () => {
       setEmailUser("");
       setPasswordUser("");
       setRenderAgain(renderAgain + 1);
-      navigate("/");
+      navigate({ to: "/" });
       dispatch(setIsLoading(false));
       return;
     } finally {
@@ -114,7 +114,7 @@ const Login = () => {
             <p className="mt-5 text-xs tracking-wide">
               Don't have an account?{" "}
               <span
-                onClick={() => navigate("/signup")}
+                onClick={() => navigate({ to: "/signup" })}
                 className="text-blue-400 cursor-pointer"
               >
                 Sign up

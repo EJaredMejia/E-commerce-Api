@@ -29,7 +29,7 @@ export const authApi = createApi({
 
         const { data } = await queryFulfilled;
 
-        localStorage.setItem("user", JSON.stringify(data.data));
+        localStorage?.setItem("user", JSON.stringify(data.data));
       },
     }),
     createUser: builder.mutation<void, CreateUserPayload>({

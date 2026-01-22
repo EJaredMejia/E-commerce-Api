@@ -1,7 +1,7 @@
 import { useGetCart } from "@/hooks/cart.hooks";
 import { useAppDispatch } from "@/store";
 import type { Product } from "@/store/slices/products.slice";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
   useAddCartProductMutation,
   useUpdateCartMutation,
@@ -22,7 +22,7 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
 
   function unAuthorized() {
     dispatch(setIsMessage("You need to be login to add products to the cart"));
-    navigate("/login");
+    navigate({ to: "/login" });
   }
   const addProductToCart = () => {
     const storageUser = localStorage.getItem("user");
@@ -74,7 +74,7 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
   };
 
   const navigateToProductDetail = () => {
-    navigate(`/product/${product.id}`);
+    navigate({ to: `/product/${product.id}` });
   };
   return (
     <li className="border pt-5 border-gray-300 rounded-xl">

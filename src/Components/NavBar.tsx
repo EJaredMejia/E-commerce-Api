@@ -1,22 +1,32 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { setIsMessage } from "../store/slices/isLoading.slice";
 import CartSideBar from "./CartSideBar";
 import { useAppDispatch } from "@/store";
 
 const NavBar = () => {
   const [isCartVisible, setIsCartVisible] = useState(false);
+  const [userLocal, setUserLocal] = useState<any>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const userLocal = JSON.parse(String(localStorage.getItem("user")));
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        setUserLocal(JSON.parse(userStr));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
 
   const toogleCart = () => {
     if (userLocal) {
       setIsCartVisible(!isCartVisible);
     } else {
       dispatch(setIsMessage("you need to log in to see your cart shop"));
-      navigate("/login");
+      navigate({ to: "/login" });
     }
   };
 

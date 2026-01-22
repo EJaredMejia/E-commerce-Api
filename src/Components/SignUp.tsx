@@ -4,7 +4,7 @@ import {
 } from "@/store/slices/auth.slice";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { setIsLoading } from "../store/slices/isLoading.slice";
 import AnimatedPage from "./AnimatedPage";
 
@@ -42,7 +42,7 @@ const SignUp = () => {
         return;
       }
 
-      navigate("/login");
+      navigate({ to: "/login" });
     } finally {
       dispatch(setIsLoading(false));
     }
@@ -104,7 +104,7 @@ const SignUp = () => {
           <p className="mt-5 text-xs tracking-wide">
             Already have an account?{" "}
             <span
-              onClick={() => navigate("/login")}
+              onClick={() => navigate({ to: "/login" })}
               className="text-blue-400 cursor-pointer"
             >
               Login in

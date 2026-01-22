@@ -1,6 +1,6 @@
 import { useGetCart } from "@/hooks/cart.hooks";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
   useDeleteCartMutation,
   useUpdateCartMutation,
@@ -77,7 +77,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
       <ul className="mr-1 change-height">
         {shoppingCart.map((cart) => (
           <li
-            onClick={() => navigate(`/product/${cart.product.id}`)}
+            onClick={() => navigate({ to: `/product/${cart.product.id}` })}
             key={cart.id}
             className="cursor-pointer hover:bg-slate-100 active:bg-slate-200 border-b-2 border-gray-300 py-1 px-5 "
           >
