@@ -1,7 +1,7 @@
 import api from "@/services/api";
 import { queryOptions } from "@tanstack/react-query";
 import type { ProductsResponse } from "../types/products.types";
-import type { Product } from "@/hooks/use-products";
+import type { Product } from "../types/products.types";
 
 export function getProductsQueryOptions() {
   return queryOptions({
