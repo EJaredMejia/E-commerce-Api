@@ -1,21 +1,20 @@
 import { ALL_PRODUCTS } from "@/constants/products.constants";
-import { useAppSelector } from "@/store";
+import { Search, Filter } from "lucide-react";
+import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
+import { useFiltersStore } from "@/store/filters.store";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useGetProductsQuery } from "../store/slices/products.slice";
-import AnimatedPage from "./AnimatedPage";
-import FiltersSideBar from "./FiltersSideBar";
-import ProductsItem from "./ProductsItem";
+import FiltersSideBar from "./filters-side-bar";
+import ProductsItem from "../features/products/components/products-item";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
-  const category = useAppSelector((state) => state.filters.category);
-  const price = useAppSelector((state) => state.filters.price);
+  const category = useFiltersStore((state) => state.category);
+  const price = useFiltersStore((state) => state.price);
 
-  const { data } = useGetProductsQuery();
-
-  const allProducts = data?.data.products;
+  const { data: allProducts } = useQuery(getProductsQueryOptions());
 
   const toogleFilters = () => {
     setIsFiltersVisible(!isFiltersVisible);
@@ -41,40 +40,49 @@ const Home = () => {
   const filteredProducts = getFilteredProducts();
 
   return (
-    <AnimatedPage>
+    <>
       <FiltersSideBar
         isFiltersVisible={isFiltersVisible}
         toogleFilters={toogleFilters}
       />
-      <section className="relative top-28 w-10/12 mx-auto sm:w-11/12 lg:grid lg:grid-cols-home lg:w-full pb-14">
+      <section className="lg:grid-cols-home relative top-28 mx-auto w-10/12 pb-14 sm:w-11/12 lg:grid lg:w-full">
         <div style={{ gridColumn: "2/3" }}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
             }}
-            className="flex align-center justify-center mx-auto"
+            className="align-center mx-auto flex justify-center"
           >
-            <input
-              placeholder="What are you looking for?"
-              type="text"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              className="p-3 max-w-[500px] text-sm rounded-xs w-10/12 border border-gray-300 md:max-w-160 lg:w-full xl:max-w-188"
-            />
-            <button className="rounded-xs bg-red-500 w-11 inline-block xl:flex xl:justify-center xl:items-center xl:px-12">
-              <i className="text-white fa-solid fa-magnifying-glass "></i>
-            </button>
-          </form>
-          <div className="flex justify-end items-center relative top-4 max-w-[500px] mx-auto md:max-w-160 lg:invisible">
-            <div onClick={toogleFilters} className="flex gap-2 items-center">
-              <i className="fa-solid text-xl fa-filter text-red-500"></i>
-              <p className="text-red-500 font-semibold text-sm tracking-widest">
-                Filters
-              </p>
+            <div className="flex max-w-[500px] grow flex-col md:max-w-160 xl:max-w-188">
+              <div className="flex justify-center">
+                <input
+                  placeholder="What are you looking for?"
+                  type="text"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="grow rounded-xs border border-gray-300 p-3 text-sm placeholder:text-gray-500 lg:w-full"
+                />
+                <button className="grid w-11 place-items-center rounded-xs bg-red-500 xl:w-24 xl:items-center xl:justify-center">
+                  <Search className="size-5 text-white" />
+                </button>
+              </div>
+              <div className="mt-4 flex items-center justify-end self-end lg:hidden">
+                <button
+                  type="button"
+                  onClick={toogleFilters}
+                  className="flex items-center gap-2"
+                >
+                  <Filter className="size-5 fill-red-500 text-red-500" />
+                  <p className="text-sm font-semibold tracking-widest text-red-500">
+                    Filters
+                  </p>
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="w-full mx-auto relative top-16 md:max-w-2xl lg:top-6 xl:max-w-none xl:w-11/12">
-            <ul className="grid gap-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3 xl:gap-10 ">
+          </form>
+
+          <div className="relative top-8 mx-auto w-full md:max-w-2xl lg:top-6 xl:top-12 xl:w-11/12 xl:max-w-none">
+            <ul className="grid gap-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3 xl:gap-10">
               {filteredProducts?.map((product) => (
                 <ProductsItem product={product} key={product.id} />
               ))}
@@ -82,7 +90,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </AnimatedPage>
+    </>
   );
 };
 

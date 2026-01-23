@@ -1,67 +1,71 @@
-import { Outlet, createRootRoute } from "@tanstack/react-router";
-import { HeadContent, Scripts } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import NavBar from "../Components/NavBar";
-import Footer from "../Components/Footer";
-import LoadingScreen from "../Components/LoadingScreen";
-import { useAppSelector } from "../store";
-import { Provider } from "react-redux";
-import store from "../store";
-import appCss from "@/index.css?url";
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
+import { type ReactNode } from "react";
+import Footer from "../components/footer";
+import LoadingScreen from "../components/loading-screen";
+import NavBar from "../components/nav-bar";
 
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "E-commerce App",
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      {
-        rel: "icon",
-        href: "https://api.iconify.design/lucide/shopping-cart.svg",
-      },
-    ],
-    scripts: [
-      {
-        crossOrigin: "anonymous",
-        src: "https://kit.fontawesome.com/3baa0ab914.js",
-      },
-    ],
-  }),
-  component: RootComponent,
-});
+import indexCss from "@/index.css?url";
+import appCss from "@/App.css?url";
+import { useAppStore } from "@/store/app.store";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        {
+          charSet: "utf-8",
+        },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        {
+          title: "E-commerce App",
+        },
+      ],
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+        { rel: "stylesheet", href: indexCss },
+        {
+          rel: "icon",
+          href: "https://api.iconify.design/lucide/shopping-cart.svg",
+        },
+      ],
+      scripts: [],
+    }),
+    component: RootComponent,
+  },
+);
 
 function RootComponent() {
   return (
     <RootDocument>
-      <Provider store={store}>
-        <AppContent />
-      </Provider>
+      <AppContent />
     </RootDocument>
   );
 }
 
 function AppContent() {
-  const isLoading = useAppSelector((state) => state.app.isLoading);
+  const { queryClient } = Route.useRouteContext();
+
+  const isLoading = useAppStore((state) => state.isLoading);
+
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       {isLoading && <LoadingScreen />}
       <NavBar />
       <Outlet />
-      {/* <Footer /> */}
-    </>
+      <Footer />
+    </QueryClientProvider>
   );
 }
 
