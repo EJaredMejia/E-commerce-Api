@@ -1,9 +1,9 @@
 import { ALL_PRODUCTS } from "@/constants/products.constants";
 import { ChevronDown, X } from "lucide-react";
-import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
 import { useFiltersStore } from "@/store/filters.store";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { CategoriesList } from "@/features/categories/components/categories-list";
+import { CategoriesSkeleton } from "@/features/categories/components/categories-skeleton";
 
 interface FiltersSideBarProps {
   isFiltersVisible: boolean;
@@ -23,11 +23,8 @@ const FiltersSideBar = ({
     setCategory(category);
   }
 
-  const category = useFiltersStore((state) => state.category);
   const price = useFiltersStore((state) => state.price);
   const setPrice = useFiltersStore((state) => state.setPrice);
-
-  const { data: categories } = useQuery(getCategoriesQueryOptions());
 
   return (
     <div
@@ -128,39 +125,12 @@ const FiltersSideBar = ({
             />
           </div>
           <div className={`mt-5 ml-3 ${isCategoryActive ? "show" : "hide"}`}>
-            <div className="mb-3">
-              <input
-                onClick={toogleFilters}
-                checked={category === ALL_PRODUCTS ? true : false}
-                className="mr-3 cursor-pointer"
-                type="radio"
-                name="select_category"
-                value={ALL_PRODUCTS}
-                id="allProducts"
-                onChange={(e) =>
-                  setCategoryInput(e.target.value as typeof ALL_PRODUCTS)
-                }
+            <Suspense fallback={<CategoriesSkeleton />}>
+              <CategoriesList
+                toogleFilters={toogleFilters}
+                setCategoryInput={setCategoryInput}
               />
-              <label className="cursor-pointer" htmlFor="allProducts">
-                All products
-              </label>
-            </div>
-            {categories?.map((category) => (
-              <div className="mb-3" key={category.id}>
-                <input
-                  onClick={toogleFilters}
-                  className="mr-3 cursor-pointer"
-                  type="radio"
-                  name="select_category"
-                  value={category.id}
-                  onChange={(e) => setCategoryInput(Number(e.target.value))}
-                  id={category.name}
-                />
-                <label className="cursor-pointer" htmlFor={category.name}>
-                  {category.name}
-                </label>
-              </div>
-            ))}
+            </Suspense>
           </div>
         </form>
       </div>

@@ -1,43 +1,17 @@
-import { ALL_PRODUCTS } from "@/constants/products.constants";
 import { Search, Filter } from "lucide-react";
-import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
-import { useFiltersStore } from "@/store/filters.store";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+
+import { useState, Suspense } from "react";
 import FiltersSideBar from "./filters-side-bar";
-import ProductsItem from "../features/products/components/products-item";
+import { ProductsGrid } from "@/features/products/components/products-grid";
+import { ProductsSkeleton } from "@/features/products/components/products-skeleton";
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
-  const category = useFiltersStore((state) => state.category);
-  const price = useFiltersStore((state) => state.price);
-
-  const { data: allProducts } = useQuery(getProductsQueryOptions());
-
   const toogleFilters = () => {
     setIsFiltersVisible(!isFiltersVisible);
   };
-
-  function getFilteredProducts() {
-    return allProducts?.filter((product) => {
-      const hasCategory =
-        category !== ALL_PRODUCTS ? product.categoryId === category : true;
-
-      const hasSearch = searchValue
-        ? product.title.toLowerCase().includes(searchValue.toLowerCase())
-        : true;
-
-      const isInsidePrice =
-        Number(product.price) >= price.from &&
-        Number(product.price) <= price.to;
-
-      return hasCategory && hasSearch && isInsidePrice;
-    });
-  }
-
-  const filteredProducts = getFilteredProducts();
 
   return (
     <>
@@ -82,11 +56,9 @@ const Home = () => {
           </form>
 
           <div className="relative top-8 mx-auto w-full md:max-w-2xl lg:top-6 xl:top-12 xl:w-11/12 xl:max-w-none">
-            <ul className="grid gap-10 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3 xl:gap-10">
-              {filteredProducts?.map((product) => (
-                <ProductsItem product={product} key={product.id} />
-              ))}
-            </ul>
+            <Suspense fallback={<ProductsSkeleton />}>
+              <ProductsGrid searchValue={searchValue} />
+            </Suspense>
           </div>
         </div>
       </section>
