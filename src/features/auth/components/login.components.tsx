@@ -1,24 +1,21 @@
 import { useLoginMutation } from "@/features/auth/hooks/auth.hooks";
+import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
+import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
 import { useAppStore } from "@/store/app.store";
+import { useUserStore } from "@/store/user.store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import { Lock, Mail, User as UserIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-interface User {
-  user: {
-    firstName: string;
-    lastName: string;
-  };
-}
 const Login = () => {
   const setIsMessage = useAppStore((state) => state.setIsMessage);
+  const { user: userState, logout: logOutStore } = useUserStore();
   const navigate = useNavigate();
 
   const [emailUser, setEmailUser] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
-  const [userState, setUserState] = useState<User | null>(null);
   const queryClient = useQueryClient();
   const { mutateAsync: login } = useLoginMutation();
 
@@ -29,18 +26,16 @@ const Login = () => {
 
   const message = useAppStore((state) => state.loginMessage) || searchMessage;
 
-  useEffect(() => {
-    const storageUser = localStorage.getItem("user");
-
-    if (!storageUser) {
-      setUserState(null);
-      return;
-    }
-
-    const user = JSON.parse(storageUser);
-    setUserState(user);
-  }, []);
-
+  function removeQueries() {
+    queryClient.removeQueries({
+      predicate: (query) =>
+        !query.queryKey.some(
+          (key) =>
+            key === getCategoriesQueryOptions().queryKey[0] ||
+            key === getProductsQueryOptions().queryKey[0],
+        ),
+    });
+  }
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const loginObject = {
@@ -49,12 +44,11 @@ const Login = () => {
     };
 
     try {
-      const data = await login(loginObject);
-      setUserState(data.data);
+      await login(loginObject);
       setEmailUser("");
       setPasswordUser("");
       navigate({ to: "/" });
-      queryClient.clear();
+      removeQueries();
     } catch (e) {
       setIsMessage("User doesn't exit");
     }
@@ -62,9 +56,8 @@ const Login = () => {
   };
 
   const logOut = () => {
-    localStorage.setItem("user", JSON.stringify(null));
-    setUserState(null);
-    queryClient.clear();
+    logOutStore();
+    removeQueries();
   };
 
   return (
@@ -106,7 +99,7 @@ const Login = () => {
               id="passwordUser"
               className="border border-gray-300 p-2"
             />
-            <button className="mt-5 w-full bg-red-500 p-2.5 text-center text-white">
+            <button className="mt-5 w-full cursor-pointer bg-red-500 p-2.5 text-center text-white">
               Login
             </button>
           </form>

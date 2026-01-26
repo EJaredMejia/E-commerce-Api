@@ -2,11 +2,15 @@ import { queryOptions } from "@tanstack/react-query";
 import type { CartResponse } from "../types/cart.types";
 import { AxiosError } from "axios";
 import api from "@/services/api";
+import { getLocalStorageUser } from "@/utils/storage";
 
 export function getCartQueryOptions() {
   return queryOptions({
     queryKey: ["cart"],
     queryFn: async () => {
+      if (!getLocalStorageUser()) {
+        return [];
+      }
       try {
         const res = await api.get<CartResponse>("/cart");
         return res.data.data.cart.productInCarts;

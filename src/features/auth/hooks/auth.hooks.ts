@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "@/services/api";
 import { useAppStore } from "@/store/app.store";
+import { useUserStore } from "@/store/user.store";
 
 interface LoginPayload {
   email: string;
@@ -19,13 +20,14 @@ interface CreateUserPayload {
 
 export const useLoginMutation = () => {
   const setIsLoading = useAppStore((state) => state.setIsLoading);
+  const setUser = useUserStore((state) => state.setUser);
 
   return useMutation({
     mutationFn: async (body: LoginPayload) => {
       setIsLoading(true);
       try {
         const res = await api.post("/users/login", body);
-        localStorage.setItem("user", JSON.stringify(res.data.data));
+        setUser(res.data.data);
         return res.data;
       } finally {
         setIsLoading(false);

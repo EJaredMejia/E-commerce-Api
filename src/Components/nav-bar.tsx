@@ -1,21 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ShoppingCart, User, Package } from "lucide-react";
 import { useAppStore } from "@/store/app.store";
+import { useUserStore } from "@/store/user.store";
 import CartSideBar from "../features/categories/components/cart-side-bar.components";
-import { getLocalStorageUser } from "../utils/storage";
 
 const NavBar = () => {
   const [isCartVisible, setIsCartVisible] = useState(false);
-  const [userLocal, setUserLocal] = useState<any>(null);
+  const { user: userLocal } = useUserStore();
   const setIsMessage = useAppStore((state) => state.setIsMessage);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const user = getLocalStorageUser();
-
-    setUserLocal(user);
-  }, []);
 
   const toogleCart = () => {
     if (userLocal) {

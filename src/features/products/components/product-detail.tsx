@@ -14,13 +14,14 @@ import {
 } from "@/features/cart/hooks/cart.hooks";
 import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
 import { useAppStore } from "@/store/app.store";
+import { useUserStore } from "@/store/user.store";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useState } from "react";
-import { getLocalStorageUser } from "../../../utils/storage";
 import ProductsItem from "./products-item";
 
 const ProductDetail = () => {
+  const { user } = useUserStore();
   const { data: shoppingCart } = useSuspenseQuery(getCartQueryOptions());
 
   const navigate = useNavigate();
@@ -56,8 +57,6 @@ const ProductDetail = () => {
   };
 
   const addToCart = () => {
-    const user = getLocalStorageUser();
-
     if (!user) {
       setIsMessage("You need to be login to add products to the cart");
       navigate({ to: "/login" });

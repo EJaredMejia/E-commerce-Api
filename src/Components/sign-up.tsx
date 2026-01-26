@@ -37,7 +37,7 @@ const SignUp = () => {
 
       try {
         await login(autoLoginObject);
-        navigate({ to: "/login" });
+        navigate({ to: "/" });
       } catch (e) {
         return;
       }
