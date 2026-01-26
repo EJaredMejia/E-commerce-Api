@@ -1,5 +1,5 @@
 import { getPurchasesQueryOptions } from "@/features/purchases/queries/purchases.types";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Circle } from "lucide-react";
 import PurchasesItem from "./purchases-item.components";
@@ -7,7 +7,7 @@ import PurchasesItem from "./purchases-item.components";
 const Purchases = () => {
   const navigate = useNavigate();
 
-  const { data: purchases = [] } = useQuery(getPurchasesQueryOptions());
+  const { data: purchases = [] } = useSuspenseQuery(getPurchasesQueryOptions());
 
   const sortArray = [...purchases];
 

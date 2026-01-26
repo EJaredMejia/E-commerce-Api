@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import CheckoutModal from "../../../components/checkout-modal";
@@ -6,8 +6,9 @@ import {
   useDeleteCartMutation,
   useUpdateCartMutation,
 } from "@/features/cart/hooks/cart.hooks";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
+import { CartSkeleton } from "@/features/cart/components/cart-skeleton";
 import type { Cart } from "@/features/cart/types/cart.types";
 
 interface CartSideBarProps {
@@ -21,7 +22,7 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
   const { mutate: updateCart } = useUpdateCartMutation();
   const { mutate: deleteCartMutation } = useDeleteCartMutation();
 
-  const { data: shoppingCart = [] } = useQuery(getCartQueryOptions());
+  const { data: shoppingCart = [] } = useSuspenseQuery(getCartQueryOptions());
 
   const total = shoppingCart.reduce((acc, product) => {
     return acc + product.product.price * product.quantity;
@@ -76,58 +77,60 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
       <h3 className="px-6 py-5 text-lg font-bold text-gray-700">
         Shopping cart
       </h3>
-      <ul className="change-height mr-1">
-        {shoppingCart.map((cart) => (
-          <li
-            onClick={() => navigate({ to: `/product/${cart.product.id}` })}
-            key={cart.id}
-            className="cursor-pointer border-b-2 border-gray-300 px-5 py-1 hover:bg-slate-100 active:bg-slate-200"
-          >
-            <div>
-              <p className="mb-2">{cart.product.title}</p>
-              <p className="mb-2">$ {cart.product.price * cart.quantity}</p>
-            </div>
-            <div className="mb-2 flex items-center gap-5">
-              <p>Quantity: </p>
-              <div className="order-4 grid w-24 grid-cols-3 items-center justify-items-center border border-gray-300 text-base">
-                <p
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    minusQuantity(cart);
-                  }}
-                  className="flex h-full w-full cursor-pointer items-center justify-center active:bg-teal-300"
-                >
-                  <Minus size={16} />
-                </p>
-                <p className="w-full border-r border-l border-gray-300 text-center">
-                  {cart.quantity}
-                </p>
-                <p
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    plusQuantity(cart);
-                  }}
-                  className="flex h-full w-full cursor-pointer items-center justify-center active:bg-teal-300"
-                >
-                  <Plus size={16} />
-                </p>
+      <Suspense fallback={<CartSkeleton />}>
+        <ul className="change-height mr-1">
+          {shoppingCart.map((cart) => (
+            <li
+              onClick={() => navigate({ to: `/product/${cart.product.id}` })}
+              key={cart.id}
+              className="cursor-pointer border-b-2 border-gray-300 px-5 py-1 hover:bg-slate-100 active:bg-slate-200"
+            >
+              <div>
+                <p className="mb-2">{cart.product.title}</p>
+                <p className="mb-2">$ {cart.product.price * cart.quantity}</p>
               </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteCart(cart.product.id);
-                }}
-                className="order-5"
-              >
-                <Trash2
-                  className="text-red-500 hover:text-red-700 active:text-red-800"
-                  size={20}
-                />
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+              <div className="mb-2 flex items-center gap-5">
+                <p>Quantity: </p>
+                <div className="order-4 grid w-24 grid-cols-3 items-center justify-items-center border border-gray-300 text-base">
+                  <p
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      minusQuantity(cart);
+                    }}
+                    className="flex h-full w-full cursor-pointer items-center justify-center active:bg-teal-300"
+                  >
+                    <Minus size={16} />
+                  </p>
+                  <p className="w-full border-r border-l border-gray-300 text-center">
+                    {cart.quantity}
+                  </p>
+                  <p
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      plusQuantity(cart);
+                    }}
+                    className="flex h-full w-full cursor-pointer items-center justify-center active:bg-teal-300"
+                  >
+                    <Plus size={16} />
+                  </p>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteCart(cart.product.id);
+                  }}
+                  className="order-5"
+                >
+                  <Trash2
+                    className="text-red-500 hover:text-red-700 active:text-red-800"
+                    size={20}
+                  />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Suspense>
       <div className="absolute bottom-20 flex w-[18rem] flex-col justify-end">
         <div className="border-t-2 border-gray-300 p-6">
           <div className="flex justify-between">

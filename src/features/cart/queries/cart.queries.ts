@@ -7,21 +7,19 @@ export function getCartQueryOptions() {
   return queryOptions({
     queryKey: ["cart"],
     queryFn: async () => {
-      const res = await api.get<CartResponse>("/cart");
-      return res.data.data.cart.productInCarts;
-    },
-    retry(failureCount, error) {
-      if (error instanceof AxiosError) {
-        const status = error.response?.status;
-        if (status === 401 || status === 403) {
-          return false;
+      try {
+        const res = await api.get<CartResponse>("/cart");
+        return res.data.data.cart.productInCarts;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          const status = error.response?.status;
+          if (status === 401 || status === 403 || status === 404) {
+            return [];
+          }
+
+          throw error;
         }
       }
-
-      if (failureCount < 3) {
-        return true;
-      }
-      return false;
     },
   });
 }

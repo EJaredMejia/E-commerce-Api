@@ -11,7 +11,15 @@ export function getRouter() {
     },
     defaultPreload: "intent",
     defaultStaleTime: 5000,
-    defaultViewTransition: true,
+    defaultViewTransition: {
+      types({ hrefChanged }) {
+        if (!hrefChanged) {
+          return false;
+        }
+
+        return ["fade"];
+      },
+    },
   });
 
   return router;

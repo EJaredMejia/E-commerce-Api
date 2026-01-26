@@ -2,12 +2,12 @@ import {
   useAddCartProductMutation,
   useUpdateCartMutation,
 } from "@/features/cart/hooks/cart.hooks";
-import { ShoppingCart } from "lucide-react";
-import { useAppStore } from "@/store/app.store";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
 import type { Product } from "@/features/products/types/products.types";
+import { useAppStore } from "@/store/app.store";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ShoppingCart } from "lucide-react";
 
 interface ProductsItemsProps {
   product: Product;
@@ -17,7 +17,7 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
   const navigate = useNavigate();
   const setIsMessage = useAppStore((state) => state.setIsMessage);
 
-  const { data: shoppingCart } = useQuery(getCartQueryOptions());
+  const { data: shoppingCart } = useSuspenseQuery(getCartQueryOptions());
 
   const { mutate: addProductCart } = useAddCartProductMutation();
   const { mutate: updateCart } = useUpdateCartMutation();

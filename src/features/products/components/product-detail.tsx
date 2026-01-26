@@ -2,32 +2,31 @@ import { getProductsQueryOptions } from "@/features/products/queries/products.qu
 import {
   ArrowLeft,
   ArrowRight,
+  Circle,
   Minus,
   Plus,
   ShoppingCart,
-  Circle,
 } from "lucide-react";
 
-import { useAppStore } from "@/store/app.store";
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
-import { useState } from "react";
-import ProductsItem from "./products-item";
-import { getLocalStorageUser } from "../../../utils/storage";
-import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
 import {
   useAddCartProductMutation,
   useUpdateCartMutation,
 } from "@/features/cart/hooks/cart.hooks";
+import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
+import { useAppStore } from "@/store/app.store";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { useState } from "react";
+import { getLocalStorageUser } from "../../../utils/storage";
+import ProductsItem from "./products-item";
 
 const ProductDetail = () => {
-  const { data: shoppingCart } = useQuery(getCartQueryOptions());
+  const { data: shoppingCart } = useSuspenseQuery(getCartQueryOptions());
 
   const navigate = useNavigate();
   const setIsMessage = useAppStore((state) => state.setIsMessage);
-  const { id } = useParams({ strict: false });
-
-  const { data: allProducts } = useQuery(getProductsQueryOptions());
+  const { id } = useParams({ from: "/product/$id" });
+  const { data: allProducts } = useSuspenseQuery(getProductsQueryOptions());
 
   const { mutate: addProductCart } = useAddCartProductMutation();
   const { mutate: updateCart } = useUpdateCartMutation();
@@ -116,7 +115,9 @@ const ProductDetail = () => {
           {currentImages?.map((img) => (
             <li key={img.imgUrl}>
               <img
-                style={{ viewTransitionName: `product-image-${product?.id}` }}
+                style={{
+                  viewTransitionName: `product-image-${product?.id}`,
+                }}
                 className="h-52 w-52 object-contain contain-layout sm:h-80 sm:w-[20rem]"
                 src={img.imgUrl}
               />
