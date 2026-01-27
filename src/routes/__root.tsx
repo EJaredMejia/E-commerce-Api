@@ -5,9 +5,9 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
-import Footer from "../components/footer";
+import Footer from "../features/layout/components/footer.components";
 import LoadingScreen from "../components/loading-screen";
-import NavBar from "../components/nav-bar";
+import NavBar from "../features/layout/components/nav-bar.components";
 
 import indexCss from "@/index.css?url";
 import appCss from "@/App.css?url";

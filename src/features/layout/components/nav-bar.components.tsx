@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { ShoppingCart, User, Package } from "lucide-react";
 import { useAppStore } from "@/store/app.store";
 import { useUserStore } from "@/store/user.store";
-import CartSideBar from "../features/categories/components/cart-side-bar.components";
+import CartSideBar from "../../categories/components/cart-side-bar.components";
 
 const NavBar = () => {
   const [isCartVisible, setIsCartVisible] = useState(false);

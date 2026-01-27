@@ -1,5 +1,5 @@
-import { Github } from "./github";
-import { Linkedin } from "./linkedin";
+import { Github } from "../../icons/components/github.components";
+import { Linkedin } from "../../icons/components/linkedin.components";
 
 const Footer = () => {
   return (

@@ -2,8 +2,8 @@ import { ALL_PRODUCTS } from "@/constants/products.constants";
 import { ChevronDown, X } from "lucide-react";
 import { useFiltersStore } from "@/store/filters.store";
 import { useState, Suspense } from "react";
-import { CategoriesList } from "@/features/categories/components/categories-list";
-import { CategoriesSkeleton } from "@/features/categories/components/categories-skeleton";
+import { CategoriesList } from "@/features/categories/components/categories-list.components";
+import { CategoriesSkeleton } from "@/features/categories/components/categories-skeleton.components";
 
 interface FiltersSideBarProps {
   isFiltersVisible: boolean;

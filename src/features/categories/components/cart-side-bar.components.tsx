@@ -1,14 +1,14 @@
 import { useState, Suspense } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import CheckoutModal from "../../../components/checkout-modal";
+import CheckoutModal from "../../cart/components/checkout-modal.components";
 import {
   useDeleteCartMutation,
   useUpdateCartMutation,
 } from "@/features/cart/hooks/cart.hooks";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
-import { CartSkeleton } from "@/features/cart/components/cart-skeleton";
+import { CartSkeleton } from "@/features/cart/components/cart-skeleton.components";
 import type { Cart } from "@/features/cart/types/cart.types";
 
 interface CartSideBarProps {
