@@ -3,7 +3,7 @@ import { Linkedin } from "../../icons/components/linkedin.components";
 
 const Footer = () => {
   return (
-    <footer className="adjust-footer relative z-40 flex flex-col items-center justify-center gap-8 bg-linear-to-t from-gray-600 to-gray-700 p-10 text-white">
+    <footer className="h-fit relative self-end z-40 flex flex-col items-center justify-center gap-8 bg-linear-to-t from-gray-600 to-gray-700 p-10 text-white">
       <p>Made by Jared Mejia {new Date().getFullYear()}</p>
       <div className="flex gap-5">
         <a

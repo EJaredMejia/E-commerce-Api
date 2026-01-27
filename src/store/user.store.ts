@@ -1,27 +1,16 @@
+import type { getCurrentUser } from "@/features/auth/server/auth.server";
 import { create } from "zustand";
-import { getLocalStorageUser } from "@/utils/storage";
 
-interface User {
-  user: {
-    firstName: string;
-    lastName: string;
-  };
-}
+type User = Awaited<ReturnType<typeof getCurrentUser>>;
 
 interface UserState {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  logout: () => void;
+  user: User;
+  setUser: (user: User) => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
-  user: getLocalStorageUser(),
+  user: null,
   setUser: (user) => {
-    localStorage.setItem("user", JSON.stringify(user));
     set({ user });
-  },
-  logout: () => {
-    localStorage.removeItem("user");
-    set({ user: null });
   },
 }));

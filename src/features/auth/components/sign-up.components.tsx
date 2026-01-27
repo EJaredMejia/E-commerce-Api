@@ -47,8 +47,8 @@ const SignUp = () => {
   };
 
   return (
-    <section className="relative top-[1.9rem] -mb-52 flex h-screen w-full items-center justify-center bg-gray-50">
-      <div className="relative w-11/12 max-w-[500px] rounded-sm bg-white p-7 shadow-md">
+    <section className="flex w-full items-center justify-center bg-gray-50 px-6 py-8">
+      <div className="w-full max-w-[500px] rounded-sm bg-white p-7 shadow-md">
         <h3 className="text-2xl font-semibold text-gray-600">Sign up</h3>
         <form
           onSubmit={handleSubmit(signUpUser)}

@@ -77,20 +77,22 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
 
   return (
     <li className="rounded-xl border border-gray-300 pt-5">
-      <Link
-        to={`/product/$id`}
-        params={{ id: product.id }}
-        className="w-full cursor-pointer border-b border-gray-300 pb-5 sm:h-50"
-      >
-        <img
-          className={`mx-auto max-h-[250px] w-40 contain-layout sm:h-40 sm:w-fit sm:px-2 md:h-48`}
-          src={product.productImgs[0]?.imgUrl}
-          alt="product image"
-          style={{
-            viewTransitionName: `product-image-${product.id}`,
-          }}
-        />
-      </Link>
+      <div className="grid place-items-center border-b border-gray-300 pb-5">
+        <Link
+          to={`/product/$id`}
+          params={{ id: product.id }}
+          className="w-fit cursor-pointer hover:scale-110 transition-transform sm:h-50"
+        >
+          <img
+            className={`max-h-[250px] w-40 contain-layout sm:h-40 sm:w-fit sm:px-2 md:h-48`}
+            src={product.productImgs[0]?.imgUrl}
+            alt="product image"
+            style={{
+              viewTransitionName: `product-image-${product.id}`,
+            }}
+          />
+        </Link>
+      </div>
       <div className="h-42 p-5">
         <h3 className="mb-4 ml-4 font-bold tracking-wider">{product.title}</h3>
         <div className="flex items-center justify-between">
@@ -101,7 +103,7 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
 
           <button
             onClick={addProductToCart}
-            className="block w-fit cursor-pointer rounded-full bg-red-500 p-4 text-gray-100"
+            className="block w-fit cursor-pointer rounded-full bg-red-500 p-4 text-gray-100 hover:bg-red-600"
           >
             <ShoppingCart className="size-5 fill-white" />
           </button>

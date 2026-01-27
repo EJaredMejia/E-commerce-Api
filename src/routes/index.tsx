@@ -7,12 +7,13 @@ import { ProductsSkeleton } from "@/features/products/components/products-skelet
 import { ProductsGrid } from "@/features/products/components/products-grid";
 import { Filter, Search } from "lucide-react";
 import FiltersSideBar from "@/features/categories/components/filters-side-bar.components";
+import { getAllProducts } from "@/features/products/server/products.server";
 
 export const Route = createFileRoute("/")({
   component: Home,
-  loader: ({ context }) => {
+  loader: async ({ context }) => {
     const { queryClient } = context;
-    queryClient.prefetchQuery(getProductsQueryOptions());
+    queryClient.prefetchQuery(getProductsQueryOptions(getAllProducts));
     queryClient.prefetchQuery(getCategoriesQueryOptions());
     queryClient.prefetchQuery(getCartQueryOptions());
   },
@@ -32,7 +33,7 @@ function Home() {
         isFiltersVisible={isFiltersVisible}
         toogleFilters={toogleFilters}
       />
-      <section className="lg:grid-cols-home relative top-28 mx-auto w-10/12 pb-14 sm:w-11/12 lg:grid lg:w-full">
+      <section className="lg:grid-cols-home relative pt-8 mx-auto w-10/12 pb-24 sm:w-11/12 lg:grid lg:w-full">
         <div style={{ gridColumn: "2/3" }}>
           <form
             onSubmit={(e) => {

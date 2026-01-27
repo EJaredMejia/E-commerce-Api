@@ -4,6 +4,7 @@ import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
 import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
 import { Suspense } from "react";
 import { ProductDetailSkeleton } from "@/features/products/components/product-detail-skeleton";
+import { getAllProducts } from "@/features/products/server/products.server";
 
 export const Route = createFileRoute("/product/$id")({
   component: () => (
@@ -19,6 +20,6 @@ export const Route = createFileRoute("/product/$id")({
     const { queryClient } = context;
 
     queryClient.prefetchQuery(getCartQueryOptions());
-    queryClient.prefetchQuery(getProductsQueryOptions());
+    queryClient.prefetchQuery(getProductsQueryOptions(getAllProducts));
   },
 });

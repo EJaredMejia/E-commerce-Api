@@ -4,9 +4,9 @@ const LoadingScreen = () => {
   return (
     <div
       style={{ background: "rgba(0,0,0,0.3)" }}
-      className="z-50 fixed h-screen w-screen flex justify-center items-center"
+      className="fixed z-50 flex h-screen w-screen items-center justify-center"
     >
-      <ClipLoader color="blue" size={120} />
+      <ClipLoader className="text-red-500" size={120} />
     </div>
   );
 };

@@ -1,15 +1,15 @@
 import api from "@/services/api";
 import { queryOptions } from "@tanstack/react-query";
-import type { ProductsResponse } from "../types/products.types";
 import type { Product } from "../types/products.types";
+import type { getAllProducts } from "../server/products.server";
+import type { InferQueryFn } from "@/features/tanstack-query/types/tanstack-query.types";
 
-export function getProductsQueryOptions() {
+export function getProductsQueryOptions<
+  T extends InferQueryFn<typeof getAllProducts>,
+>(queryFn: T) {
   return queryOptions({
     queryKey: ["products"],
-    queryFn: async () => {
-      const res = await api.get<ProductsResponse>("/products");
-      return res.data.data.products;
-    },
+    queryFn,
   });
 }
 

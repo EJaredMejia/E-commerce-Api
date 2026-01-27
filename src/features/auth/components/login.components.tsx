@@ -1,6 +1,10 @@
-import { useLoginMutation } from "@/features/auth/hooks/auth.hooks";
+import {
+  useLoginMutation,
+  useLogoutMutation,
+} from "@/features/auth/hooks/auth.hooks";
 import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
 import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
+import { getAllProducts } from "@/features/products/server/products.server";
 import { useAppStore } from "@/store/app.store";
 import { useUserStore } from "@/store/user.store";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,9 +15,9 @@ import { useState } from "react";
 
 const Login = () => {
   const setIsMessage = useAppStore((state) => state.setIsMessage);
-  const { user: userState, logout: logOutStore } = useUserStore();
+  const userState = useUserStore((state) => state.user);
   const navigate = useNavigate();
-
+  const logout = useLogoutMutation();
   const [emailUser, setEmailUser] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
   const queryClient = useQueryClient();
@@ -32,7 +36,7 @@ const Login = () => {
         !query.queryKey.some(
           (key) =>
             key === getCategoriesQueryOptions().queryKey[0] ||
-            key === getProductsQueryOptions().queryKey[0],
+            key === getProductsQueryOptions(getAllProducts).queryKey[0],
         ),
     });
   }
@@ -55,13 +59,13 @@ const Login = () => {
     return;
   };
 
-  const logOut = () => {
-    logOutStore();
+  const logOut = async () => {
+    await logout.mutateAsync();
     removeQueries();
   };
 
   return (
-    <section className="relative top-[1.9rem] -mb-52 flex h-screen w-full items-center justify-center bg-gray-50">
+    <section className="relative flex w-full grow items-center justify-center bg-gray-50 px-6 py-8">
       {userState === null ? (
         <div className="relative w-11/12 max-w-[500px] rounded-sm bg-white p-7 shadow-md">
           <h3 className="text-2xl leading-9 font-semibold tracking-wide text-gray-600">
@@ -73,11 +77,12 @@ const Login = () => {
               <b>Test data</b>
             </h4>
             <p className="text-gray-600">
-              <Mail className="mr-3 mb-4 inline text-red-500" size={16} />{" "}
+              <Mail className="mr-3 mb-4 inline text-red-500" size={16} />
               admin@gmail.com
             </p>
             <p className="text-gray-600">
-              <Lock className="mr-3 inline text-red-500" size={16} /> pass1234
+              <Lock className="mr-3 inline text-red-500" size={16} />
+              pass1234
             </p>
           </div>
           <form onSubmit={loginUser} className="mt-5 flex flex-col gap-3">
@@ -114,14 +119,16 @@ const Login = () => {
           </p>
         </div>
       ) : (
-        <div className="flex h-[200px] w-11/12 max-w-[500px] flex-col items-center justify-center gap-5 rounded-sm bg-white p-7 shadow-md">
-          <UserIcon size={48} />
-          <p className="font-bold text-gray-600">
-            {userState.user.firstName} {userState.user.lastName}
-          </p>
-          <p onClick={logOut} className="cursor-pointer text-blue-400">
-            Log out
-          </p>
+        <div className="grid grow place-items-center">
+          <div className="flex h-[200px] w-11/12 max-w-[500px] flex-col items-center justify-center gap-5 rounded-sm bg-white p-7 shadow-md">
+            <UserIcon size={48} />
+            <p className="font-bold text-gray-600">
+              {userState?.firstName} {userState?.lastName}
+            </p>
+            <p onClick={logOut} className="cursor-pointer text-blue-400">
+              Log out
+            </p>
+          </div>
         </div>
       )}
     </section>

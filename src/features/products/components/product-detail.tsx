@@ -19,6 +19,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import ProductsItem from "./products-item";
+import { getAllProducts } from "../server/products.server";
+import { useServerFn } from "@tanstack/react-start";
 
 const ProductDetail = () => {
   const { user } = useUserStore();
@@ -27,7 +29,10 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const setIsMessage = useAppStore((state) => state.setIsMessage);
   const { id } = useParams({ from: "/product/$id" });
-  const { data: allProducts } = useSuspenseQuery(getProductsQueryOptions());
+  const queryFn = useServerFn(getAllProducts);
+  const { data: allProducts } = useSuspenseQuery(
+    getProductsQueryOptions(queryFn),
+  );
 
   const { mutate: addProductCart } = useAddCartProductMutation();
   const { mutate: updateCart } = useUpdateCartMutation();
@@ -88,7 +93,7 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="relative top-20 mx-auto w-11/12 max-w-[540px] pb-12 text-gray-600 md:top-28 md:grid md:max-w-[900px] md:grid-cols-2 md:gap-8 lg:max-w-[1300px]">
+    <div className="relative mx-auto w-11/12 max-w-[540px] px-6 py-8 pb-12 text-gray-600 md:grid md:max-w-[900px] md:grid-cols-2 md:gap-8 lg:max-w-[1300px]">
       <section>
         <div className="flex items-center gap-3 text-sm">
           <h4 className="cursor-pointer" onClick={() => navigate({ to: "/" })}>
@@ -99,7 +104,7 @@ const ProductDetail = () => {
         </div>
         <ul className="relative top-12 flex items-center justify-between gap-1 md:justify-center lg:justify-evenly">
           <li>
-            <ArrowLeft
+            <button
               onClick={() => {
                 if (currentPage !== 1) {
                   setCurrentPage(currentPage - 1);
@@ -108,8 +113,9 @@ const ProductDetail = () => {
                 }
               }}
               className="box-content cursor-pointer rounded-full bg-red-500 p-2 text-white"
-              size={20}
-            />
+            >
+              <ArrowLeft size={20} />
+            </button>
           </li>
           {currentImages?.map((img) => (
             <li key={img.imgUrl}>
@@ -123,7 +129,7 @@ const ProductDetail = () => {
             </li>
           ))}
           <li>
-            <ArrowRight
+            <button
               onClick={() => {
                 if (currentPage !== product?.productImgs?.length) {
                   setCurrentPage(currentPage + 1);
@@ -132,18 +138,21 @@ const ProductDetail = () => {
                 }
               }}
               className="box-content cursor-pointer rounded-full bg-red-500 p-2 text-white"
-              size={20}
-            />
+            >
+              <ArrowRight size={20} />
+            </button>
           </li>
         </ul>
         <ul className="mt-20 hidden items-center justify-center gap-4 lg:flex">
           {product?.productImgs?.map((img, i) => (
             <div
               key={img.imgUrl}
-              className="cursor-pointer rounded-md p-1"
+              className={
+                "cursor-pointer rounded-md p-1 hover:outline-2 hover:outline-red-500"
+              }
               onClick={() => setCurrentPage(i + 1)}
               style={{
-                border: i + 1 === currentPage ? "2px red solid" : undefined,
+                outline: i + 1 === currentPage ? "2px red solid" : undefined,
               }}
             >
               <img
@@ -166,27 +175,27 @@ const ProductDetail = () => {
           </p>
           <h6 className="order-2 text-gray-400">Quantity</h6>
           <div className="order-4 mt-2 grid w-32 grid-cols-3 items-center justify-items-center border border-gray-300 text-base">
-            <p
+            <button
               onClick={minusQuantity}
               className="flex h-full w-full cursor-pointer items-center justify-center active:bg-teal-300"
             >
               <Minus size={16} />
-            </p>
+            </button>
             <p className="w-full border-r border-l border-gray-300 text-center">
               {quantityProducts}
             </p>
-            <p
+            <button
               onClick={plusQuantity}
               className="flex h-full w-full cursor-pointer items-center justify-center active:bg-teal-300"
             >
               <Plus size={16} />
-            </p>
+            </button>
           </div>
         </div>
         <div className="md:grid">
           <button
             onClick={addToCart}
-            className="mt-10 flex w-full cursor-pointer items-center justify-center gap-3 bg-red-500 px-3 py-4 text-white md:order-2"
+            className="mt-10 flex w-full cursor-pointer items-center justify-center gap-3 bg-red-500 px-3 py-4 text-white hover:bg-red-600 md:order-2"
           >
             Add to cart <ShoppingCart size={20} />
           </button>

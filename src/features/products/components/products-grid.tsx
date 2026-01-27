@@ -3,13 +3,18 @@ import { getProductsQueryOptions } from "@/features/products/queries/products.qu
 import { useFiltersStore } from "@/store/filters.store";
 import { ALL_PRODUCTS } from "@/constants/products.constants";
 import ProductsItem from "./products-item";
+import { useServerFn } from "@tanstack/react-start";
+import { getAllProducts } from "../server/products.server";
 
 interface ProductsGridProps {
   searchValue: string;
 }
 
 export const ProductsGrid = ({ searchValue }: ProductsGridProps) => {
-  const { data: allProducts } = useSuspenseQuery(getProductsQueryOptions());
+  const queryFn = useServerFn(getAllProducts);
+  const { data: allProducts } = useSuspenseQuery(
+    getProductsQueryOptions(queryFn),
+  );
   const category = useFiltersStore((state) => state.category);
   const price = useFiltersStore((state) => state.price);
 

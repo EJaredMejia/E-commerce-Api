@@ -27,7 +27,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="fixed z-50 grid w-screen grid-cols-2 bg-white p-5 lg:items-center lg:border-b lg:border-gray-300 lg:py-0">
+    <nav className="sticky h-fit top-0 z-50 grid w-full grid-cols-2 bg-white p-5 lg:items-center lg:border-b lg:border-gray-300 lg:py-0">
       <Link className="w-fit" to="/">
         <h1 className="text-xl font-bold tracking-wider text-red-500 sm:text-2xl lg:text-3xl">
           e-commerce

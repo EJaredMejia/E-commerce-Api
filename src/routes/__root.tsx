@@ -5,13 +5,15 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
-import Footer from "../features/layout/components/footer.components";
 import LoadingScreen from "../components/loading-screen";
+import Footer from "../features/layout/components/footer.components";
 import NavBar from "../features/layout/components/nav-bar.components";
 
-import indexCss from "@/index.css?url";
 import appCss from "@/App.css?url";
+import { getCurrentUser } from "@/features/auth/server/auth.server";
+import indexCss from "@/index.css?url";
 import { useAppStore } from "@/store/app.store";
+import { useUserStore } from "@/store/user.store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
@@ -43,6 +45,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       scripts: [],
     }),
     component: RootComponent,
+    loader: async () => {
+      const data = await getCurrentUser();
+
+      useUserStore.getState().setUser(data);
+    },
   },
 );
 
@@ -62,9 +69,11 @@ function AppContent() {
   return (
     <QueryClientProvider client={queryClient}>
       {isLoading && <LoadingScreen />}
-      <NavBar />
-      <Outlet />
-      <Footer />
+      <div className="grid min-h-svh grid-rows-[auto_auto_auto]">
+        <NavBar />
+        <Outlet />
+        <Footer />
+      </div>
     </QueryClientProvider>
   );
 }
