@@ -1,10 +1,12 @@
-import { getLocalStorageUser } from "@/utils/storage";
+import { getCurrentUserQueryOptions } from "@/features/auth/queries/auth.queries";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_protected")({
   component: RouteComponent,
-  beforeLoad: () => {
-    const user = getLocalStorageUser();
+  beforeLoad: async ({ context }) => {
+    const user = await context.queryClient.ensureQueryData(
+      getCurrentUserQueryOptions(),
+    );
 
     if (!user) {
       throw redirect({

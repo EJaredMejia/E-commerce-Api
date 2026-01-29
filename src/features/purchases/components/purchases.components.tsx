@@ -3,29 +3,25 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Circle } from "lucide-react";
 import PurchasesItem from "./purchases-item.components";
+import { getUserPurchases } from "../server/purchases.server";
+import { useServerFn } from "@tanstack/react-start";
 
 const Purchases = () => {
   const navigate = useNavigate();
 
-  const { data: purchases = [] } = useSuspenseQuery(getPurchasesQueryOptions());
+  const queryFn = useServerFn(getUserPurchases);
+  const { data: purchases = [] } = useSuspenseQuery(
+    getPurchasesQueryOptions(queryFn),
+  );
 
-  const sortArray = [...purchases];
+  console.log({ purchases });
 
-  sortArray
-    .sort((a, b) => {
-      return (
-        parseInt(
-          a.createdAt.slice(0, a.createdAt.search("T")).replace(/-/g, ""),
-        ) -
-        parseInt(
-          b.createdAt.slice(0, b.createdAt.search("T")).replace(/-/g, ""),
-        )
-      );
-    })
-    .reverse();
+  const sortedPurchases = purchases.toSorted((a, b) => {
+    return b.createdAt.getTime() - a.createdAt.getTime();
+  });
 
   return (
-    <section className="relative top-20 mx-auto w-11/12 max-w-[600px] pb-12 md:top-28 md:max-w-[1000px]">
+    <section className="relative mx-auto pt-10 w-11/12 max-w-[600px] pb-12 md:max-w-[1000px]">
       <div className="flex items-center gap-3 text-sm text-gray-700">
         <h4
           className="cursor-pointer text-gray-600"
@@ -40,7 +36,7 @@ const Purchases = () => {
         My purchases
       </h2>
       <ul className="mt-8 grid gap-5">
-        {sortArray.map((purchase) => (
+        {sortedPurchases.map((purchase) => (
           <PurchasesItem key={purchase.id} purchase={purchase} />
         ))}
       </ul>

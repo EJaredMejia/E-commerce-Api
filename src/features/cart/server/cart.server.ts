@@ -10,7 +10,7 @@ import {
 import { createServerFn } from "@tanstack/react-start";
 import { and, eq, isNotNull } from "drizzle-orm";
 
-export const getCartProductsUser = createServerFn()
+export const getCartProductsUser = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
     const { user } = context;

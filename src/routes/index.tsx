@@ -1,5 +1,5 @@
 import FiltersSideBar from "@/features/categories/components/filters-side-bar.components";
-import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
+
 import { ProductsGrid } from "@/features/products/components/products-grid";
 import { ProductsSkeleton } from "@/features/products/components/products-skeleton";
 import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
@@ -14,7 +14,6 @@ export const Route = createFileRoute("/")({
     const { queryClient } = context;
 
     queryClient.prefetchQuery(getProductsQueryOptions(getAllProducts));
-    queryClient.prefetchQuery(getCategoriesQueryOptions());
   },
 });
 

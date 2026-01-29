@@ -1,13 +1,12 @@
+import type { InferQueryFn } from "@/features/tanstack-query/types/tanstack-query.types";
 import { queryOptions } from "@tanstack/react-query";
-import type { CategoriesResponse } from "../types/categories.types";
-import { api } from "@/services/api";
+import type { getAllCategories } from "../server/categories.server";
 
-export function getCategoriesQueryOptions() {
+export function getCategoriesQueryOptions(
+  queryFn: InferQueryFn<typeof getAllCategories>,
+) {
   return queryOptions({
     queryKey: ["categories"],
-    queryFn: async () => {
-      const res = await api.get<CategoriesResponse>("/products/categories");
-      return res.data.categories;
-    },
+    queryFn,
   });
 }

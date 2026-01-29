@@ -13,6 +13,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getCurrentUserQueryOptions } from "../queries/auth.queries";
 import { login, logout } from "../server/auth.server";
+import { getAllCategories } from "@/features/categories/server/categories.server";
 
 interface LoginPayload {
   email: string;
@@ -34,7 +35,7 @@ function removeQueries(queryClient: QueryClient) {
     predicate: (query) =>
       !query.queryKey.some(
         (key) =>
-          key === getCategoriesQueryOptions().queryKey[0] ||
+          key === getCategoriesQueryOptions(getAllCategories).queryKey[0] ||
           key === getProductsQueryOptions(getAllProducts).queryKey[0],
       ),
   });

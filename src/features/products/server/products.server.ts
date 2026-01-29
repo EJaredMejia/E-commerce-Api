@@ -1,6 +1,7 @@
+import { jsonAgg } from "@/db/db.utils";
 import { db } from "@/db/drizzle";
 import { products, productImgs } from "@root/drizzle/schema"; // Adjust paths to your schema
-import { eq, sql } from "drizzle-orm";
+import { eq, isNotNull } from "drizzle-orm";
 import { createServerFn } from "@tanstack/react-start";
 
 export const getAllProducts = createServerFn({ method: "GET" }).handler(
@@ -12,17 +13,14 @@ export const getAllProducts = createServerFn({ method: "GET" }).handler(
         title: products.title,
         price: products.price,
         description: products.description,
-        // JSON Aggregation for the product images
-        productImgs: sql<Array<{ id: number; imgUrl: string }>>`
-          COALESCE(
-            json_agg(
-              json_build_object(
-                'id', ${productImgs.id},
-                'imgUrl', ${productImgs.imgUrl}
-              )
-            ) FILTER (WHERE ${productImgs.id} IS NOT NULL), 
-            '[]'
-          )`.as("productImgs"),
+        // JSON Aggregation for the product images using helpers
+        productImgs: jsonAgg({
+          columnsMap: {
+            id: productImgs.id,
+            imgUrl: productImgs.imgUrl,
+          },
+          filter: isNotNull(productImgs.id),
+        }),
       })
       .from(products)
       .leftJoin(productImgs, eq(products.id, productImgs.productId))

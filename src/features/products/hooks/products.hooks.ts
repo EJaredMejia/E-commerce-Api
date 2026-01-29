@@ -14,6 +14,7 @@ export function useAddProductToCart({
   productId,
   quantity,
 }: useAddProductToCartParams) {
+  const quantityProducts = quantity === 0 ? 1 : quantity;
   const { data: user } = useCurrentUserQuery();
   const { data: shoppingCart } = useCartUserSuspenseQuery();
 
@@ -41,7 +42,7 @@ export function useAddProductToCart({
     if (productInCart) {
       const newProductCart = {
         productId: productInCart.product.id,
-        newQty: quantity ?? productInCart.quantity + 1,
+        newQty: quantityProducts ?? productInCart.quantity + 1,
       };
       updateCart(newProductCart);
       return;
@@ -49,7 +50,7 @@ export function useAddProductToCart({
 
     const newProductCart = {
       productId: idProduct,
-      quantity: quantity ?? 1,
+      quantity: quantityProducts ?? 1,
     };
     addProductCart(newProductCart);
   }

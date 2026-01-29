@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
 import { useFiltersStore } from "@/store/filters.store";
 import { ALL_PRODUCTS } from "@/constants/products.constants";
+import { getAllCategories } from "../server/categories.server";
 
 interface CategoriesListProps {
   toogleFilters: () => void;
@@ -12,7 +13,9 @@ export const CategoriesList = ({
   toogleFilters,
   setCategoryInput,
 }: CategoriesListProps) => {
-  const { data: categories } = useSuspenseQuery(getCategoriesQueryOptions());
+  const { data: categories } = useSuspenseQuery(
+    getCategoriesQueryOptions(getAllCategories),
+  );
   const category = useFiltersStore((state) => state.category);
 
   return (
@@ -53,4 +56,3 @@ export const CategoriesList = ({
     </>
   );
 };
-

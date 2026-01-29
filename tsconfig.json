@@ -8,7 +8,12 @@
     // See also https://aka.ms/tsconfig/module
     "moduleResolution": "Bundler",
     "module": "ESNext",
-    "target": "ES2022",
+    "target": "ES2023",
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
     // "types": ["node"],
     // and npm install -D @types/node
     // Stricter Typechecking Options

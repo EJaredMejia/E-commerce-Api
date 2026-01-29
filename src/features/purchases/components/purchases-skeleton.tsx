@@ -2,7 +2,7 @@ import { Circle } from "lucide-react";
 
 export const PurchasesSkeleton = () => {
   return (
-    <section className="relative top-20 mx-auto w-11/12 max-w-[600px] pb-12 md:top-28 md:max-w-[1000px]">
+    <section className="relative mx-auto pt-10 w-11/12 max-w-[600px] pb-12 md:max-w-[1000px]">
       <div className="flex items-center gap-3 text-sm text-gray-700">
         <div className="h-4 w-12 animate-pulse rounded bg-gray-200" />
         <Circle className="text-gray-200" fill="currentColor" size={8} />

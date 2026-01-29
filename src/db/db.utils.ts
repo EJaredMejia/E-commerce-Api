@@ -1,5 +1,5 @@
 import { SQL, sql, type Column } from "drizzle-orm";
-type JsonBuildObjectParam = Record<string, Column>;
+type JsonBuildObjectParam = Record<string, Column | SQL>;
 
 interface JsonAggParams<T extends JsonBuildObjectParam> {
   columnsMap: T;
@@ -8,7 +8,13 @@ interface JsonAggParams<T extends JsonBuildObjectParam> {
 
 type InferJsonBuildObjectParam<T extends JsonBuildObjectParam> =
   T extends JsonBuildObjectParam
-    ? { [K in keyof T]: T[K]["_"]["data"] }
+    ? {
+        [K in keyof T]: T[K] extends Column
+          ? T[K]["_"]["data"]
+          : T[K] extends SQL<infer TType>
+            ? TType
+            : never;
+      }
     : never;
 export function jsonAgg<T extends JsonBuildObjectParam>({
   columnsMap,

@@ -1,13 +1,12 @@
+import type { InferQueryFn } from "@/features/tanstack-query/types/tanstack-query.types";
 import { queryOptions } from "@tanstack/react-query";
-import type { PurchasesResponse } from "../types/purchases.types";
-import { api } from "@/services/api";
+import type { getUserPurchases } from "../server/purchases.server";
 
-export function getPurchasesQueryOptions() {
+export function getPurchasesQueryOptions(
+  queryFn: InferQueryFn<typeof getUserPurchases>,
+) {
   return queryOptions({
     queryKey: ["purchases"],
-    queryFn: async () => {
-      const res = await api.get<PurchasesResponse>("/users/orders");
-      return res.data.data.orders;
-    },
+    queryFn,
   });
 }
