@@ -1,28 +1,26 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
-import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
-import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
-import { Suspense, useState } from "react";
-import { ProductsSkeleton } from "@/features/products/components/products-skeleton";
-import { ProductsGrid } from "@/features/products/components/products-grid";
-import { Filter, Search } from "lucide-react";
 import FiltersSideBar from "@/features/categories/components/filters-side-bar.components";
+import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
+import { ProductsGrid } from "@/features/products/components/products-grid";
+import { ProductsSkeleton } from "@/features/products/components/products-skeleton";
+import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
 import { getAllProducts } from "@/features/products/server/products.server";
+import { createFileRoute } from "@tanstack/react-router";
+import { Filter, Search } from "lucide-react";
+import { Suspense, useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: Home,
   loader: async ({ context }) => {
     const { queryClient } = context;
+
     queryClient.prefetchQuery(getProductsQueryOptions(getAllProducts));
     queryClient.prefetchQuery(getCategoriesQueryOptions());
-    queryClient.prefetchQuery(getCartQueryOptions());
   },
 });
 
 function Home() {
   const [searchValue, setSearchValue] = useState("");
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
-
   const toogleFilters = () => {
     setIsFiltersVisible(!isFiltersVisible);
   };
@@ -33,7 +31,7 @@ function Home() {
         isFiltersVisible={isFiltersVisible}
         toogleFilters={toogleFilters}
       />
-      <section className="lg:grid-cols-home relative pt-8 mx-auto w-10/12 pb-24 sm:w-11/12 lg:grid lg:w-full">
+      <section className="lg:grid-cols-home relative mx-auto w-10/12 pt-8 pb-24 sm:w-11/12 lg:grid lg:w-full">
         <div style={{ gridColumn: "2/3" }}>
           <form
             onSubmit={(e) => {

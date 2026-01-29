@@ -1,4 +1,4 @@
-import api from "@/services/api";
+import { api } from "@/services/api";
 import { queryOptions } from "@tanstack/react-query";
 import type { Product } from "../types/products.types";
 import type { getAllProducts } from "../server/products.server";

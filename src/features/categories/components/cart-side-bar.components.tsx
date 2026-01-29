@@ -1,15 +1,14 @@
-import { useState, Suspense } from "react";
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
-import CheckoutModal from "../../cart/components/checkout-modal.components";
+import { CartSkeleton } from "@/features/cart/components/cart-skeleton.components";
 import {
+  useCartUserSuspenseQuery,
   useDeleteCartMutation,
   useUpdateCartMutation,
 } from "@/features/cart/hooks/cart.hooks";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
-import { CartSkeleton } from "@/features/cart/components/cart-skeleton.components";
 import type { Cart } from "@/features/cart/types/cart.types";
+import { useNavigate } from "@tanstack/react-router";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { Suspense, useState } from "react";
+import CheckoutModal from "../../cart/components/checkout-modal.components";
 
 interface CartSideBarProps {
   isCartVisible: boolean;
@@ -60,7 +59,7 @@ const CartContent = ({
   const { mutate: updateCart } = useUpdateCartMutation();
   const { mutate: deleteCartMutation } = useDeleteCartMutation();
 
-  const { data: shoppingCart = [] } = useSuspenseQuery(getCartQueryOptions());
+  const { data: shoppingCart = [] } = useCartUserSuspenseQuery();
 
   const total = shoppingCart.reduce((acc, product) => {
     return acc + product.product.price * product.quantity;

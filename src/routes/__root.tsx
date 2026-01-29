@@ -10,11 +10,19 @@ import Footer from "../features/layout/components/footer.components";
 import NavBar from "../features/layout/components/nav-bar.components";
 
 import appCss from "@/App.css?url";
-import { getCurrentUser } from "@/features/auth/server/auth.server";
+import { getCurrentUserQueryOptions } from "@/features/auth/queries/auth.queries";
 import indexCss from "@/index.css?url";
 import { useAppStore } from "@/store/app.store";
-import { useUserStore } from "@/store/user.store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
+import { useAppSession } from "@/features/auth/utils/auth.utils";
+import { getCartProductsUser } from "@/features/cart/server/cart.server";
+import { createServerOnlyFn } from "@tanstack/react-start";
+
+const getUserId = createServerOnlyFn(async () => {
+  const { data } = await useAppSession();
+  return data.userId;
+});
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -45,10 +53,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       scripts: [],
     }),
     component: RootComponent,
-    loader: async () => {
-      const data = await getCurrentUser();
+    loader: async ({ context }) => {
+      const { queryClient } = context;
+      const userPromise = queryClient.ensureQueryData(
+        getCurrentUserQueryOptions(),
+      );
 
-      useUserStore.getState().setUser(data);
+      const userId = await getUserId();
+
+      queryClient.prefetchQuery(
+        getCartQueryOptions({
+          queryFn: getCartProductsUser,
+          userId,
+        }),
+      );
+
+      await userPromise;
     },
   },
 );

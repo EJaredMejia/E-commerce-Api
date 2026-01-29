@@ -8,34 +8,22 @@ import {
   ShoppingCart,
 } from "lucide-react";
 
-import {
-  useAddCartProductMutation,
-  useUpdateCartMutation,
-} from "@/features/cart/hooks/cart.hooks";
-import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
-import { useAppStore } from "@/store/app.store";
-import { useUserStore } from "@/store/user.store";
+import { cn } from "@/utils/cn.utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useState } from "react";
-import ProductsItem from "./products-item";
-import { getAllProducts } from "../server/products.server";
 import { useServerFn } from "@tanstack/react-start";
+import { Suspense, useState, type ComponentProps } from "react";
+import { useAddProductToCart } from "../hooks/products.hooks";
+import { getAllProducts } from "../server/products.server";
+import ProductsItem from "./products-item";
 
 const ProductDetail = () => {
-  const { user } = useUserStore();
-  const { data: shoppingCart } = useSuspenseQuery(getCartQueryOptions());
-
   const navigate = useNavigate();
-  const setIsMessage = useAppStore((state) => state.setIsMessage);
   const { id } = useParams({ from: "/product/$id" });
   const queryFn = useServerFn(getAllProducts);
   const { data: allProducts } = useSuspenseQuery(
     getProductsQueryOptions(queryFn),
   );
-
-  const { mutate: addProductCart } = useAddCartProductMutation();
-  const { mutate: updateCart } = useUpdateCartMutation();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, _] = useState(1);
@@ -59,37 +47,6 @@ const ProductDetail = () => {
 
   const plusQuantity = () => {
     setQuantityProducts(quantityProducts + 1);
-  };
-
-  const addToCart = () => {
-    if (!user) {
-      setIsMessage("You need to be login to add products to the cart");
-      navigate({ to: "/login" });
-      return;
-    }
-    let isProductAllreadyInCart = false;
-    const idProduct = Number(id);
-    shoppingCart?.find((product) => {
-      // TODO is this a bug?
-      console.log({ product, idProduct });
-      if (product.product.id === idProduct) {
-        isProductAllreadyInCart = true;
-        const newProductCart = {
-          productId: product.product.id,
-          newQty: quantityProducts,
-        };
-        updateCart(newProductCart);
-
-        return true;
-      }
-    });
-    if (!isProductAllreadyInCart) {
-      const newProductCart = {
-        productId: idProduct,
-        quantity: quantityProducts,
-      };
-      addProductCart(newProductCart);
-    }
   };
 
   return (
@@ -193,12 +150,9 @@ const ProductDetail = () => {
           </div>
         </div>
         <div className="md:grid">
-          <button
-            onClick={addToCart}
-            className="mt-10 flex w-full cursor-pointer items-center justify-center gap-3 bg-red-500 px-3 py-4 text-white hover:bg-red-600 md:order-2"
-          >
-            Add to cart <ShoppingCart size={20} />
-          </button>
+          <Suspense fallback={<ButtonAdd disabled />}>
+            <ButtonAddToCart quantityProducts={quantityProducts} />
+          </Suspense>
           <p className="mt-12 text-base leading-6 md:order-1">
             {product?.description}
           </p>
@@ -226,5 +180,32 @@ const ProductDetail = () => {
     </div>
   );
 };
+
+function ButtonAddToCart({ quantityProducts }: { quantityProducts: number }) {
+  const { id } = useParams({ from: "/product/$id" });
+  const addToCart = useAddProductToCart({
+    productId: id,
+    quantity: quantityProducts,
+  });
+
+  return <ButtonAdd onClick={addToCart} />;
+}
+
+function ButtonAdd({
+  className,
+  ...rest
+}: Omit<ComponentProps<"button">, "children">) {
+  return (
+    <button
+      className={cn(
+        "mt-10 flex w-full cursor-pointer items-center justify-center gap-3 bg-red-500 px-3 py-4 text-white transition-colors hover:bg-red-600 disabled:bg-gray-500 md:order-2",
+        className,
+      )}
+      {...rest}
+    >
+      Add to cart <ShoppingCart size={20} />
+    </button>
+  );
+}
 
 export default ProductDetail;

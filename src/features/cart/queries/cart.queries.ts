@@ -1,29 +1,23 @@
-import api from "@/services/api";
+import type { InferQueryFn } from "@/features/tanstack-query/types/tanstack-query.types";
 import { queryOptions } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import type { CartResponse } from "../types/cart.types";
+import type { getCartProductsUser } from "../server/cart.server";
 
-export function getCartQueryOptions() {
+interface GetCartQueryOptionsParams {
+  queryFn: InferQueryFn<typeof getCartProductsUser>;
+  userId: number | undefined;
+}
+export function getCartQueryOptions({
+  queryFn,
+  userId,
+}: GetCartQueryOptionsParams) {
   return queryOptions({
-    queryKey: ["cart"],
+    queryKey: ["cart", userId],
     queryFn: async () => {
-      // TODO use cookies auth
-      // if (!getLocalStorageUser()) {
-      //   return [];
-      // }
-      try {
-        const res = await api.get<CartResponse>("/cart");
-        return res.data.data.cart.productInCarts;
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          const status = error.response?.status;
-          if (status === 401 || status === 403 || status === 404) {
-            return [];
-          }
-
-          throw error;
-        }
+      if (!userId) {
+        return [];
       }
+
+      return await queryFn();
     },
   });
 }

@@ -9,11 +9,12 @@ export function useAppSession() {
     // Session configuration
     name: "app-session",
     password: process.env.JWT_SECRET!, // At least 32 characters
-    // Optional: customize cookie settings
     cookie: {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       httpOnly: true,
+      // 30 days in seconds
+      maxAge: 60 * 60 * 24 * 30,
     },
   });
 }

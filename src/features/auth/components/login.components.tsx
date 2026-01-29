@@ -1,26 +1,22 @@
 import {
+  useCurrentUserQuery,
   useLoginMutation,
   useLogoutMutation,
 } from "@/features/auth/hooks/auth.hooks";
-import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
-import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
-import { getAllProducts } from "@/features/products/server/products.server";
 import { useAppStore } from "@/store/app.store";
-import { useUserStore } from "@/store/user.store";
-import { useQueryClient } from "@tanstack/react-query";
-import { useSearch } from "@tanstack/react-router";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Lock, Mail, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 
 const Login = () => {
   const setIsMessage = useAppStore((state) => state.setIsMessage);
-  const userState = useUserStore((state) => state.user);
+  const { data: userState } = useCurrentUserQuery();
+
   const navigate = useNavigate();
   const logout = useLogoutMutation();
   const [emailUser, setEmailUser] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
-  const queryClient = useQueryClient();
+
   const { mutateAsync: login } = useLoginMutation();
 
   const searchMessage = useSearch({
@@ -30,16 +26,6 @@ const Login = () => {
 
   const message = useAppStore((state) => state.loginMessage) || searchMessage;
 
-  function removeQueries() {
-    queryClient.removeQueries({
-      predicate: (query) =>
-        !query.queryKey.some(
-          (key) =>
-            key === getCategoriesQueryOptions().queryKey[0] ||
-            key === getProductsQueryOptions(getAllProducts).queryKey[0],
-        ),
-    });
-  }
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const loginObject = {
@@ -51,17 +37,15 @@ const Login = () => {
       await login(loginObject);
       setEmailUser("");
       setPasswordUser("");
-      navigate({ to: "/" });
-      removeQueries();
     } catch (e) {
+      // TODO maybe doesnt work this way
       setIsMessage("User doesn't exit");
     }
     return;
   };
 
-  const logOut = async () => {
-    await logout.mutateAsync();
-    removeQueries();
+  const logOut = () => {
+    logout.mutate();
   };
 
   return (

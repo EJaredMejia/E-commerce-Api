@@ -5,11 +5,8 @@ import {
   integer,
   numeric,
   timestamp,
-  foreignKey,
-  primaryKey,
   unique,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 export const carts = pgTable("carts", {
   id: serial().primaryKey(),

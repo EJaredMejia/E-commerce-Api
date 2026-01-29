@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import type { PurchasesResponse } from "../types/purchases.types";
-import api from "@/services/api";
+import { api } from "@/services/api";
 
 export function getPurchasesQueryOptions() {
   return queryOptions({

@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { ShoppingCart, User, Package } from "lucide-react";
+import { useCurrentUserQuery } from "@/features/auth/hooks/auth.hooks";
 import { useAppStore } from "@/store/app.store";
-import { useUserStore } from "@/store/user.store";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Package, ShoppingCart, User } from "lucide-react";
+import { useState } from "react";
 import CartSideBar from "../../categories/components/cart-side-bar.components";
 
 const NavBar = () => {
   const [isCartVisible, setIsCartVisible] = useState(false);
-  const { user: userLocal } = useUserStore();
+  const { data: userLocal } = useCurrentUserQuery();
   const setIsMessage = useAppStore((state) => state.setIsMessage);
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="sticky h-fit top-0 z-50 grid w-full grid-cols-2 bg-white p-5 lg:items-center lg:border-b lg:border-gray-300 lg:py-0">
+    <nav className="sticky top-0 z-50 grid h-fit w-full grid-cols-2 bg-white p-5 lg:items-center lg:border-b lg:border-gray-300 lg:py-0">
       <Link className="w-fit" to="/">
         <h1 className="text-xl font-bold tracking-wider text-red-500 sm:text-2xl lg:text-3xl">
           e-commerce

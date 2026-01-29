@@ -1,7 +1,15 @@
-import api from "@/services/api";
+import { useCurrentUserQuery } from "@/features/auth/hooks/auth.hooks";
+import { api } from "@/services/api";
 import { useAppStore } from "@/store/app.store";
 import type { PurchaseCart } from "@/types/cart.types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getCartProductsUser } from "../server/cart.server";
+import { getCartQueryOptions } from "../queries/cart.queries";
 
 export const useAddCartProductMutation = () => {
   const setIsLoading = useAppStore((state) => state.setIsLoading);
@@ -80,3 +88,17 @@ export const usePurchaseCartMutation = () => {
     },
   });
 };
+
+export function useCartUserSuspenseQuery() {
+  const { data: user } = useCurrentUserQuery();
+
+  const serverFn = useServerFn(getCartProductsUser);
+  return useSuspenseQuery(
+    getCartQueryOptions({
+      queryFn: async () => {
+        return await serverFn();
+      },
+      userId: user?.id,
+    }),
+  );
+}
