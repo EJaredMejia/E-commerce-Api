@@ -1,7 +1,6 @@
 import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
 import { getProductsQueryOptions } from "@/features/products/queries/products.queries";
 import { getAllProducts } from "@/features/products/server/products.server";
-import { api } from "@/services/api";
 import { useAppStore } from "@/store/app.store";
 import {
   Query,
@@ -13,7 +12,7 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getCurrentUserQueryOptions } from "../queries/auth.queries";
-import { login, logout } from "../server/auth.server";
+import { createUser, login, logout } from "../server/auth.server";
 import { getAllCategories } from "@/features/categories/server/categories.server";
 
 interface LoginPayload {
@@ -28,7 +27,6 @@ interface CreateUserPayload {
   firstName: string;
   lastName: string;
   phone: string;
-  role: "normal";
 }
 
 function predicateRemoveQueries(query: Query) {
@@ -98,13 +96,13 @@ export const useLogoutMutation = () => {
 // TODO create signup
 export const useCreateUserMutation = () => {
   const setIsLoading = useAppStore((state) => state.setIsLoading);
+  const createUserFn = useServerFn(createUser);
 
   return useMutation({
     mutationFn: async (body: CreateUserPayload) => {
       setIsLoading(true);
       try {
-        const res = await api.post("/users", body);
-        return res.data;
+        return await createUserFn({ data: body });
       } finally {
         setIsLoading(false);
       }

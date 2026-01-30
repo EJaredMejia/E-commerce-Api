@@ -73,3 +73,46 @@ export const getCurrentUser = createServerFn({ method: "GET" }).handler(
     return user || null;
   },
 );
+const createUserSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string().min(6),
+  firstName: z.string(),
+  lastName: z.string(),
+  phone: z.string(),
+});
+
+export const createUser = createServerFn({ method: "POST" })
+  .inputValidator(createUserSchema)
+  .handler(async ({ data }) => {
+    const { name, email, password, firstName, lastName, role } = data;
+
+    const [userExist] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, email));
+
+    if (userExist) {
+      throw Response.json(
+        { message: "email is already taken" },
+        { status: 409 },
+      );
+    }
+
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    await db.insert(users).values({
+      username: name,
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      role: "normal",
+      status: "active",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    return { status: "success" };
+  });

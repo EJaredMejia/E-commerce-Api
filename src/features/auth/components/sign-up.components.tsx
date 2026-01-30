@@ -23,7 +23,7 @@ const SignUp = () => {
 
   const signUpUser = async (data: typeof defaultValues) => {
     try {
-      await createUser({ ...data, role: "normal" });
+      await createUser(data);
     } catch (e) {
       alert("email already taken");
       return;
@@ -90,7 +90,7 @@ const SignUp = () => {
             id="phoneSignUp"
             className="border border-gray-300 p-2"
           />
-          <button className="mt-5 w-full bg-red-500 p-2.5 text-center text-white">
+          <button className="mt-5 w-full cursor-pointer bg-red-500 p-2.5 text-center text-white hover:bg-red-600">
             Sign up
           </button>
         </form>
