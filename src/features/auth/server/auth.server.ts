@@ -85,7 +85,7 @@ const createUserSchema = z.object({
 export const createUser = createServerFn({ method: "POST" })
   .inputValidator(createUserSchema)
   .handler(async ({ data }) => {
-    const { name, email, password, firstName, lastName, role } = data;
+    const { name, email, password, firstName, lastName } = data;
 
     const [userExist] = await db
       .select({ id: users.id })
