@@ -28,8 +28,8 @@ export const getAllProducts = createServerFn({ method: "GET" }).handler(
       .groupBy(products.id)
       .$withCache({
         config: {
-          // 24 hours - data almost never changes
-          ex: 60 * 60 * 24,
+          // 1 week - data almost never changes
+          ex: 60 * 60 * 24 * 7,
         },
       });
 

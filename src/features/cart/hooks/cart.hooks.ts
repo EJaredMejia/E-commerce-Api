@@ -8,24 +8,33 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getCartProductsUser } from "../server/cart.server";
+import { addProductToCart, getCartProductsUser } from "../server/cart.server";
 import { getCartQueryOptions } from "../queries/cart.queries";
 
 export const useAddCartProductMutation = () => {
   const setIsLoading = useAppStore((state) => state.setIsLoading);
   const queryClient = useQueryClient();
+  const { data: user } = useCurrentUserQuery();
+
+  const addProductFn = useServerFn(addProductToCart);
 
   return useMutation({
-    mutationFn: async (body: { productId: number; quantity: number }) => {
+    mutationFn: async (body: Parameters<typeof addProductFn>[0]["data"]) => {
+      return await addProductFn({ data: body });
+    },
+    onMutate: () => {
       setIsLoading(true);
-      try {
-        await api.post("/cart/add-product", body);
-      } finally {
-        setIsLoading(false);
-      }
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({
+        queryKey: getCartQueryOptions({
+          queryFn: getCartProductsUser,
+          userId: user?.id,
+        }).queryKey,
+      });
     },
   });
 };

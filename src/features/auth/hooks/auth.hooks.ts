@@ -73,8 +73,10 @@ export const useLogoutMutation = () => {
   const logoutFn = useServerFn(logout);
   return useMutation({
     mutationFn: () => {
-      setIsLoading(true);
       return logoutFn();
+    },
+    onMutate: () => {
+      setIsLoading(true);
     },
     onSettled: () => {
       setIsLoading(false);

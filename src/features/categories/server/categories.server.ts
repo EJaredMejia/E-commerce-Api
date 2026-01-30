@@ -9,7 +9,8 @@ export const getAllCategories = createServerFn({ method: "GET" }).handler(
         id: categories.id,
         name: categories.name,
       })
-      .from(categories);
+      .from(categories)
+      .$withCache({ config: { ex: 60 * 60 * 24 * 7 } });
 
     return categoriesItems;
   },

@@ -23,26 +23,22 @@ const SignUp = () => {
 
   const signUpUser = async (data: typeof defaultValues) => {
     try {
-      try {
-        await createUser({ ...data, role: "normal" });
-      } catch (e) {
-        alert("email already taken");
-        return;
-      }
+      await createUser({ ...data, role: "normal" });
+    } catch (e) {
+      alert("email already taken");
+      return;
+    }
 
-      const autoLoginObject = {
-        email: data.email,
-        password: data.password,
-      };
+    const autoLoginObject = {
+      email: data.email,
+      password: data.password,
+    };
 
-      try {
-        await login(autoLoginObject);
-        navigate({ to: "/" });
-      } catch (e) {
-        return;
-      }
-    } finally {
-      // handled by mutation
+    try {
+      await login(autoLoginObject);
+      navigate({ to: "/" });
+    } catch (e) {
+      return;
     }
   };
 
