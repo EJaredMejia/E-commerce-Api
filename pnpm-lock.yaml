@@ -80,6 +80,9 @@ importers:
       vinxi:
         specifier: ^0.5.11
         version: 0.5.11(@azure/identity@4.13.0)(@types/node@25.0.10)(@upstash/redis@1.36.1)(db0@0.3.4(drizzle-orm@1.0.0-beta.12-a5629fb(@neondatabase/serverless@1.0.2)(@types/mssql@9.1.9)(@types/pg@8.16.0)(@upstash/redis@1.36.1)(mssql@11.0.1)))(drizzle-orm@1.0.0-beta.12-a5629fb(@neondatabase/serverless@1.0.2)(@types/mssql@9.1.9)(@types/pg@8.16.0)(@upstash/redis@1.36.1)(mssql@11.0.1))(ioredis@5.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)
+      ws:
+        specifier: ^8.19.0
+        version: 8.19.0
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -105,6 +108,9 @@ importers:
       '@types/react-modal':
         specifier: ^3.16.3
         version: 3.16.3
+      '@types/ws':
+        specifier: ^8.18.1
+        version: 8.18.1
       '@vitejs/plugin-react':
         specifier: ^5.0.4
         version: 5.0.4(vite@7.1.11(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0))
@@ -1559,6 +1565,9 @@ packages:
 
   '@types/use-sync-external-store@0.0.6':
     resolution: {integrity: sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==}
+
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
   '@typespec/ts-http-runtime@0.3.2':
     resolution: {integrity: sha512-IlqQ/Gv22xUC1r/WQm4StLkYQmaaTsXAhUVsNE0+xiyf0yRFiH5++q78U3bw6bLKDCTmh0uqKB9eG9+Bt75Dkg==}
@@ -5356,6 +5365,10 @@ snapshots:
   '@types/resolve@1.20.2': {}
 
   '@types/use-sync-external-store@0.0.6': {}
+
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 25.0.10
 
   '@typespec/ts-http-runtime@0.3.2':
     dependencies:

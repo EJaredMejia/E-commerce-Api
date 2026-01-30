@@ -1,5 +1,4 @@
 import { useCurrentUserQuery } from "@/features/auth/hooks/auth.hooks";
-import { api } from "@/services/api";
 import { useAppStore } from "@/store/app.store";
 import type { PurchaseCart } from "@/types/cart.types";
 import {
@@ -12,9 +11,12 @@ import {
   addProductToCart,
   deleteCartProduct,
   getCartProductsUser,
+  purchaseCartFn,
   updateCartProduct,
 } from "../server/cart.server";
 import { getCartQueryOptions } from "../queries/cart.queries";
+import { getPurchasesQueryOptions } from "@/features/purchases/queries/purchases.types";
+import { getUserPurchases } from "@/features/purchases/server/purchases.server";
 
 export const useAddCartProductMutation = () => {
   const setIsLoading = useAppStore((state) => state.setIsLoading);
@@ -103,19 +105,30 @@ export const useDeleteCartMutation = () => {
 export const usePurchaseCartMutation = () => {
   const setIsLoading = useAppStore((state) => state.setIsLoading);
   const queryClient = useQueryClient();
+  const { data: user } = useCurrentUserQuery();
+
+  const purchaseFn = useServerFn(purchaseCartFn);
 
   return useMutation({
-    mutationFn: async (body: PurchaseCart) => {
+    mutationFn: async (data: PurchaseCart) => {
+      return await purchaseFn({ data });
+    },
+    onMutate: () => {
       setIsLoading(true);
-      try {
-        await api.post("/cart/purchase", body);
-      } finally {
-        setIsLoading(false);
-      }
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
-      queryClient.invalidateQueries({ queryKey: ["purchases"] });
+      queryClient.invalidateQueries({
+        queryKey: getCartQueryOptions({
+          queryFn: getCartProductsUser,
+          userId: user?.id,
+        }).queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: getPurchasesQueryOptions(getUserPurchases).queryKey,
+      });
       alert("your purchase was Successful");
     },
   });

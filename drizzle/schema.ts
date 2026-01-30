@@ -34,7 +34,7 @@ export const orders = pgTable("orders", {
   cartId: integer()
     .notNull()
     .references(() => carts.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  totalPrice: numeric().notNull(),
+  totalPrice: numeric({ mode: "number" }).notNull(),
   status: varchar({ length: 255 }).default("active").notNull(),
   createdAt: timestamp({ withTimezone: true }).notNull(),
   updatedAt: timestamp({ withTimezone: true }).notNull(),

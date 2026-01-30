@@ -14,10 +14,8 @@ export function CheckoutModal({
 }: CheckoutModalProps) {
   const defaultValues = {
     street: "",
-    colony: "",
     zipCode: "",
     city: "",
-    references: "",
   };
   const { register, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
@@ -59,14 +57,6 @@ export function CheckoutModal({
           id="street"
           {...register("street")}
         />
-        <label htmlFor="colony">Colony</label>
-        <input
-          required
-          className="border border-gray-300 p-2"
-          type="text"
-          id="colony"
-          {...register("colony")}
-        />
         <label htmlFor="zipCode">Zip Code</label>
         <input
           required
@@ -83,15 +73,9 @@ export function CheckoutModal({
           id="city"
           {...register("city")}
         />
-        <label htmlFor="references">References</label>
-        <input
-          required
-          className="border border-gray-300 p-2"
-          type="text"
-          id="references"
-          {...register("references")}
-        />
-        <button className="bg-red-500 p-3 text-white">Purchase products</button>
+        <button className="cursor-pointer bg-red-500 p-3 text-white hover:bg-red-600">
+          Purchase products
+        </button>
       </form>
     </Modal>
   );

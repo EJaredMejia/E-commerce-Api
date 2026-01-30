@@ -1,6 +1,3 @@
-import { useNavigate } from "@tanstack/react-router";
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { Suspense, useState, useEffect } from "react";
 import { CartSkeleton } from "@/features/cart/components/cart-skeleton.components";
 import {
   useCartUserSuspenseQuery,
@@ -8,6 +5,9 @@ import {
   useUpdateCartMutation,
 } from "@/features/cart/hooks/cart.hooks";
 import type { Cart } from "@/features/cart/types/cart.types";
+import { useNavigate } from "@tanstack/react-router";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { Suspense, useState } from "react";
 import { CheckoutModal } from "../../cart/components/checkout-modal.components";
 
 interface CartSideBarProps {
@@ -173,7 +173,7 @@ function CartContent({
           </div>
           <button
             onClick={checkoutClick}
-            className="mt-8 w-full bg-red-500 p-2 text-center text-white"
+            className="mt-8 w-full cursor-pointer bg-red-500 p-2 text-center text-white hover:bg-red-600"
           >
             Checkout
           </button>

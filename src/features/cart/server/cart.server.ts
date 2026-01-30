@@ -1,10 +1,16 @@
 import { jsonAgg } from "@/db/db.utils";
 import { db } from "@/db/drizzle";
 import { authMiddleware } from "@/features/auth/middleware/auth.middleware";
-import { productImgs, productInCarts, products } from "@root/drizzle/schema";
+import {
+  carts,
+  orders,
+  productImgs,
+  productInCarts,
+  products,
+} from "@root/drizzle/schema";
 
 import { createServerFn } from "@tanstack/react-start";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { z } from "zod";
 import {
   getActiveCart,
@@ -261,4 +267,96 @@ export const deleteCartProduct = createServerFn({ method: "POST" })
       .where(eq(productInCarts.id, existingProduct.id));
 
     return { status: "success" };
+  });
+
+const purchaseCartSchema = z.object({
+  street: z.string(),
+  zipCode: z.string(),
+  city: z.string(),
+});
+
+export const purchaseCartFn = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(purchaseCartSchema)
+  .handler(async ({ context }) => {
+    const { user } = context;
+
+    const cart = await getActiveCart(user.id);
+
+    if (!cart) {
+      throw Response.json({ error: "Cart not found" }, { status: 404 });
+    }
+    debugger;
+
+    const cartProducts = await db
+      .select({
+        id: productInCarts.id,
+        quantity: productInCarts.quantity,
+        product: {
+          id: products.id,
+          price: products.price,
+          quantity: products.quantity,
+        },
+      })
+      .from(productInCarts)
+      .innerJoin(products, eq(products.id, productInCarts.productId))
+      .where(
+        and(
+          eq(productInCarts.cartId, cart.id),
+          eq(productInCarts.status, "active"),
+        ),
+      );
+
+    if (cartProducts.length === 0) {
+      throw Response.json(
+        { error: "there is no products in the cart" },
+        { status: 404 },
+      );
+    }
+
+    await db.transaction(async (tx) => {
+      let totalPrice = 0;
+      const productsPromises = cartProducts.map(async (item) => {
+        totalPrice += item.product.price * item.quantity;
+        await tx
+          .update(products)
+          .set({
+            quantity: item.product.quantity - item.quantity,
+            updatedAt: new Date(),
+          })
+          .where(eq(products.id, item.product.id));
+      });
+
+      await Promise.all([
+        ...productsPromises,
+        tx
+          .update(productInCarts)
+          .set({ status: "purchased", updatedAt: new Date() })
+          .where(
+            inArray(
+              productInCarts.id,
+              cartProducts.map((item) => item.id),
+            ),
+          ),
+        tx
+          .update(carts)
+          .set({
+            status: "purchased",
+            updatedAt: new Date(),
+          })
+          .where(eq(carts.id, cart.id)),
+        tx.insert(orders).values({
+          userId: user.id,
+          cartId: cart.id,
+          totalPrice: totalPrice,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
+      ]);
+    });
+
+    return {
+      status: "success",
+    };
   });

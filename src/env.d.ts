@@ -22,6 +22,7 @@ declare global {
       readonly FIREBASE_PROJECT_ID: string;
       readonly FIREBASE_STORAGE_BUCKET: string;
       readonly JWT_SECRET: string;
+      readonly NETLIFY: string;
     }
   }
 }
