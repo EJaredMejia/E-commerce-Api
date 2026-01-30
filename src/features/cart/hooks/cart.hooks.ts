@@ -10,6 +10,7 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import {
   addProductToCart,
+  deleteCartProduct,
   getCartProductsUser,
   updateCartProduct,
 } from "../server/cart.server";
@@ -74,18 +75,27 @@ export const useUpdateCartMutation = () => {
 export const useDeleteCartMutation = () => {
   const setIsLoading = useAppStore((state) => state.setIsLoading);
   const queryClient = useQueryClient();
+  const { data: user } = useCurrentUserQuery();
+
+  const deleteCartFn = useServerFn(deleteCartProduct);
 
   return useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (productInCartId: number) => {
+      return await deleteCartFn({ data: { productInCartId } });
+    },
+    onMutate: () => {
       setIsLoading(true);
-      try {
-        await api.delete(`/cart/${id}`);
-      } finally {
-        setIsLoading(false);
-      }
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({
+        queryKey: getCartQueryOptions({
+          queryFn: getCartProductsUser,
+          userId: user?.id,
+        }).queryKey,
+      });
     },
   });
 };

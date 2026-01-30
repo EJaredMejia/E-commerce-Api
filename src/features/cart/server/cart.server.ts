@@ -213,3 +213,52 @@ export const updateCartProduct = createServerFn({ method: "POST" })
       data: { updatedProduct },
     };
   });
+
+const deleteCartSchema = z.object({
+  productInCartId: z.number(),
+});
+
+export const deleteCartProduct = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(deleteCartSchema)
+  .handler(async ({ data, context }) => {
+    const { productInCartId } = data;
+    const { user } = context;
+
+    const cart = await getActiveCart(user.id);
+
+    if (!cart) {
+      throw Response.json({ error: "Cart not found" }, { status: 404 });
+    }
+
+    const [existingProduct] = await db
+      .select({
+        id: productInCarts.id,
+      })
+      .from(productInCarts)
+      .where(
+        and(
+          eq(productInCarts.id, productInCartId),
+          eq(productInCarts.status, "active"),
+        ),
+      )
+      .limit(1);
+
+    if (!existingProduct) {
+      throw Response.json(
+        { error: "product in cart not found" },
+        { status: 404 },
+      );
+    }
+
+    await db
+      .update(productInCarts)
+      .set({
+        quantity: 0,
+        status: "removed",
+        updatedAt: new Date(),
+      })
+      .where(eq(productInCarts.id, existingProduct.id));
+
+    return { status: "success" };
+  });
