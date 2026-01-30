@@ -9,65 +9,72 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as ProtectedRouteImport } from './routes/_protected'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProductIdRouteImport } from './routes/product.$id'
-import { Route as ProtectedPurchasesRouteImport } from './routes/_protected/purchases'
+import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as LayoutSignupRouteImport } from './routes/_layout/signup'
+import { Route as LayoutLoginRouteImport } from './routes/_layout/login'
+import { Route as LayoutProtectedRouteImport } from './routes/_layout/_protected'
+import { Route as LayoutProductIdRouteImport } from './routes/_layout/product.$id'
+import { Route as LayoutProtectedPurchasesRouteImport } from './routes/_layout/_protected/purchases'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
+const LayoutRoute = LayoutRouteImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProtectedRoute = ProtectedRouteImport.update({
-  id: '/_protected',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
+const LayoutIndexRoute = LayoutIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LayoutRoute,
 } as any)
-const ProductIdRoute = ProductIdRouteImport.update({
+const LayoutSignupRoute = LayoutSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutLoginRoute = LayoutLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutProtectedRoute = LayoutProtectedRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutProductIdRoute = LayoutProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LayoutRoute,
 } as any)
-const ProtectedPurchasesRoute = ProtectedPurchasesRouteImport.update({
-  id: '/purchases',
-  path: '/purchases',
-  getParentRoute: () => ProtectedRoute,
-} as any)
+const LayoutProtectedPurchasesRoute =
+  LayoutProtectedPurchasesRouteImport.update({
+    id: '/purchases',
+    path: '/purchases',
+    getParentRoute: () => LayoutProtectedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
-  '/purchases': typeof ProtectedPurchasesRoute
-  '/product/$id': typeof ProductIdRoute
+  '/': typeof LayoutIndexRoute
+  '/login': typeof LayoutLoginRoute
+  '/signup': typeof LayoutSignupRoute
+  '/purchases': typeof LayoutProtectedPurchasesRoute
+  '/product/$id': typeof LayoutProductIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
-  '/purchases': typeof ProtectedPurchasesRoute
-  '/product/$id': typeof ProductIdRoute
+  '/': typeof LayoutIndexRoute
+  '/login': typeof LayoutLoginRoute
+  '/signup': typeof LayoutSignupRoute
+  '/purchases': typeof LayoutProtectedPurchasesRoute
+  '/product/$id': typeof LayoutProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_protected': typeof ProtectedRouteWithChildren
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
-  '/_protected/purchases': typeof ProtectedPurchasesRoute
-  '/product/$id': typeof ProductIdRoute
+  '/_layout': typeof LayoutRouteWithChildren
+  '/_layout/_protected': typeof LayoutProtectedRouteWithChildren
+  '/_layout/login': typeof LayoutLoginRoute
+  '/_layout/signup': typeof LayoutSignupRoute
+  '/_layout/': typeof LayoutIndexRoute
+  '/_layout/_protected/purchases': typeof LayoutProtectedPurchasesRoute
+  '/_layout/product/$id': typeof LayoutProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -76,87 +83,106 @@ export interface FileRouteTypes {
   to: '/' | '/login' | '/signup' | '/purchases' | '/product/$id'
   id:
     | '__root__'
-    | '/'
-    | '/_protected'
-    | '/login'
-    | '/signup'
-    | '/_protected/purchases'
-    | '/product/$id'
+    | '/_layout'
+    | '/_layout/_protected'
+    | '/_layout/login'
+    | '/_layout/signup'
+    | '/_layout/'
+    | '/_layout/_protected/purchases'
+    | '/_layout/product/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ProtectedRoute: typeof ProtectedRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  SignupRoute: typeof SignupRoute
-  ProductIdRoute: typeof ProductIdRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_protected': {
-      id: '/_protected'
+    '/_layout': {
+      id: '/_layout'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof ProtectedRouteImport
+      preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_layout/': {
+      id: '/_layout/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof LayoutIndexRouteImport
+      parentRoute: typeof LayoutRoute
     }
-    '/product/$id': {
-      id: '/product/$id'
+    '/_layout/signup': {
+      id: '/_layout/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof LayoutSignupRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/login': {
+      id: '/_layout/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LayoutLoginRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/_protected': {
+      id: '/_layout/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutProtectedRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/product/$id': {
+      id: '/_layout/product/$id'
       path: '/product/$id'
       fullPath: '/product/$id'
-      preLoaderRoute: typeof ProductIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof LayoutProductIdRouteImport
+      parentRoute: typeof LayoutRoute
     }
-    '/_protected/purchases': {
-      id: '/_protected/purchases'
+    '/_layout/_protected/purchases': {
+      id: '/_layout/_protected/purchases'
       path: '/purchases'
       fullPath: '/purchases'
-      preLoaderRoute: typeof ProtectedPurchasesRouteImport
-      parentRoute: typeof ProtectedRoute
+      preLoaderRoute: typeof LayoutProtectedPurchasesRouteImport
+      parentRoute: typeof LayoutProtectedRoute
     }
   }
 }
 
-interface ProtectedRouteChildren {
-  ProtectedPurchasesRoute: typeof ProtectedPurchasesRoute
+interface LayoutProtectedRouteChildren {
+  LayoutProtectedPurchasesRoute: typeof LayoutProtectedPurchasesRoute
 }
 
-const ProtectedRouteChildren: ProtectedRouteChildren = {
-  ProtectedPurchasesRoute: ProtectedPurchasesRoute,
+const LayoutProtectedRouteChildren: LayoutProtectedRouteChildren = {
+  LayoutProtectedPurchasesRoute: LayoutProtectedPurchasesRoute,
 }
 
-const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
-  ProtectedRouteChildren,
+const LayoutProtectedRouteWithChildren = LayoutProtectedRoute._addFileChildren(
+  LayoutProtectedRouteChildren,
 )
 
+interface LayoutRouteChildren {
+  LayoutProtectedRoute: typeof LayoutProtectedRouteWithChildren
+  LayoutLoginRoute: typeof LayoutLoginRoute
+  LayoutSignupRoute: typeof LayoutSignupRoute
+  LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutProductIdRoute: typeof LayoutProductIdRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutProtectedRoute: LayoutProtectedRouteWithChildren,
+  LayoutLoginRoute: LayoutLoginRoute,
+  LayoutSignupRoute: LayoutSignupRoute,
+  LayoutIndexRoute: LayoutIndexRoute,
+  LayoutProductIdRoute: LayoutProductIdRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ProtectedRoute: ProtectedRouteWithChildren,
-  LoginRoute: LoginRoute,
-  SignupRoute: SignupRoute,
-  ProductIdRoute: ProductIdRoute,
+  LayoutRoute: LayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

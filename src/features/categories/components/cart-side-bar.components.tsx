@@ -106,8 +106,12 @@ const CartContent = ({
       <ul className="change-height mr-1">
         {shoppingCart.map((cart) => (
           <li
-            onClick={() => navigate({ to: `/product/${cart.product.id}` })}
-            key={cart.id}
+            onClick={() =>
+              navigate({
+                to: "/product/$id",
+                params: { id: cart.product.id },
+              })
+            }
             className="cursor-pointer border-b-2 border-gray-300 px-5 py-1 hover:bg-slate-100 active:bg-slate-200"
           >
             <div>
@@ -147,7 +151,7 @@ const CartContent = ({
                 className="order-5"
               >
                 <Trash2
-                  className="text-red-500 hover:text-red-700 active:text-red-800"
+                  className="cursor-pointer text-red-500 hover:text-red-700 active:text-red-800"
                   size={20}
                 />
               </button>

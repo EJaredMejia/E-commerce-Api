@@ -20,7 +20,7 @@ const Login = () => {
   const { mutateAsync: login } = useLoginMutation();
 
   const searchMessage = useSearch({
-    from: "/login",
+    from: "/_layout/login",
     select: (state) => state.message,
   });
 

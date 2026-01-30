@@ -8,7 +8,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Filter, Search } from "lucide-react";
 import { Suspense, useState } from "react";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_layout/")({
   component: Home,
   loader: async ({ context }) => {
     const { queryClient } = context;

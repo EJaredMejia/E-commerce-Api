@@ -19,7 +19,7 @@ import ProductsItem from "./products-item";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
-  const { id } = useParams({ from: "/product/$id" });
+  const { id } = useParams({ from: "/_layout/product/$id" });
   const queryFn = useServerFn(getAllProducts);
   const { data: allProducts } = useSuspenseQuery(
     getProductsQueryOptions(queryFn),
@@ -182,7 +182,7 @@ const ProductDetail = () => {
 };
 
 function ButtonAddToCart({ quantityProducts }: { quantityProducts: number }) {
-  const { id } = useParams({ from: "/product/$id" });
+  const { id } = useParams({ from: "/_layout/product/$id" });
   const addToCart = useAddProductToCart({
     productId: id,
     quantity: quantityProducts,

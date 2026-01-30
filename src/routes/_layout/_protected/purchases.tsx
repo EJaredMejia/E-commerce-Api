@@ -4,7 +4,7 @@ import { getPurchasesQueryOptions } from "@/features/purchases/queries/purchases
 import { getUserPurchases } from "@/features/purchases/server/purchases.server";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_protected/purchases")({
+export const Route = createFileRoute("/_layout/_protected/purchases")({
   component: Purchases,
   pendingComponent: PurchasesSkeleton,
   loader: async ({ context }) => {

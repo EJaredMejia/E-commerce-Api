@@ -3,9 +3,9 @@ import { getProductsQueryOptions } from "@/features/products/queries/products.qu
 import { getAllProducts } from "@/features/products/server/products.server";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import ProductDetail from "../features/products/components/product-detail";
+import ProductDetail from "../../features/products/components/product-detail";
 
-export const Route = createFileRoute("/product/$id")({
+export const Route = createFileRoute("/_layout/product/$id")({
   component: () => (
     <Suspense fallback={<ProductDetailSkeleton />}>
       <ProductDetail />
