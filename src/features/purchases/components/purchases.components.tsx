@@ -14,7 +14,6 @@ const Purchases = () => {
     getPurchasesQueryOptions(queryFn),
   );
 
-  console.log({ purchases });
 
   const sortedPurchases = purchases.toSorted((a, b) => {
     return b.createdAt.getTime() - a.createdAt.getTime();

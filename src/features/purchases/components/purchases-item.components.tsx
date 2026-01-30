@@ -34,7 +34,7 @@ const PurchasesItem = ({ purchase }: PurchasesItemProps) => {
               >
                 <p>{product.product.title}</p>
                 <p className="flex w-12 items-center justify-center border border-gray-300 px-6 py-1">
-                  {product.quantity || 1}
+                  {product.quantity}
                 </p>
                 <p>$ {product.product.price}</p>
               </div>

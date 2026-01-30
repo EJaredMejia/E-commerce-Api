@@ -1,6 +1,6 @@
 import ClipLoader from "react-spinners/ClipLoader";
 
-const LoadingScreen = () => {
+export function LoadingScreen() {
   return (
     <div
       style={{ background: "rgba(0,0,0,0.3)" }}
@@ -9,6 +9,4 @@ const LoadingScreen = () => {
       <ClipLoader className="text-red-500" size={120} />
     </div>
   );
-};
-
-export default LoadingScreen;
+}

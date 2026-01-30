@@ -4,6 +4,7 @@ import { getAllProducts } from "@/features/products/server/products.server";
 import { api } from "@/services/api";
 import { useAppStore } from "@/store/app.store";
 import {
+  Query,
   QueryClient,
   useMutation,
   useQueryClient,
@@ -30,14 +31,21 @@ interface CreateUserPayload {
   role: "normal";
 }
 
+function predicateRemoveQueries(query: Query) {
+  return !query.queryKey.some(
+    (key) =>
+      key === getCategoriesQueryOptions(getAllCategories).queryKey[0] ||
+      key === getProductsQueryOptions(getAllProducts).queryKey[0],
+  );
+}
+
 function removeQueries(queryClient: QueryClient) {
+  // remove for potentially showing info of another user
   queryClient.removeQueries({
-    predicate: (query) =>
-      !query.queryKey.some(
-        (key) =>
-          key === getCategoriesQueryOptions(getAllCategories).queryKey[0] ||
-          key === getProductsQueryOptions(getAllProducts).queryKey[0],
-      ),
+    predicate: predicateRemoveQueries,
+  });
+  queryClient.invalidateQueries({
+    predicate: predicateRemoveQueries,
   });
 }
 

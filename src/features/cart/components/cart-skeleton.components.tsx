@@ -1,6 +1,6 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 
-export const CartSkeleton = () => {
+export function CartSkeleton() {
   return (
     <ul className="change-height mr-1">
       {[1, 2, 3].map((i) => (
@@ -31,4 +31,4 @@ export const CartSkeleton = () => {
       ))}
     </ul>
   );
-};
+}

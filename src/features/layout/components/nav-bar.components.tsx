@@ -3,28 +3,28 @@ import { useAppStore } from "@/store/app.store";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Package, ShoppingCart, User } from "lucide-react";
 import { useState } from "react";
-import CartSideBar from "../../categories/components/cart-side-bar.components";
+import { CartSideBar } from "../../categories/components/cart-side-bar.components";
 
-const NavBar = () => {
+export function NavBar() {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const { data: userLocal } = useCurrentUserQuery();
   const setIsMessage = useAppStore((state) => state.setIsMessage);
   const navigate = useNavigate();
 
-  const toogleCart = () => {
+  function toogleCart() {
     if (userLocal) {
       setIsCartVisible(!isCartVisible);
     } else {
       setIsMessage("you need to log in to see your cart shop");
       navigate({ to: "/login" });
     }
-  };
+  }
 
-  const purchaseClick = () => {
+  function purchaseClick() {
     if (!userLocal) {
       setIsMessage("you need to log in to see your purchases");
     }
-  };
+  }
 
   return (
     <nav className="sticky top-0 z-50 grid h-fit w-full grid-cols-2 bg-white p-5 lg:items-center lg:border-b lg:border-gray-300 lg:py-0">
@@ -52,9 +52,9 @@ const NavBar = () => {
         >
           <ShoppingCart
             className={`${
-              isCartVisible
-                ? "fill-red-500 text-red-500"
-                : "fill-gray-500 text-gray-500"
+              !userLocal && isCartVisible
+                ? "fill-gray-500 text-gray-500"
+                : "fill-red-500 text-red-500"
             } size-8`}
           />
         </button>
@@ -67,6 +67,4 @@ const NavBar = () => {
       )}
     </nav>
   );
-};
-
-export default NavBar;
+}

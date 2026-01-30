@@ -3,8 +3,8 @@ import { getCartQueryOptions } from "@/features/cart/queries/cart.queries";
 import { getCartProductsUser } from "@/features/cart/server/cart.server";
 import { getCategoriesQueryOptions } from "@/features/categories/queries/categories.queries";
 import { getAllCategories } from "@/features/categories/server/categories.server";
-import Footer from "@/features/layout/components/footer.components";
-import NavBar from "@/features/layout/components/nav-bar.components";
+import { Footer } from "@/features/layout/components/footer.components";
+import { NavBar } from "@/features/layout/components/nav-bar.components";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout")({

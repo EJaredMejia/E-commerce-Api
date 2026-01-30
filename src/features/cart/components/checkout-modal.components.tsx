@@ -7,10 +7,11 @@ interface CheckoutModalProps {
   isCheckoutModalOpen: boolean;
   closeCheckoutModal: () => void;
 }
-const CheckoutModal = ({
+
+export function CheckoutModal({
   isCheckoutModalOpen,
   closeCheckoutModal,
-}: CheckoutModalProps) => {
+}: CheckoutModalProps) {
   const defaultValues = {
     street: "",
     colony: "",
@@ -24,15 +25,15 @@ const CheckoutModal = ({
 
   const { mutate: purchaseCartMutate } = usePurchaseCartMutation();
 
-  const restoreForm = () => {
+  function restoreForm() {
     reset();
-  };
+  }
 
-  const purchaseCart = (data: typeof defaultValues) => {
+  function purchaseCart(data: typeof defaultValues) {
     purchaseCartMutate(data);
     closeCheckoutModal();
     restoreForm();
-  };
+  }
 
   return (
     <Modal
@@ -46,14 +47,14 @@ const CheckoutModal = ({
       >
         <X
           onClick={closeCheckoutModal}
-          className="absolute right-8 top-8 cursor-pointer text-gray-600"
+          className="absolute top-8 right-8 cursor-pointer text-gray-600"
           size={24}
         />
         <h2 className="font-bold text-gray-800">Send to:</h2>
         <label htmlFor="street">Street</label>
         <input
           required
-          className="p-2 border border-gray-300"
+          className="border border-gray-300 p-2"
           type="text"
           id="street"
           {...register("street")}
@@ -61,7 +62,7 @@ const CheckoutModal = ({
         <label htmlFor="colony">Colony</label>
         <input
           required
-          className="p-2 border border-gray-300"
+          className="border border-gray-300 p-2"
           type="text"
           id="colony"
           {...register("colony")}
@@ -69,7 +70,7 @@ const CheckoutModal = ({
         <label htmlFor="zipCode">Zip Code</label>
         <input
           required
-          className="p-2 border border-gray-300"
+          className="border border-gray-300 p-2"
           type="number"
           id="zipCode"
           {...register("zipCode")}
@@ -77,7 +78,7 @@ const CheckoutModal = ({
         <label htmlFor="city">City</label>
         <input
           required
-          className="p-2 border border-gray-300"
+          className="border border-gray-300 p-2"
           type="text"
           id="city"
           {...register("city")}
@@ -85,15 +86,13 @@ const CheckoutModal = ({
         <label htmlFor="references">References</label>
         <input
           required
-          className="p-2 border border-gray-300"
+          className="border border-gray-300 p-2"
           type="text"
           id="references"
           {...register("references")}
         />
-        <button className="bg-red-500 text-white p-3">Purchase products</button>
+        <button className="bg-red-500 p-3 text-white">Purchase products</button>
       </form>
     </Modal>
   );
-};
-
-export default CheckoutModal;
+}

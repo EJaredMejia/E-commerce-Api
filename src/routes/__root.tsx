@@ -5,12 +5,14 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
-import LoadingScreen from "../components/loading-screen";
+import { LoadingScreen } from "../components/loading-screen";
 
 import appCss from "@/App.css?url";
 import indexCss from "@/index.css?url";
 import { useAppStore } from "@/store/app.store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -61,6 +63,14 @@ function AppContent() {
     <QueryClientProvider client={queryClient}>
       {isLoading && <LoadingScreen />}
       <Outlet />
+      <TanStackDevtools
+        plugins={[
+          {
+            name: "TanStack Query",
+            render: <ReactQueryDevtoolsPanel />,
+          },
+        ]}
+      />
     </QueryClientProvider>
   );
 }

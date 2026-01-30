@@ -3,7 +3,7 @@ import { db } from "@/db/drizzle";
 import { authMiddleware } from "@/features/auth/middleware/auth.middleware";
 import { carts, orders, productInCarts, products } from "@root/drizzle/schema";
 import { createServerFn } from "@tanstack/react-start";
-import { eq, isNotNull } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 
 export const getUserPurchases = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
@@ -35,7 +35,13 @@ export const getUserPurchases = createServerFn({ method: "GET" })
       })
       .from(orders)
       .innerJoin(carts, eq(carts.id, orders.cartId))
-      .innerJoin(productInCarts, eq(productInCarts.cartId, carts.id))
+      .innerJoin(
+        productInCarts,
+        and(
+          eq(productInCarts.cartId, carts.id),
+          eq(productInCarts.status, "purchased"),
+        ),
+      )
       .innerJoin(products, eq(products.id, productInCarts.productId))
       .where(eq(orders.userId, userId))
       .groupBy(orders.id, carts.id);

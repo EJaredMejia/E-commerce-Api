@@ -1,3 +1,6 @@
+import { useNavigate } from "@tanstack/react-router";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { Suspense, useState, useEffect } from "react";
 import { CartSkeleton } from "@/features/cart/components/cart-skeleton.components";
 import {
   useCartUserSuspenseQuery,
@@ -5,22 +8,22 @@ import {
   useUpdateCartMutation,
 } from "@/features/cart/hooks/cart.hooks";
 import type { Cart } from "@/features/cart/types/cart.types";
-import { useNavigate } from "@tanstack/react-router";
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { Suspense, useState } from "react";
-import CheckoutModal from "../../cart/components/checkout-modal.components";
+import { CheckoutModal } from "../../cart/components/checkout-modal.components";
 
 interface CartSideBarProps {
   isCartVisible: boolean;
   setIsCartVisible: (value: boolean) => void;
 }
 
-const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
+export function CartSideBar({
+  isCartVisible,
+  setIsCartVisible,
+}: CartSideBarProps) {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
-  const closeCheckoutModal = () => {
+  function closeCheckoutModal() {
     setIsCheckoutModalOpen(false);
-  };
+  }
 
   return (
     <div
@@ -31,29 +34,31 @@ const CartSideBar = ({ isCartVisible, setIsCartVisible }: CartSideBarProps) => {
       <h3 className="px-6 py-5 text-lg font-bold text-gray-700">
         Shopping cart
       </h3>
+
       <Suspense fallback={<CartSkeleton />}>
         <CartContent
           setIsCartVisible={setIsCartVisible}
           setIsCheckoutModalOpen={setIsCheckoutModalOpen}
         />
       </Suspense>
+
       <CheckoutModal
         isCheckoutModalOpen={isCheckoutModalOpen}
         closeCheckoutModal={closeCheckoutModal}
       />
     </div>
   );
-};
+}
 
 interface CartContentProps {
   setIsCartVisible: (value: boolean) => void;
   setIsCheckoutModalOpen: (value: boolean) => void;
 }
 
-const CartContent = ({
+function CartContent({
   setIsCartVisible,
   setIsCheckoutModalOpen,
-}: CartContentProps) => {
+}: CartContentProps) {
   const navigate = useNavigate();
 
   const { mutate: updateCart } = useUpdateCartMutation();
@@ -65,7 +70,7 @@ const CartContent = ({
     return acc + product.product.price * product.quantity;
   }, 0);
 
-  const minusQuantity = (cart: Cart) => {
+  function minusQuantity(cart: Cart) {
     if (cart.quantity === 1) {
       deleteCartMutation(cart.id);
       return;
@@ -77,21 +82,21 @@ const CartContent = ({
     };
 
     updateCart(newProductCart);
-  };
+  }
 
-  const plusQuantity = (cart: Cart) => {
+  function plusQuantity(cart: Cart) {
     const newProductCart = {
       productId: cart.product.id,
       newQty: cart.quantity + 1,
     };
     updateCart(newProductCart);
-  };
+  }
 
-  const deleteCart = (id: number) => {
+  function deleteCart(id: number) {
     deleteCartMutation(id);
-  };
+  }
 
-  const checkoutClick = () => {
+  function checkoutClick() {
     if (shoppingCart.length > 0) {
       setIsCheckoutModalOpen(true);
       setIsCartVisible(false);
@@ -99,13 +104,14 @@ const CartContent = ({
     }
 
     alert("The shopping cart is empty");
-  };
+  }
 
   return (
     <>
       <ul className="change-height mr-1">
         {shoppingCart.map((cart) => (
           <li
+            key={cart.id}
             onClick={() =>
               navigate({
                 to: "/product/$id",
@@ -175,6 +181,4 @@ const CartContent = ({
       </div>
     </>
   );
-};
-
-export default CartSideBar;
+}

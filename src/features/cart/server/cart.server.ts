@@ -154,3 +154,62 @@ export const addProductToCart = createServerFn({ method: "POST" })
 
     return { status: "success" };
   });
+
+const updateCartSchema = z.object({
+  productId: z.number(),
+  newQty: z.number().min(0),
+});
+
+export const updateCartProduct = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(updateCartSchema)
+  .handler(async ({ data, context }) => {
+    const { productId, newQty } = data;
+    const { user } = context;
+
+    const cart = await getActiveCart(user.id);
+
+    if (!cart) {
+      throw Response.json({ error: "Cart not found" }, { status: 404 });
+    }
+
+    const [existingProduct] = await db
+      .select({
+        id: productInCarts.id,
+      })
+      .from(productInCarts)
+      .where(
+        and(
+          eq(productInCarts.cartId, cart.id),
+          eq(productInCarts.productId, productId),
+          eq(productInCarts.status, "active"),
+        ),
+      )
+      .limit(1);
+
+    if (!existingProduct) {
+      if (newQty === 0) return { status: "success" };
+
+      throw Response.json(
+        { error: "product in cart not found" },
+        { status: 404 },
+      );
+    }
+
+    const [updatedProduct] = await db
+      .update(productInCarts)
+      .set({
+        quantity: newQty,
+        status: newQty === 0 ? "removed" : "active",
+        updatedAt: new Date(),
+      })
+      .where(eq(productInCarts.id, existingProduct.id))
+      .returning({
+        id: productInCarts.id,
+      });
+
+    return {
+      status: "success",
+      data: { updatedProduct },
+    };
+  });
