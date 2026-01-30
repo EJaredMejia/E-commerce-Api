@@ -1,11 +1,10 @@
 import {
   Link,
   useCanGoBack,
-  useNavigate,
-  useRouter,
+  useRouter
 } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import { Home, MoveLeft, Search } from "lucide-react";
+import { motion } from "motion/react";
 
 export function NotFoundComponent() {
   const canGoBack = useCanGoBack();
