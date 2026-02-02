@@ -5,7 +5,7 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
-import { LoadingScreen } from "../components/loading-screen";
+import { LoadingScreen } from "@/components/loading-screen";
 
 import appCss from "@/App.css?url";
 import indexCss from "@/index.css?url";
