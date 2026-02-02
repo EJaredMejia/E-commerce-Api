@@ -13,8 +13,6 @@ export interface DeleteCart {
 }
 export interface PurchaseCart {
   street: string;
-  colony: string;
   zipCode: string;
   city: string;
-  references: string;
 }
