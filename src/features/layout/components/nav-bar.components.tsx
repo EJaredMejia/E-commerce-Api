@@ -1,6 +1,5 @@
 import { useCurrentUserQuery } from "@/features/auth/hooks/auth.hooks";
-import { useAppStore } from "@/store/app.store";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, type LinkProps } from "@tanstack/react-router";
 import { Package, ShoppingCart, User } from "lucide-react";
 import { useState } from "react";
 import { CartSideBar } from "../../categories/components/cart-side-bar.components";
@@ -8,23 +7,28 @@ import { CartSideBar } from "../../categories/components/cart-side-bar.component
 export function NavBar() {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const { data: userLocal } = useCurrentUserQuery();
-  const setIsMessage = useAppStore((state) => state.setIsMessage);
   const navigate = useNavigate();
 
   function toogleCart() {
     if (userLocal) {
       setIsCartVisible(!isCartVisible);
-    } else {
-      setIsMessage("you need to log in to see your cart shop");
-      navigate({ to: "/login" });
+      return;
     }
+
+    navigate({
+      to: "/login",
+      search: { message: "you need to log in to see your cart shop" },
+    });
   }
 
-  function purchaseClick() {
-    if (!userLocal) {
-      setIsMessage("you need to log in to see your purchases");
-    }
-  }
+  const linkPropsPurchases: LinkProps = userLocal
+    ? {
+        to: "/purchases",
+      }
+    : {
+        to: "/login",
+        search: { message: "you need to log in to see your purchases" },
+      };
 
   return (
     <nav className="sticky top-0 z-50 grid h-fit w-full grid-cols-2 bg-white p-5 lg:items-center lg:border-b lg:border-gray-300 lg:py-0">
@@ -40,19 +44,21 @@ export function NavBar() {
         >
           <User className="size-8 text-red-500" />
         </Link>
+
         <Link
-          to="/purchases"
+          {...linkPropsPurchases}
           className="lg:border-l lg:border-gray-300 lg:px-16 lg:py-5"
         >
-          <Package onClick={purchaseClick} className="size-8 text-red-500" />
+          <Package className="size-8 text-red-500" />
         </Link>
+
         <button
           onClick={toogleCart}
           className="cursor-pointer lg:border-l lg:border-gray-300 lg:px-16 lg:py-5"
         >
           <ShoppingCart
             className={`${
-              !userLocal && isCartVisible
+              !userLocal || !isCartVisible
                 ? "fill-gray-500 text-gray-500"
                 : "fill-red-500 text-red-500"
             } size-8`}

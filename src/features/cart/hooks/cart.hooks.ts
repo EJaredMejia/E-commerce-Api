@@ -141,7 +141,13 @@ export function useCartUserSuspenseQuery() {
   return useSuspenseQuery(
     getCartQueryOptions({
       queryFn: async () => {
-        return await serverFn();
+        const res = await serverFn();
+
+        if (Array.isArray(res)) {
+          return res;
+        }
+
+        return [];
       },
       userId: user?.id,
     }),

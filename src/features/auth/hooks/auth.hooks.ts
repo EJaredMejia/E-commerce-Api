@@ -30,18 +30,15 @@ interface CreateUserPayload {
 }
 
 function predicateRemoveQueries(query: Query) {
-  return !query.queryKey.some(
+  const shouldRemove = !query.queryKey.some(
     (key) =>
       key === getCategoriesQueryOptions(getAllCategories).queryKey[0] ||
       key === getProductsQueryOptions(getAllProducts).queryKey[0],
   );
+  return shouldRemove;
 }
 
-function removeQueries(queryClient: QueryClient) {
-  // remove for potentially showing info of another user
-  queryClient.removeQueries({
-    predicate: predicateRemoveQueries,
-  });
+async function removeQueries(queryClient: QueryClient) {
   queryClient.invalidateQueries({
     predicate: predicateRemoveQueries,
   });
@@ -56,16 +53,17 @@ export const useLoginMutation = () => {
   const loginFn = useServerFn(login);
   return useMutation({
     mutationFn: async (body: LoginPayload) => {
-      setIsLoading(true);
-      try {
-        const user = await loginFn({ data: body });
-        return user;
-      } finally {
-        setIsLoading(false);
-      }
+      const user = await loginFn({ data: body });
+      return user;
     },
-    onSuccess: () => {
-      removeQueries(queryClient);
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSettled: () => {
+      setIsLoading(false);
+    },
+    onSuccess: async () => {
+      await removeQueries(queryClient);
       navigate({ to: "/" });
     },
   });
@@ -78,8 +76,8 @@ export const useLogoutMutation = () => {
 
   const logoutFn = useServerFn(logout);
   return useMutation({
-    mutationFn: () => {
-      return logoutFn();
+    mutationFn: async () => {
+      return await logoutFn();
     },
     onMutate: () => {
       setIsLoading(true);
@@ -87,25 +85,25 @@ export const useLogoutMutation = () => {
     onSettled: () => {
       setIsLoading(false);
     },
-    onSuccess: () => {
-      removeQueries(queryClient);
+    onSuccess: async () => {
+      await removeQueries(queryClient);
     },
   });
 };
 
-// TODO create signup
 export const useCreateUserMutation = () => {
   const setIsLoading = useAppStore((state) => state.setIsLoading);
   const createUserFn = useServerFn(createUser);
 
   return useMutation({
     mutationFn: async (body: CreateUserPayload) => {
+      return await createUserFn({ data: body });
+    },
+    onMutate: () => {
       setIsLoading(true);
-      try {
-        return await createUserFn({ data: body });
-      } finally {
-        setIsLoading(false);
-      }
+    },
+    onSettled: () => {
+      setIsLoading(false);
     },
   });
 };

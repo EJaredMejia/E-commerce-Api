@@ -3,13 +3,11 @@ import {
   useLoginMutation,
   useLogoutMutation,
 } from "@/features/auth/hooks/auth.hooks";
-import { useAppStore } from "@/store/app.store";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Lock, Mail, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 
 const Login = () => {
-  const setIsMessage = useAppStore((state) => state.setIsMessage);
   const { data: userState } = useCurrentUserQuery();
 
   const navigate = useNavigate();
@@ -19,12 +17,10 @@ const Login = () => {
 
   const { mutateAsync: login } = useLoginMutation();
 
-  const searchMessage = useSearch({
+  const message = useSearch({
     from: "/_layout/login",
     select: (state) => state.message,
   });
-
-  const message = useAppStore((state) => state.loginMessage) || searchMessage;
 
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,7 +35,12 @@ const Login = () => {
       setPasswordUser("");
     } catch (e) {
       // TODO maybe doesnt work this way
-      setIsMessage("User doesn't exit");
+      navigate({
+        to: "/login",
+        search: {
+          message: "User doesn't exit",
+        },
+      });
     }
     return;
   };
