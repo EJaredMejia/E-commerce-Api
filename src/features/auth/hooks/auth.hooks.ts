@@ -3,8 +3,8 @@ import { getProductsQueryOptions } from "@/features/products/queries/products.qu
 import { getAllProducts } from "@/features/products/server/products.server";
 import { useAppStore } from "@/store/app.store";
 import {
-  Query,
-  QueryClient,
+  type Query,
+  type QueryClient,
   useMutation,
   useQueryClient,
   useSuspenseQuery,

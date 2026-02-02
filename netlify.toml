@@ -1,0 +1,6 @@
+[build]
+  command = "vite build"
+  publish = "dist/client"
+[dev]
+  targetPort = 5173
+  port = 3000

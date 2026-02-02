@@ -1,4 +1,4 @@
-import { SQL, sql, type Column } from "drizzle-orm";
+import { type SQL, sql, type Column } from "drizzle-orm";
 type JsonBuildObjectParam = Record<string, Column | SQL>;
 
 interface JsonAggParams<T extends JsonBuildObjectParam> {
