@@ -2,7 +2,7 @@ import { db } from "@/db/drizzle";
 import { users } from "@root/drizzle/schema";
 import { notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { useAppSession } from "../utils/auth.utils";

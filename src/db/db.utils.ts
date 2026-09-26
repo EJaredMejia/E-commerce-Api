@@ -11,8 +11,8 @@ type InferJsonBuildObjectParam<T extends JsonBuildObjectParam> =
     ? {
         [K in keyof T]: T[K] extends Column
           ? T[K]["_"]["data"]
-          : T[K] extends SQL<infer TType>
-            ? TType
+          : T[K] extends SQL | SQL.Aliased
+            ? T[K]["_"]["type"]
             : never;
       }
     : never;
@@ -22,18 +22,16 @@ export function jsonAgg<T extends JsonBuildObjectParam>({
 }: JsonAggParams<T>) {
   return sql<InferJsonBuildObjectParam<T>[]>`
               COALESCE(
-                json_agg(${jsonBuildObject(columnsMap)}) FILTER (WHERE ${filter}),
-                '[]'
-              )`;
+                json_group_array(${jsonBuildObject(columnsMap)}) FILTER (WHERE ${filter}),
+                json_array()
+              )`.mapWith({ mapFromDriverValue: (v: string): InferJsonBuildObjectParam<T>[] => JSON.parse(v) });
 }
 
 export function jsonBuildObject<T extends JsonBuildObjectParam>(columnsMap: T) {
   const chunks = Object.entries(columnsMap).map(([key, column]) => {
-    // We use sql.raw for the key to keep it as a string literal in SQL
-    // and the column object directly so Drizzle handles the mapping
     return sql`'${sql.raw(key)}', ${column}`;
   });
   return sql<
     InferJsonBuildObjectParam<T>
-  >`json_build_object(${sql.join(chunks, sql`, `)})`;
+  >`json_object(${sql.join(chunks, sql`, `)})`;
 }

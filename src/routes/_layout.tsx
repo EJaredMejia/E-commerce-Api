@@ -31,8 +31,12 @@ export const Route = createFileRoute("/_layout")({
 function RouteComponent() {
   return (
     <div className="grid min-h-svh grid-rows-[auto_auto_auto]">
-      <NavBar />
-      <Outlet />
+      <header>
+        <NavBar />
+      </header>
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </div>
   );

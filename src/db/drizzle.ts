@@ -1,27 +1,18 @@
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { upstashCache } from "drizzle-orm/cache/upstash";
+import { createClient } from "@libsql/client/web";
+import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "@root/drizzle/schema";
 import { relations } from "@root/drizzle/relations";
-import ws from "ws";
 
-if (!process.env.NETLIFY) {
-  neonConfig.webSocketConstructor = ws;
-}
+const url = process.env["TURSO_DATABASE_URL"] || "file:./drizzle/dev.db";
+const authToken = process.env["TURSO_AUTH_TOKEN"] || "";
 
-const sql = new Pool({ connectionString: process.env.DATABASE_URL });
+const client = createClient({
+  url,
+  authToken,
+});
 
 export const db = drizzle({
-  client: sql,
-  cache: upstashCache({
-    url: process.env.UPSTASH_REDIS_REST_URL,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    global: true,
-    config: {
-      // 5 minutes
-      ex: 60 * 5,
-    },
-  }),
+  client,
   schema,
   relations,
 });

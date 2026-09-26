@@ -1,109 +1,105 @@
 import {
-  pgTable,
-  serial,
-  varchar,
+  sqliteTable,
+  text,
   integer,
-  numeric,
-  timestamp,
-  unique,
-} from "drizzle-orm/pg-core";
+  real,
+} from "drizzle-orm/sqlite-core";
 
-export const carts = pgTable("carts", {
-  id: serial().primaryKey(),
-  userId: integer()
+export const carts = sqliteTable("carts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  status: varchar({ length: 255 }).default("active").notNull(),
-  createdAt: timestamp({ withTimezone: true }).notNull(),
-  updatedAt: timestamp({ withTimezone: true }).notNull(),
+  status: text("status").default("active").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
 });
 
-export const categories = pgTable("categories", {
-  id: serial().primaryKey(),
-  name: varchar({ length: 255 }).notNull(),
-  status: varchar({ length: 255 }).default("active").notNull(),
-  createdAt: timestamp({ withTimezone: true }).notNull(),
-  updatedAt: timestamp({ withTimezone: true }).notNull(),
+export const categories = sqliteTable("categories", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  status: text("status").default("active").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
 });
 
-export const orders = pgTable("orders", {
-  id: serial().primaryKey(),
-  userId: integer()
+export const orders = sqliteTable("orders", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  cartId: integer()
+  cartId: integer("cartId")
     .notNull()
     .references(() => carts.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  totalPrice: numeric({ mode: "number" }).notNull(),
-  status: varchar({ length: 255 }).default("active").notNull(),
-  createdAt: timestamp({ withTimezone: true }).notNull(),
-  updatedAt: timestamp({ withTimezone: true }).notNull(),
+  totalPrice: real("totalPrice").notNull(),
+  status: text("status").default("active").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
 });
 
-export const productImgs = pgTable("productImgs", {
-  id: serial().primaryKey(),
-  imgUrl: varchar({ length: 255 }).notNull(),
-  productId: integer()
+export const productImgs = sqliteTable("productImgs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  imgUrl: text("imgUrl").notNull(),
+  productId: integer("productId")
     .notNull()
     .references(() => products.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  status: varchar({ length: 255 }).default("active").notNull(),
-  createdAt: timestamp({ withTimezone: true }).notNull(),
-  updatedAt: timestamp({ withTimezone: true }).notNull(),
+  status: text("status").default("active").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
 });
 
-export const productInCarts = pgTable("productInCarts", {
-  id: serial().primaryKey(),
-  cartId: integer()
+export const productInCarts = sqliteTable("productInCarts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  cartId: integer("cartId")
     .notNull()
     .references(() => carts.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  productId: integer()
+  productId: integer("productId")
     .notNull()
     .references(() => products.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  quantity: integer().notNull(),
-  status: varchar({ length: 255 }).default("active").notNull(),
-  createdAt: timestamp({ withTimezone: true }).notNull(),
-  updatedAt: timestamp({ withTimezone: true }).notNull(),
+  quantity: integer("quantity").notNull(),
+  status: text("status").default("active").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
 });
 
-export const products = pgTable("products", {
-  id: serial().primaryKey(),
-  title: varchar({ length: 255 }).notNull(),
-  description: varchar({ length: 255 }).notNull(),
-  quantity: integer().notNull(),
-  price: numeric({ mode: "number" }).notNull(),
-  categoryId: integer()
+export const products = sqliteTable("products", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  quantity: integer("quantity").notNull(),
+  price: real("price").notNull(),
+  categoryId: integer("categoryId")
     .notNull()
     .references(() => categories.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  userId: integer()
+  userId: integer("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  status: varchar({ length: 255 }).default("active").notNull(),
-  createdAt: timestamp({ withTimezone: true }).notNull(),
-  updatedAt: timestamp({ withTimezone: true }).notNull(),
+  status: text("status").default("active").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
 });
 
-export const users = pgTable(
+export const users = sqliteTable(
   "users",
   {
-    id: serial().primaryKey(),
-    username: varchar({ length: 255 }).notNull(),
-    email: varchar({ length: 255 }).notNull(),
-    password: varchar({ length: 255 }).notNull(),
-    firstName: varchar({ length: 255 }),
-    lastName: varchar({ length: 255 }),
-    role: varchar({ length: 255 }).default("normal").notNull(),
-    status: varchar({ length: 255 }).default("active").notNull(),
-    createdAt: timestamp({ withTimezone: true }).notNull(),
-    updatedAt: timestamp({ withTimezone: true }).notNull(),
-  },
-  (table) => [unique("users_email_key").on(table.email)],
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    username: text("username").notNull(),
+    email: text("email").notNull().unique(),
+    password: text("password").notNull(),
+    firstName: text("firstName"),
+    lastName: text("lastName"),
+    role: text("role").default("normal").notNull(),
+    status: text("status").default("active").notNull(),
+    createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
+  }
 );

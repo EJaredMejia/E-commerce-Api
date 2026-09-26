@@ -26,3 +26,15 @@ dist-ssr
 .env
 
 .netlify
+# Cloudflare & Wrangler
+.wrangler/
+.dev.vars
+
+# TanStack Start & Vinxi
+.output/
+.vinxi/
+.tanstack/
+
+# Database
+*.db
+*.db-journal
