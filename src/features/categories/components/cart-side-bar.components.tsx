@@ -162,7 +162,7 @@ function CartContent({
                   className="text-red-500 hover:text-red-600 hover:bg-red-50"
                   onClick={(e) => {
                     e.stopPropagation();
-                    deleteCart(cart.product.id);
+                    deleteCart(cart.id);
                   }}
                 >
                   <Trash2 className="h-5 w-5" />

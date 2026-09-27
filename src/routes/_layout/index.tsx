@@ -49,7 +49,7 @@ function Home() {
                   onChange={(e) => setSearchValue(e.target.value)}
                   className="grow"
                 />
-                <Button type="submit" className="bg-red-500 hover:bg-red-600 px-6">
+                <Button type="submit" className="bg-red-500 h-full hover:bg-red-600 px-6">
                   <Search className="size-5 text-white" />
                 </Button>
               </div>
