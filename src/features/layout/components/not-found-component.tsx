@@ -1,10 +1,7 @@
-import {
-  Link,
-  useCanGoBack,
-  useRouter
-} from "@tanstack/react-router";
+import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
 import { Home, MoveLeft, Search } from "lucide-react";
 import { motion } from "motion/react";
+import { Button } from "@root/components/ui/button";
 
 export function NotFoundComponent() {
   const canGoBack = useCanGoBack();
@@ -57,19 +54,27 @@ export function NotFoundComponent() {
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row">
-        <button
+        <Button
           onClick={goBack}
-          className="flex items-center justify-center gap-3 rounded-2xl border-2 border-gray-100 bg-white px-8 py-4 font-bold text-gray-700 transition-all hover:border-gray-200 hover:bg-gray-50"
+          variant="outline"
+          size="lg"
+          className="h-14 rounded-2xl px-8 font-bold text-gray-700 hover:bg-gray-50"
         >
-          <MoveLeft className="h-5 w-5 text-gray-400" />
+          <MoveLeft className="mr-2 h-5 w-5 text-gray-400" />
           Go Back
-        </button>
-        <Link to="/">
-          <div className="flex items-center justify-center gap-3 rounded-2xl bg-red-500 px-8 py-4 font-bold text-white shadow-lg shadow-red-200 transition-all hover:bg-red-600 active:shadow-inner">
-            <Home className="h-5 w-5" />
-            Back to Home
-          </div>
-        </Link>
+        </Button>
+        <Button
+          render={(props) => (
+            <Link
+              to="/"
+              className="h-14 rounded-2xl bg-red-500 px-8 font-bold text-white shadow-lg shadow-red-200 hover:bg-red-600"
+              {...props}
+            >
+              <Home className="mr-2 h-5 w-5" />
+              Back to Home
+            </Link>
+          )}
+        />
       </div>
     </div>
   );

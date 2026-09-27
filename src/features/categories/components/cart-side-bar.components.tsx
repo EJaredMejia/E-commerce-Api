@@ -9,6 +9,13 @@ import { useNavigate } from "@tanstack/react-router";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Suspense, useState } from "react";
 import { CheckoutModal } from "../../cart/components/checkout-modal.components";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@root/components/ui/sheet";
+import { Button } from "@root/components/ui/button";
 
 interface CartSideBarProps {
   isCartVisible: boolean;
@@ -26,27 +33,25 @@ export function CartSideBar({
   }
 
   return (
-    <div
-      className={`fixed right-0 z-50 block w-[20rem] ${
-        isCartVisible ? "show-filters" : "hide-filters"
-      } top-16 h-screen bg-white shadow-xl lg:top-18 lg:border`}
-    >
-      <h3 className="px-6 py-5 text-lg font-bold text-gray-700">
-        Shopping cart
-      </h3>
+    <Sheet open={isCartVisible} onOpenChange={setIsCartVisible}>
+      <SheetContent className="flex flex-col w-full sm:max-w-md p-0 border-none shadow-2xl">
+        <SheetHeader className="px-6 py-5 border-b border-gray-200">
+          <SheetTitle className="text-xl font-bold text-gray-700">Shopping cart</SheetTitle>
+        </SheetHeader>
 
-      <Suspense fallback={<CartSkeleton />}>
-        <CartContent
-          setIsCartVisible={setIsCartVisible}
-          setIsCheckoutModalOpen={setIsCheckoutModalOpen}
+        <Suspense fallback={<CartSkeleton />}>
+          <CartContent
+            setIsCartVisible={setIsCartVisible}
+            setIsCheckoutModalOpen={setIsCheckoutModalOpen}
+          />
+        </Suspense>
+
+        <CheckoutModal
+          isCheckoutModalOpen={isCheckoutModalOpen}
+          closeCheckoutModal={closeCheckoutModal}
         />
-      </Suspense>
-
-      <CheckoutModal
-        isCheckoutModalOpen={isCheckoutModalOpen}
-        closeCheckoutModal={closeCheckoutModal}
-      />
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -75,12 +80,10 @@ function CartContent({
       deleteCartMutation(cart.id);
       return;
     }
-
     const newProductCart = {
       productId: cart.product.id,
       newQty: cart.quantity - 1,
     };
-
     updateCart(newProductCart);
   }
 
@@ -102,13 +105,12 @@ function CartContent({
       setIsCartVisible(false);
       return;
     }
-
     alert("The shopping cart is empty");
   }
 
   return (
     <>
-      <ul className="change-height mr-1">
+      <ul className="flex-1 overflow-y-auto">
         {shoppingCart.map((cart) => (
           <li
             key={cart.id}
@@ -118,66 +120,69 @@ function CartContent({
                 params: { id: cart.product.id },
               })
             }
-            className="cursor-pointer border-b-2 border-gray-300 px-5 py-1 hover:bg-slate-100 active:bg-slate-200"
+            className="cursor-pointer border-b border-gray-200 px-6 py-4 hover:bg-slate-50 transition-colors"
           >
-            <div>
-              <p className="mb-2">{cart.product.title}</p>
-              <p className="mb-2">$ {cart.product.price * cart.quantity}</p>
-            </div>
-            <div className="mb-2 flex items-center gap-5">
-              <p>Quantity: </p>
-              <div className="order-4 grid w-24 grid-cols-3 items-center justify-items-center border border-gray-300 text-base">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    minusQuantity(cart);
-                  }}
-                  className="flex h-full w-full cursor-pointer items-center justify-center active:bg-teal-300"
-                >
-                  <Minus size={16} />
-                </button>
-                <p className="w-full border-r border-l border-gray-300 text-center">
-                  {cart.quantity}
-                </p>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    plusQuantity(cart);
-                  }}
-                  className="flex h-full w-full cursor-pointer items-center justify-center active:bg-teal-300"
-                >
-                  <Plus size={16} />
-                </button>
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-start">
+                <p className="font-medium text-gray-800">{cart.product.title}</p>
+                <p className="font-semibold whitespace-nowrap ml-4">$ {cart.product.price * cart.quantity}</p>
               </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteCart(cart.product.id);
-                }}
-                className="order-5"
-              >
-                <Trash2
-                  className="cursor-pointer text-red-500 hover:text-red-700 active:text-red-800"
-                  size={20}
-                />
-              </button>
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-500">Qty:</span>
+                  <div className="flex items-center border border-gray-200 rounded-md">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-none rounded-l-md hover:bg-gray-100"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        minusQuantity(cart);
+                      }}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-10 text-center text-sm">{cart.quantity}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-none rounded-r-md hover:bg-gray-100"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        plusQuantity(cart);
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteCart(cart.product.id);
+                  }}
+                >
+                  <Trash2 className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
           </li>
         ))}
       </ul>
-      <div className="absolute bottom-20 flex w-[18rem] flex-col justify-end">
-        <div className="border-t-2 border-gray-300 p-6">
-          <div className="flex justify-between">
-            <p className="text-gray-500">Total: </p>
-            <p className="font-bold">$ {total}</p>
-          </div>
-          <button
-            onClick={checkoutClick}
-            className="mt-8 w-full cursor-pointer bg-red-500 p-2 text-center text-white hover:bg-red-600"
-          >
-            Checkout
-          </button>
+      <div className="border-t border-gray-200 bg-white p-6 shadow-sm z-10">
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-gray-500 font-medium">Total</p>
+          <p className="text-lg font-bold text-gray-900">$ {total.toFixed(2)}</p>
         </div>
+        <Button
+          onClick={checkoutClick}
+          className="w-full bg-red-500 hover:bg-red-600 text-white py-6 text-lg rounded-md"
+        >
+          Checkout
+        </Button>
       </div>
     </>
   );

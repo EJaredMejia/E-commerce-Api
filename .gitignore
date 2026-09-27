@@ -38,3 +38,5 @@ dist-ssr
 # Database
 *.db
 *.db-journal
+
+service-account-key.json

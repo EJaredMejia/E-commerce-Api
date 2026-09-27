@@ -7,6 +7,8 @@ import { getAllProducts } from "@/features/products/server/products.server";
 import { createFileRoute } from "@tanstack/react-router";
 import { Filter, Search } from "lucide-react";
 import { Suspense, useState } from "react";
+import { Input } from "@root/components/ui/input";
+import { Button } from "@root/components/ui/button";
 
 export const Route = createFileRoute("/_layout/")({
   component: Home,
@@ -39,17 +41,17 @@ function Home() {
             className="align-center mx-auto flex justify-center"
           >
             <div className="flex max-w-[500px] grow flex-col md:max-w-160 xl:max-w-188">
-              <div className="flex justify-center">
-                <input
+              <div className="flex justify-center gap-2">
+                <Input
                   placeholder="What are you looking for?"
                   type="text"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                  className="grow rounded-xs border border-gray-300 p-3 text-sm placeholder:text-gray-500 lg:w-full"
+                  className="grow"
                 />
-                <button className="grid w-11 place-items-center rounded-xs bg-red-500 xl:w-24 xl:items-center xl:justify-center">
+                <Button type="submit" className="bg-red-500 hover:bg-red-600 px-6">
                   <Search className="size-5 text-white" />
-                </button>
+                </Button>
               </div>
               <div className="mt-4 flex items-center justify-end self-end lg:hidden">
                 <button

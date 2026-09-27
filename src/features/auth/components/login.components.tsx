@@ -6,6 +6,9 @@ import {
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Lock, Mail, User as UserIcon } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@root/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@root/components/ui/card";
+import { Input } from "@root/components/ui/input";
 
 const Login = () => {
   const { data: userState } = useCurrentUserQuery();
@@ -34,15 +37,13 @@ const Login = () => {
       setEmailUser("");
       setPasswordUser("");
     } catch (e) {
-      // TODO maybe doesnt work this way
       navigate({
         to: "/login",
         search: {
-          message: "User doesn't exit",
+          message: "User doesn't exist",
         },
       });
     }
-    return;
   };
 
   const logOut = () => {
@@ -50,72 +51,93 @@ const Login = () => {
   };
 
   return (
-    <section className="relative flex w-full grow items-center justify-center bg-gray-50 px-6 py-8">
-      <div className="grid grow place-items-center">
-        {userState === null ? (
-          <div className="relative w-11/12 max-w-[500px] rounded-sm bg-white p-7 shadow-md">
-            <h3 className="text-2xl leading-9 font-semibold tracking-wide text-gray-600">
-              Welcome! Enter your email and password to continue
-            </h3>
-            <p className="mt-3 text-center text-blue-500">{message}</p>
-            <div className="mt-5 rounded-sm bg-cyan-100 p-4">
-              <h4 className="mb-2 text-center text-gray-600">
-                <b>Test data</b>
+    <section className="flex flex-col flex-1 items-center justify-center min-h-[calc(100vh-100px)] py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      {userState === null ? (
+        <Card className="w-full max-w-md shadow-lg border-none">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-2xl font-bold tracking-tight text-center">
+              Log in
+            </CardTitle>
+            <CardDescription className="text-center text-gray-500">
+              Enter your credentials to access your account
+            </CardDescription>
+            {message && <p className="mt-2 text-center text-sm font-medium text-red-500">{message}</p>}
+          </CardHeader>
+          <CardContent>
+            <div className="mb-6 rounded-md bg-blue-50 p-4 border border-blue-100">
+              <h4 className="mb-2 text-sm font-semibold text-blue-900">
+                Test Credentials
               </h4>
-              <p className="text-gray-600">
-                <Mail className="mr-3 mb-4 inline text-red-500" size={16} />
-                admin@gmail.com
-              </p>
-              <p className="text-gray-600">
-                <Lock className="mr-3 inline text-red-500" size={16} />
-                pass1234
-              </p>
+              <div className="flex flex-col gap-1 text-sm text-blue-800">
+                <div className="flex items-center gap-2">
+                  <Mail size={14} className="text-blue-500" />
+                  <span>admin@gmail.com</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock size={14} className="text-blue-500" />
+                  <span>pass1234</span>
+                </div>
+              </div>
             </div>
-            <form onSubmit={loginUser} className="mt-5 flex flex-col gap-3">
-              <label htmlFor="emailUser">Email</label>
-              <input
-                value={emailUser}
-                onChange={(e) => setEmailUser(e.target.value)}
-                required
-                type="email"
-                id="emailUser"
-                className="border border-gray-300 p-2"
-              />
-              <label htmlFor="passwordUser">Password</label>
-              <input
-                onChange={(e) => setPasswordUser(e.target.value)}
-                value={passwordUser}
-                required
-                type="password"
-                id="passwordUser"
-                className="border border-gray-300 p-2"
-              />
-              <button className="mt-5 w-full cursor-pointer bg-red-500 p-2.5 text-center text-white">
+            
+            <form onSubmit={loginUser} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="emailUser" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
+                <Input
+                  id="emailUser"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  value={emailUser}
+                  onChange={(e) => setEmailUser(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="passwordUser" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Password</label>
+                <Input
+                  id="passwordUser"
+                  type="password"
+                  required
+                  value={passwordUser}
+                  onChange={(e) => setPasswordUser(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="w-full bg-red-500 hover:bg-red-600 text-white mt-4">
                 Login
-              </button>
+              </Button>
             </form>
-            <p className="mt-5 text-xs tracking-wide">
+          </CardContent>
+          <CardFooter className="flex flex-col items-center justify-center space-y-2">
+            <p className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <span
+              <button
+                type="button"
                 onClick={() => navigate({ to: "/signup" })}
-                className="cursor-pointer text-blue-400"
+                className="font-medium text-red-600 hover:text-red-500 hover:underline"
               >
                 Sign up
-              </span>
+              </button>
             </p>
-          </div>
-        ) : (
-          <div className="flex h-[200px] w-11/12 max-w-[500px] flex-col items-center justify-center gap-5 rounded-sm bg-white p-7 shadow-md">
-            <UserIcon size={48} />
-            <p className="font-bold text-gray-600">
-              {userState?.firstName} {userState?.lastName}
-            </p>
-            <p onClick={logOut} className="cursor-pointer text-blue-400">
+          </CardFooter>
+        </Card>
+      ) : (
+        <Card className="w-full max-w-md shadow-lg border-none text-center">
+          <CardContent className="pt-10 pb-8 flex flex-col items-center gap-4">
+            <div className="h-20 w-20 bg-gray-100 rounded-full flex items-center justify-center">
+              <UserIcon size={40} className="text-gray-400" />
+            </div>
+            <div>
+              <p className="text-xl font-bold text-gray-900">
+                {userState?.firstName} {userState?.lastName}
+              </p>
+              <p className="text-sm text-gray-500">{userState?.email}</p>
+            </div>
+            <Button variant="outline" onClick={logOut} className="mt-4 w-full">
               Log out
-            </p>
-          </div>
-        )}
-      </div>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </section>
   );
 };

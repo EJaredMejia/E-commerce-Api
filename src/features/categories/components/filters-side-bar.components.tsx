@@ -4,6 +4,7 @@ import { useFiltersStore } from "@/store/filters.store";
 import { useState, Suspense } from "react";
 import { CategoriesList } from "@/features/categories/components/categories-list.components";
 import { CategoriesSkeleton } from "@/features/categories/components/categories-skeleton.components";
+import { Input } from "@root/components/ui/input";
 
 interface FiltersSideBarProps {
   isFiltersVisible: boolean;
@@ -41,7 +42,7 @@ const FiltersSideBar = ({
         )}
         <div
           onClick={() => setIsPriceActive(!isPriceActive)}
-          className="flex cursor-pointer justify-between border-b-2 border-gray-300"
+          className="flex cursor-pointer justify-between border-b-2 border-gray-300 pb-2"
         >
           <h4 className="font-bold text-gray-600">Price</h4>
           <ChevronDown
@@ -55,14 +56,15 @@ const FiltersSideBar = ({
             isPriceActive ? "show" : "hide"
           }`}
         >
-          <div>
-            <label className="text-md text-gray-600" htmlFor="fromPrice">
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-gray-600 w-10" htmlFor="fromPrice">
               From
             </label>
-            <input
-              min="0"
-              className="ml-3 w-44 rounded-sm border border-gray-300 p-2 text-sm"
+            <Input
               id="fromPrice"
+              type="number"
+              min="0"
+              className="w-32"
               value={
                 !price.from || price.from === Number.NEGATIVE_INFINITY
                   ? ""
@@ -70,24 +72,23 @@ const FiltersSideBar = ({
               }
               onChange={(e) => {
                 const value = e.target.value;
-
-                const isEmpty = value === "";
-
-                if (isEmpty) {
+                if (value === "") {
                   setPrice({ from: Number.NEGATIVE_INFINITY });
                   return;
                 }
-
-                setPrice({ from: Number(e.target.value) });
+                setPrice({ from: Number(value) });
               }}
-              type="number"
             />
           </div>
-          <div>
-            <label className="text-md text-gray-600" htmlFor="toPrice">
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-gray-600 w-10" htmlFor="toPrice">
               To
             </label>
-            <input
+            <Input
+              id="toPrice"
+              type="number"
+              min="1"
+              className="w-32"
               value={
                 !price.to || price.to === Number.POSITIVE_INFINITY
                   ? ""
@@ -95,27 +96,19 @@ const FiltersSideBar = ({
               }
               onChange={(e) => {
                 const value = e.target.value;
-
-                const isEmpty = value === "";
-
-                if (isEmpty) {
+                if (value === "") {
                   setPrice({ to: Number.POSITIVE_INFINITY });
                   return;
                 }
-
                 setPrice({ to: Number(value) });
               }}
-              min="1"
-              className="ml-8 w-44 rounded-sm border border-gray-300 p-2 text-sm"
-              id="toPrice"
-              type="number"
             />
           </div>
         </div>
         <form className="mt-10">
           <div
             onClick={() => setIsCategoryActive(!isCategoryActive)}
-            className="flex cursor-pointer justify-between border-b-2 border-gray-300"
+            className="flex cursor-pointer justify-between border-b-2 border-gray-300 pb-2"
           >
             <h4 className="font-bold text-gray-600">Category</h4>
             <ChevronDown

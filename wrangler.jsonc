@@ -5,6 +5,9 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
   "observability": {
-    "enabled": true
-  }
+    "enabled": true,
+  },
+  "vars": {
+    "VITE_API_URL": "https://e-commerce.jared-mejia.workers.dev/api/v1",
+  },
 }

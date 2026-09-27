@@ -14,7 +14,7 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   plugins: [
     cloudflare({
-      viteEnvironment: { name: "ssr" }
+      viteEnvironment: { name: "ssr" },
     }),
     devtools(),
     viteTsConfigPaths({

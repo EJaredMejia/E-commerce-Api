@@ -1,7 +1,8 @@
 import { usePurchaseCartMutation } from "@/features/cart/hooks/cart.hooks";
-import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import Modal from "react-modal";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@root/components/ui/dialog";
+import { Button } from "@root/components/ui/button";
+import { Input } from "@root/components/ui/input";
 
 interface CheckoutModalProps {
   isCheckoutModalOpen: boolean;
@@ -33,50 +34,57 @@ export function CheckoutModal({
     restoreForm();
   }
 
+  // Handle dialog open state changing
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      closeCheckoutModal();
+    }
+  };
+
   return (
-    <Modal
-      isOpen={isCheckoutModalOpen}
-      onRequestClose={closeCheckoutModal}
-      className="adjust-modal"
-    >
-      <form
-        className="flex flex-col gap-3 p-3 pb-0"
-        onSubmit={handleSubmit(purchaseCart)}
-      >
-        <X
-          onClick={closeCheckoutModal}
-          className="absolute top-8 right-8 cursor-pointer text-gray-600"
-          size={24}
-        />
-        <h2 className="font-bold text-gray-800">Send to:</h2>
-        <label htmlFor="street">Street</label>
-        <input
-          required
-          className="border border-gray-300 p-2"
-          type="text"
-          id="street"
-          {...register("street")}
-        />
-        <label htmlFor="zipCode">Zip Code</label>
-        <input
-          required
-          className="border border-gray-300 p-2"
-          type="number"
-          id="zipCode"
-          {...register("zipCode")}
-        />
-        <label htmlFor="city">City</label>
-        <input
-          required
-          className="border border-gray-300 p-2"
-          type="text"
-          id="city"
-          {...register("city")}
-        />
-        <button className="cursor-pointer bg-red-500 p-3 text-white hover:bg-red-600">
-          Purchase products
-        </button>
-      </form>
-    </Modal>
+    <Dialog open={isCheckoutModalOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold text-gray-800">Send to:</DialogTitle>
+          <DialogDescription>
+            Please enter your shipping information to complete the purchase.
+          </DialogDescription>
+        </DialogHeader>
+        <form
+          className="flex flex-col gap-4 py-2"
+          onSubmit={handleSubmit(purchaseCart)}
+        >
+          <div className="space-y-2">
+            <label htmlFor="street" className="text-sm font-medium">Street</label>
+            <Input
+              required
+              id="street"
+              {...register("street")}
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="zipCode" className="text-sm font-medium">Zip Code</label>
+            <Input
+              required
+              type="number"
+              id="zipCode"
+              {...register("zipCode")}
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="city" className="text-sm font-medium">City</label>
+            <Input
+              required
+              type="text"
+              id="city"
+              {...register("city")}
+            />
+          </div>
+          <Button type="submit" className="w-full mt-4 bg-red-500 hover:bg-red-600 text-white">
+            Purchase products
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

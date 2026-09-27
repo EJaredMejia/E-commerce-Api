@@ -15,19 +15,6 @@ body {
   width: 100%;
 }
 
-.rotate-up {
-  transition: transform 0.4s !important;
-  display: inline-block !important;
-  transform: rotatex(180deg) !important;
-  /* ^^ Change this */
-}
-
-.rotate-down {
-  transition: transform 0.4s !important;
-  display: inline-block !important;
-  transform: rotatex(0deg) !important;
-}
-
 .hide {
   max-height: 0;
   transition: max-height 0.4s ease-out;
@@ -40,46 +27,17 @@ body {
   transition: max-height 0.4s ease-in;
 }
 
-.hide-filters {
-  max-width: 0;
-  transition: max-width 0.4s ease-out;
-  overflow: hidden;
-}
-
-.show-filters {
-  overflow: hidden;
-  max-width: 18rem;
-  transition: max-width 0.4s ease-in;
-}
-
 .change-height {
   overflow-y: auto;
   margin: auto;
   height: 20vh;
 }
 
-.adjust-modal {
-  box-shadow: 0 0 8px rgb(209, 209, 209);
-  background-color: white;
-  padding: 1rem;
-  position: absolute;
-  top: 16%;
-  overflow-y: auto;
-  left: 15%;
-  transform: translate(-50% -50%);
-  height: fit-content;
-  max-height: 36.5rem;
-  width: 70%;
-  max-width: 50rem;
-}
-
 @media (min-height: 576px) {
   .change-height {
     height: 50vh;
   }
-
 }
-
 
 @media (min-height: 768px) {
   .change-height {
@@ -96,19 +54,5 @@ body {
 @media (min-height: 1200px) {
   .change-height {
     height: 80vh;
-  }
-}
-
-@media (min-width: 992px) {
-  .adjust-modal {
-    left: 32%;
-    max-width: 40rem;
-  }
-}
-
-@media (min-width: 1200px) {
-  .adjust-modal {
-    left: 30%;
-    max-width: 55rem;
   }
 }

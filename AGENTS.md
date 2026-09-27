@@ -1,0 +1,1 @@
+- always verify typescript code doesn't have an error before running the build command.

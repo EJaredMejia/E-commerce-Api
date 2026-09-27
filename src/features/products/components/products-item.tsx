@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { ShoppingCart } from "lucide-react";
 import { Suspense, type ComponentProps } from "react";
 import { useAddProductToCart } from "../hooks/products.hooks";
+import { Button } from "@root/components/ui/button";
 
 interface ProductsItemsProps {
   product: Product;
@@ -11,8 +12,8 @@ interface ProductsItemsProps {
 
 const ProductsItem = ({ product }: ProductsItemsProps) => {
   return (
-    <li className="rounded-xl border border-gray-300 pt-5">
-      <div className="grid place-items-center border-b border-gray-300 pb-5">
+    <li className="rounded-xl border border-gray-300 pt-5 bg-white shadow-sm hover:shadow-md transition-shadow">
+      <div className="grid place-items-center border-b border-gray-100 pb-5">
         <Link
           to={`/product/$id`}
           params={{ id: product.id }}
@@ -28,12 +29,12 @@ const ProductsItem = ({ product }: ProductsItemsProps) => {
           />
         </Link>
       </div>
-      <div className="h-42 p-5">
-        <h3 className="mb-4 ml-4 font-bold tracking-wider">{product.title}</h3>
+      <div className="h-42 p-5 flex flex-col justify-between">
+        <h3 className="mb-4 font-bold tracking-wider text-gray-800 line-clamp-2">{product.title}</h3>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-gray-400">Price</p>
-            <p className="ml-4 font-semibold">$ {product.price}</p>
+            <p className="text-gray-400 text-sm">Price</p>
+            <p className="font-semibold text-lg text-gray-900">$ {product.price}</p>
           </div>
           <Suspense fallback={<ButtonAdd disabled />}>
             <ButtonAddToCart productId={product.id} />
@@ -57,15 +58,16 @@ function ButtonAdd({
   ...rest
 }: Omit<ComponentProps<"button">, "children">) {
   return (
-    <button
+    <Button
+      size="icon"
       className={cn(
-        "block w-fit cursor-pointer rounded-full bg-red-500 p-4 text-gray-100 transition-colors hover:bg-red-600 disabled:bg-gray-500",
+        "rounded-full bg-red-500 hover:bg-red-600 h-12 w-12 text-white shadow-md",
         className,
       )}
-      {...rest}
+      {...rest as any}
     >
       <ShoppingCart className="size-5 fill-white" />
-    </button>
+    </Button>
   );
 }
 export default ProductsItem;

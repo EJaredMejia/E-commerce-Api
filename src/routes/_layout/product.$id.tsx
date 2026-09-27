@@ -6,11 +6,14 @@ import { Suspense } from "react";
 import ProductDetail from "../../features/products/components/product-detail";
 
 export const Route = createFileRoute("/_layout/product/$id")({
-  component: () => (
-    <Suspense fallback={<ProductDetailSkeleton />}>
-      <ProductDetail />
-    </Suspense>
-  ),
+  component: function ProductComponent() {
+    const { id } = Route.useParams();
+    return (
+      <Suspense fallback={<ProductDetailSkeleton />}>
+        <ProductDetail key={id} />
+      </Suspense>
+    );
+  },
   params: {
     parse: (params) => ({ id: Number(params.id) }),
     stringify: (params) => ({ id: String(params.id) }),
